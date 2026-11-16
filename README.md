@@ -1,5 +1,22 @@
 # flightdeck
 
+## Darts Arcade fork
+
+This is Sean's working fork of [richiela/flightdeck](https://github.com/richiela/flightdeck), based on audited commit `9bfc6cf1516d262d003584efd22ca32a1ad43eb7`.
+
+**Start here: [Darts Arcade improvement plan](docs/ARCADE-PLAN.md).**
+
+- [Audit baseline and confirmed problems](docs/AUDIT-BASELINE.md)
+- [Asset status and removed example clips](docs/ASSET-REGISTER.md)
+
+The game code is unchanged at this planning stage. The example film/TV/sports clips have been removed from the current tree. Other assets still need a commercial rights review, and the inherited Git history still contains the original clips. Turn **Viewer Video off** in Configure when trying this fork. Existing video references will be cleaned up in the first implementation milestone.
+
+Use **Node 22.14.0**, the version exercised in the audit, for now. The upstream Node 18 claim below is not valid with the current locked UUID dependency. The upstream test command also references missing files. Fixing the runtime contract and restoring a reproducible test suite are first-milestone tasks.
+
+The upstream project description and instructions follow.
+
+---
+
 A control panel + kiosk display for running a real dartboard as a party/venue
 game system, inspired by [Flight Club](https://flightclubdarts.com/). This is a personal fan project,
 not affiliated with or endorsed by Flight Club — built for my own dartboard
@@ -98,15 +115,14 @@ values.
 ## Videos
 
 Winner screens, busts, and eliminations can play a short video instead of
-just a text overlay — create your own trash talking videos!! `public/assets/`
-ships with a handful of example clips wired up so you can see the feature
-working the moment you clone this.
+just a text overlay. Upstream shipped example film, TV and sports clips;
+its author explicitly said they did not hold the rights to them. Those
+fourteen clips have been removed from this fork's current tree. The
+inherited Git history still contains them.
 
-**Those clips are examples I don't hold the rights to.**
-They're here purely to demonstrate what the feature can do, not as content
-you're meant to keep or redistribute.
-**Delete them and drop in your own clips** before you use this
-for real, and definitely before forking this into your own public repo.
+Use **Viewer Video off** until original or appropriately licensed clips
+are supplied. See [the asset register](docs/ASSET-REGISTER.md) for remaining
+rights checks and the planned cleanup of existing video references.
 Point a game's config at any `.mp4` the same way — see
 `public/games/event-videos.js` and each game's own HTML for where the
 paths are wired up.
@@ -117,10 +133,11 @@ Each dart thrown can also get an audible callout ("triple twenty", "bust",
 etc.) instead of, or alongside, the on-screen callout card — set
 `dartCalloutMode` (`'card' | 'sound' | 'both' | 'off'`) in `data/venue.json`.
 
-Unlike the video clips above, **the callout audio needs no disclaimer**:
-`public/assets/sounds/callouts/{Bella,Daniel}/` are locally-generated
-synthetic speech, made with Kokoro TTS (Apache-2.0) — not third-party
-recordings, so there's nothing to remove before you ship this. Pick the
+Upstream describes `public/assets/sounds/callouts/{Bella,Daniel}/` as
+locally generated synthetic speech made with Kokoro TTS (Apache-2.0).
+This fork retains those files for prototyping; the exact model/voice terms
+and any required notices must be verified before commercial distribution.
+Pick the
 voice with `dartCalloutVoice` in `data/venue.json`. Run
 `scripts/generate-callout-sounds.py` to regenerate a set or add a new voice.
 
