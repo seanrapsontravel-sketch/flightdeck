@@ -23,7 +23,7 @@ function throwScoreFromTarget(number, multiplier) {
         return 25 * mult;
     }
     const base = Number(number);
-    if (!Number.isFinite(base) || base < 1 || base > 20) return 0;
+    if (!Number.isInteger(base) || base < 1 || base > 20) return 0;
     return base * mult;
 }
 

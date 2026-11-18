@@ -2151,6 +2151,7 @@
             buildQsBoard();
 
             window.addEventListener('message', (event) => {
+                if (event.origin !== location.origin || event.source !== window.parent) return;
                 const messageData = event.data;
                 if (!messageData || messageData.type !== 'SYNC_STATE') return;
                 const state = messageData.state;

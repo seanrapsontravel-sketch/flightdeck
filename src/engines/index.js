@@ -465,13 +465,12 @@ function parseSpecificThrow(payload) {
     if (payload.miss) {
         return { miss: true, number: null, multiplier: 1, sector: null };
     }
-    const number = payload.number === 'bull' ? 'bull' : Number(payload.number);
-    if (number !== 'bull' && (!Number.isFinite(number) || number < 1 || number > 20)) {
+    const number = payload.number;
+    if (number !== 'bull' && (!Number.isInteger(number) || number < 1 || number > 20)) {
         return null;
     }
-    let multiplier = normalizeMultiplier(payload.multiplier);
-    // No treble bull on a real board — double bull is the max
-    if (number === 'bull' && multiplier > 2) multiplier = 2;
+    const multiplier = payload.multiplier == null ? 1 : payload.multiplier;
+    if (!Number.isInteger(multiplier) || multiplier < 1 || multiplier > 3 || (number === 'bull' && multiplier === 3)) return null;
     return {
         number,
         multiplier,
@@ -531,7 +530,7 @@ function initGameData(gameType, players, options = {}) {
         }
     }
 
-    const ordered = shufflePlayers(players || []);
+    const ordered = options.playOrder === 'random' ? shufflePlayers(players || []) : [...(players || [])];
 
     // Registry dispatch: each engine builds its own initial state. An unknown
     // game returns null, exactly as the old switch's default did.

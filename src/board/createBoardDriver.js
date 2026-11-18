@@ -91,10 +91,10 @@ function saveBoardConfig(dataDir, patch) {
     if (!['scolia', 'autodarts', 'opendarts', 'mock'].includes(next.provider)) {
         return { ok: false, error: `Unknown provider: ${next.provider}` };
     }
-    if (!Number.isFinite(next.autodarts.port) || next.autodarts.port <= 0) {
+    if (!Number.isInteger(next.autodarts.port) || next.autodarts.port <= 0 || next.autodarts.port > 65535 || next.autodarts.host.length > 253) {
         return { ok: false, error: 'Invalid Autodarts port' };
     }
-    if (!Number.isFinite(next.opendarts.port) || next.opendarts.port <= 0) {
+    if (!Number.isInteger(next.opendarts.port) || next.opendarts.port <= 0 || next.opendarts.port > 65535 || next.opendarts.host.length > 253) {
         return { ok: false, error: 'Invalid OpenDarts port' };
     }
     try {

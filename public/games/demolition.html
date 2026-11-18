@@ -837,7 +837,7 @@
                 if (tvmEndedBound) return;
                 tvmEndedBound = true;
                 try {
-                    window.parent.postMessage({ type: 'TVM_COMPLETE' }, '*');
+                    window.parent.postMessage({ type: 'TVM_COMPLETE' }, location.origin);
                 } catch (_) {}
             }
 
@@ -901,7 +901,7 @@
                 }
                 const fontSize = sizeClass === 'large' ? '3.5rem' : '1.1rem';
                 const bg = sizeClass === 'large' ? '#242430' : '#2c2c35';
-                return `<div style="display:flex; align-items:center; justify-content:center; height:100%; font-family:sans-serif; font-size:${fontSize}; font-weight:bold; color:#fff; background:${bg};">${fallbackLetter}</div>`;
+                return `<div style="display:flex; align-items:center; justify-content:center; height:100%; font-family:sans-serif; font-size:${fontSize}; font-weight:bold; color:#fff; background:${bg};">${FC_escapeHtml(fallbackLetter)}</div>`;
             }
 
             function renderOverlayAvatars(pairOrSlotId, members, fallbackAvatar, fallbackName) {
@@ -1205,6 +1205,7 @@
             }
 
             window.addEventListener('message', (event) => {
+                if (event.origin !== location.origin || event.source !== window.parent) return;
                 const messageData = event.data;
                 if (!messageData || messageData.type !== 'SYNC_STATE') return;
                 const state = messageData.state;

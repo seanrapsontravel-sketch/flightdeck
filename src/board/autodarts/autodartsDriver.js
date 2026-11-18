@@ -268,7 +268,7 @@ function createAutodartsDriver({ host, port, onUpdate, onEvent }) {
                     raw: throws[i],
                     source: 'autodarts'
                 };
-                pushEvent('THROW', mapped);
+                pushEvent('THROW', { ...mapped, eventId: throws[i].id || throws[i].uuid || (raw.visitId ? `${raw.visitId}:${i}` : null) });
             }
             lastNumThrows = throws.length;
             lastThrowsFingerprint = JSON.stringify(throws);

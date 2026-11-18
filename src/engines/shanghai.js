@@ -20,6 +20,16 @@ const {
 } = require('./core');
 
 const SHANGHAI_MAX_ROUNDS = 8;
+/** a "Shanghai" (single + double + treble of the round's number in one visit) wins outright, after this beat */
+const SHANGHAI_WIN_DELAY_MS = 900;
+
+/** did this visit's three darts make a Shanghai: a single, a double and a treble of the target, all hits? */
+function shanghaiIsShanghai(gameData) {
+    const darts = (gameData.turnDarts || []).slice(-3);
+    if ((gameData.throwsThisTurn || 0) !== 3 || darts.length !== 3) return false;
+    const mults = new Set(darts.filter(d => d.hit).map(d => d.mult));
+    return mults.has('S') && mults.has('D') && mults.has('T');
+}
 
 /* ========== SHANGHAI ========== */
 
@@ -113,6 +123,22 @@ function shanghaiAdvanceTurn(gameData) {
 
 function shanghaiResolveMatch(gameData) {
     const players = gameData.players || [];
+    // a Shanghai ends the game on the spot: that thrower wins, whatever the scores
+    const sh = gameData.shanghai;
+    if (sh && sh.playerId != null) {
+        const champ = players.find(p => p.id === sh.playerId);
+        if (champ) {
+            gameData.phase = makePhase('winner', {
+                ...doublesWinnerFields(champ),
+                reason: 'shanghai',
+                score: champ.score || 0,
+                rounds: sh.round,
+                targetNumber: sh.round
+            });
+            return { gameData, schedule: null };
+        }
+    }
+
     let bestScore = -Infinity;
     players.forEach(p => {
         bestScore = Math.max(bestScore, p.score || 0);
@@ -139,6 +165,14 @@ function shanghaiResolveMatch(gameData) {
 }
 
 function shanghaiContinueAfterThrow(gameData) {
+    // the pub rule: single + double + treble of the target in one visit wins outright
+    if (shanghaiIsShanghai(gameData)) {
+        const player = gameData.players[gameData.activeIdx];
+        gameData.shanghai = { playerId: player.id, playerName: doublesThrowerName(gameData, gameData.activeIdx), round: shanghaiTargetNumber(gameData) };
+        if (gameData.lastThrow) gameData.lastThrow.shanghai = true;
+        gameData.phase = makePhase('playing');
+        return { gameData, schedule: { delayMs: SHANGHAI_WIN_DELAY_MS, next: 'shanghai_resolve_match' } };
+    }
     if (gameData.throwsThisTurn < 3) {
         gameData.phase = makePhase('playing');
         return { gameData, schedule: null };
@@ -303,7 +337,9 @@ module.exports = {
     init,
     handleThrow,
     SHANGHAI_MAX_ROUNDS,
+    SHANGHAI_WIN_DELAY_MS,
     meta,
+    shanghaiIsShanghai,
     handleShanghaiThrow,
     shanghaiAdvanceTurn,
     shanghaiContinueAfterThrow,

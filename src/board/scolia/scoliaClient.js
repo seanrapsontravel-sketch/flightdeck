@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('node:crypto');
 
 const SCOLIA_WS_BASE = 'wss://game.scoliadarts.com/api/v1/social';
 const MAX_LOG_ENTRIES = 200;

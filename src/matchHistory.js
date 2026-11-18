@@ -21,7 +21,8 @@ function appendMatch(dataDir, record) {
     if (!record || typeof record !== 'object') return { ok: false, error: 'invalid record' };
     try {
         ensureDataDir(dataDir);
-        fs.appendFileSync(matchesPath(dataDir), `${JSON.stringify(record)}\n`, 'utf8');
+        const fd = fs.openSync(matchesPath(dataDir), 'a', 0o600);
+        try { fs.writeFileSync(fd, `\n${JSON.stringify(record)}\n`); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
         return { ok: true };
     } catch (err) {
         return { ok: false, error: err.message };
@@ -64,9 +65,10 @@ function topMatches(dataDir, gameType, limit = 5, order = 'desc') {
     const sign = order === 'asc' ? 1 : -1;
     const latest = new Map();
     readAllMatches(dataDir)
-        .filter((m) => m && m.gameType === gameType && Number.isFinite(Number(m.totalScore)))
+        .filter((m) => m && m.gameType === gameType)
         .forEach((m, i) => latest.set(m.id != null ? `id:${m.id}` : `row:${i}`, m));
     return [...latest.values()]
+        .filter(m => Number.isFinite(Number(m.totalScore)) && !['pending_correction', 'abandoned'].includes(m.status))
         .sort((a, b) => {
             const scoreDiff = sign * (Number(a.totalScore) - Number(b.totalScore));
             if (scoreDiff !== 0) return scoreDiff;

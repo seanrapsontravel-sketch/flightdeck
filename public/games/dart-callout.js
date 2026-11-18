@@ -162,6 +162,7 @@
     }
 
     window.addEventListener('message', function (event) {
+        if (event.origin !== location.origin || event.source !== window.parent) return;
         const data = event.data;
         if (data && data.type === 'DART_ANNOUNCE') {
             showEarlyCard(data.data && data.data.card);

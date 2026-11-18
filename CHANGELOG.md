@@ -1,3 +1,39 @@
+# Unreleased — Shanghai: the "Shanghai" instant win, and 3D Shanghai in progress
+
+- Shanghai rule change: a single, a double and a treble of the round's number in one visit is a **Shanghai** and wins the game on the spot, whatever the scores (the pub rule). The winner phase carries `reason: 'shanghai'` and the round's `targetNumber`; the 2D page shows "Shanghai!" and the help card lists the rule. Anything short of the full set plays on as before. New unit test `tests/shanghai-rules.test.cjs`.
+- 3D Shanghai ("The Lantern Pagoda"): a temple courtyard at sunset turning to night over eight rounds. The moon gate is the board, with only the round's number glowing gold; an eight-tier pagoda lights a tier per round. Every point is a sky lantern rising from the wedge to the thrower's lantern strings. A scoring dart rings the gong, a treble sets off firecrackers along the walls, a Shanghai ends the game in fireworks, and the champion's moment releases every lantern into the sky. 60 fps at 2.3 Mpx in Chrome on an M1.
+- It is being built alongside the 2D page: preview it with `viewer.html?shanghai=3d` or `games/shanghai-3d.html?demo=1` (`players=2..6`, `seed=n`, `speed=n`, `doubles=1`, `long=1`). The original 2D page is kept as `public/games/shanghai-classic.html` (`viewer.html?shanghai=classic`). New browser test `tests/browser/shanghai.spec.cjs`.
+
+# Unreleased — 3D Killer ("The Ledger")
+
+- Killer is now a 3D game (Three.js): a members' club on the 66th floor, rain on a wall of glass and the city in bokeh below, and the game itself as a giant marble-and-brass dartboard inlaid in the floor. Every dart lands in the exact bed it hit on the real board; each player stands on their own number as a hitman in a dinner jacket in their colour, with their own hat or hair (players can be told apart without colour); marks and lives are light filling the three bands of their wedge.
+- Killers burn crimson (wedge, number, a ring at the base) and draw a suppressed pistol with a laser sight, which fires on a strike and is dropped when they're stripped; strikes crack and drain the victim's band while a tracer runs round the ring from the killer; a death shatters the agent into real rigid bodies and draws a red ledger line through the wedge. Rounds 7–9 warm the room to amber with lightning over the city; 10–12 bring a red emergency wash and lashing rain.
+- Cameras return to an overhead master shot that shows every number, mark, killer and out player from across a bar; moments are short excursions (agent, dart-cam, wedge, strike, death, orbit, round). Deco ledger HUD: round tracker, thrower card with each dart's result, a ledger card per player, title cards and the rules overlay.
+- Moments fit the server's windows in both video-mode settings; in video mode the venue's winner clips play over the scene, and operator-supplied Killer moment clips play if present.
+- The original 2D Killer is kept as `public/games/killer-classic.html`; open `viewer.html?killer=classic` to show it instead. `games/killer.html?demo=1` previews a simulated game without a server or board (`players=2..6`, `seed=n`, `speed=n`, `doubles=1`, `video=1`, `long=1`).
+- Shared 3D game kit in `public/games/lib3d/kit/` (event queue, frame loop, HUD pieces, demo harness, roster naming, dartboard geometry); Limbo now runs on it, pixel-identical. New browser test `tests/browser/killer.spec.cjs` and unit test `tests/darts.test.cjs`.
+
+# Unreleased — 3D Derby
+
+- Derby is now a 3D racecourse (Three.js): sculpted, skinned horses with a transverse-gallop cycle, jockeys in silks that match the running order, saddle cloths carrying each player's number, a grandstand with a crowd that reacts to the action, and a finish gantry.
+- Broadcast-style direction: a tracking shot during play, a head-on charge for doubles and trebles, rearing close-ups for knock-backs, a slow-motion photo finish, a crane shot for round titles and an orbit of the winner's circle with confetti and fireworks.
+- New on-screen graphics: running order with live positions, a lower third for the thrower showing each dart's result, event banners, round titles, call to the post, past the post and the winner's circle.
+- The original 2D Derby is kept as `public/games/derby-classic.html`; open `viewer.html?derby=classic` to show it instead. `games/derby.html?demo=1` previews the 3D race without a server or board (`players=2..6`, `seed=n`, `speed=n`). `?quality=low` gives slower screens a smaller shadow map and no depth of field.
+- `npm run check` now parses browser ES modules as modules and skips `public/vendor/`.
+
+# 0.25.0 — Arcade reliability and timed sessions
+
+- Pair tablets separately from operators; keep the TV read only and reject unknown origins.
+- Validate player names, raster photos and darts; remove dead example-video references.
+- Correct completed Quick 10 results under one stable match identity.
+- Restore delivered tests, dependency checks and CI for Node 22/24.
+- Commit versioned session checkpoints before broadcasts; recover visits, corrections and pending transitions after a crash.
+- Retry acknowledged controller identities safely and deduplicate provider event identities without collapsing repeated targets.
+- Add saved 30/60/90-minute sessions, five-minute warnings, pause/extension controls and visit-boundary expiry.
+- Archive versioned competitive results and show championship points, ties and exclusions on tablet and TV.
+
+See `docs/ARCADE-OPERATIONS.md` for setup and the rules adopted for this release. Physical hardware validation and commercial media clearance remain outstanding. Milestones 4–7 are unchanged.
+
 # FlightDeck Changelog
 
 Keep **`## Unreleased`** at the **bottom** current between releases — that is the pending-changes list for the side window.

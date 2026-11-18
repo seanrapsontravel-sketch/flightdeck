@@ -955,7 +955,7 @@
         function renderAvatarHtml(avatar, name) {
             if (avatar) return `<img src="${avatar}" alt="">`;
             const initials = (name || '?').trim().slice(0, 2).toUpperCase();
-            return `<div class="initials">${initials}</div>`;
+            return `<div class="initials">${FC_escapeHtml(initials)}</div>`;
         }
 
         function markSvg(inner) {
@@ -1371,6 +1371,7 @@
         }
 
         window.addEventListener('message', (event) => {
+                if (event.origin !== location.origin || event.source !== window.parent) return;
             if (event.data?.type !== 'SYNC_STATE') return;
             const state = event.data.state;
             if (!state || !state.gameData) return;

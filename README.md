@@ -1,3 +1,7 @@
+# Arcade reliability and timed sessions
+
+For setup, tablet pairing, recovery, timed play and championship rules, see [ARCADE-OPERATIONS.md](docs/ARCADE-OPERATIONS.md). This fork implements milestones 1–3 of the [improvement plan](docs/ARCADE-PLAN.md). New 3D games, premium controls and commercial hardware packaging are outside this change.
+
 # flightdeck
 
 ## Darts Arcade fork
@@ -9,9 +13,9 @@ This is Sean's working fork of [richiela/flightdeck](https://github.com/richiela
 - [Audit baseline and confirmed problems](docs/AUDIT-BASELINE.md)
 - [Asset status and removed example clips](docs/ASSET-REGISTER.md)
 
-The game code is unchanged at this planning stage. The example film/TV/sports clips have been removed from the current tree. Other assets still need a commercial rights review, and the inherited Git history still contains the original clips. Turn **Viewer Video off** in Configure when trying this fork. Existing video references will be cleaned up in the first implementation milestone.
+Milestones 1–3 now add paired device permissions, safe inputs, portable automated tests, durable session recovery, timed play and championship standings. The original games and upstream attribution are retained. Example film/TV/sports clips are absent from the current tree, and dead references have been removed. Remaining asset rights and inherited media history still need commercial review.
 
-Use **Node 22.14.0**, the version exercised in the audit, for now. The upstream Node 18 claim below is not valid with the current locked UUID dependency. The upstream test command also references missing files. Fixing the runtime contract and restoring a reproducible test suite are first-milestone tasks.
+Use Node 22.14+ or 24 LTS. See the operations guide above for the current setup and test commands.
 
 The upstream project description and instructions follow.
 
@@ -40,7 +44,7 @@ timeouts, callout duration, which games are enabled).
 No hardware required — runs against a mock board so you can see every game
 end to end.
 
-You need node 18+, npm and openssl installed already — `run.sh` checks for
+You need Node 22.14+ (or 24 LTS), npm and openssl installed already — `run.sh` checks for
 all three up front and tells you exactly what is missing.
 
 ```bash

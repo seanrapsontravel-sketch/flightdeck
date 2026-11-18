@@ -1379,6 +1379,7 @@
             }
 
             window.addEventListener('message', (event) => {
+                if (event.origin !== location.origin || event.source !== window.parent) return;
                 const msg = event.data;
                 if (!msg || msg.type !== 'SYNC_STATE' || !msg.state) return;
                 const state = msg.state;

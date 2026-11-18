@@ -21,13 +21,13 @@ cd "$(dirname "$0")"
 # Installing a runtime wants a package manager and usually root, differs on
 # every platform, and would quietly shadow an nvm/asdf node the machine already
 # manages. A precise error you can act on beats a surprise system change.
-NODE_MIN=18   # express 5 requires >= 18; nothing in src/ needs newer
+NODE_MIN=22   # supported runtime: Node 22.14+ or 24 LTS
 
 missing=()
 
 if ! command -v node >/dev/null 2>&1; then
     missing+=("node ${NODE_MIN}+ — not installed")
-elif [ "$(node -p 'process.versions.node.split(".")[0]')" -lt "$NODE_MIN" ]; then
+elif ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major < 22 || (major === 22 && minor < 14) ? 1 : 0)'; then
     missing+=("node ${NODE_MIN}+ — found $(node -v), too old (express 5 needs ${NODE_MIN}+)")
 fi
 
@@ -46,7 +46,7 @@ fi
 
 if [ ! -d node_modules ]; then
     echo "Installing dependencies..."
-    npm install || { echo "[run.sh] npm install failed" >&2; exit 1; }
+    npm ci || { echo "[run.sh] npm install failed" >&2; exit 1; }
 fi
 
 if [ ! -f certs/server.key ] || [ ! -f certs/server.crt ]; then
@@ -159,7 +159,7 @@ while true; do
 
         # Dependencies can move with the code, so only after a pull that landed.
         if [ "$before" != "$after" ]; then
-            npm install || echo "[run.sh] WARNING: npm install failed — starting with what is installed" >&2
+            npm ci || echo "[run.sh] WARNING: npm install failed — starting with what is installed" >&2
         fi
     fi
 

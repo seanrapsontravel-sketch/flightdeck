@@ -3113,6 +3113,8 @@
 
 
     </style>
+<link rel="stylesheet" href="/arcade.css">
+<script src="/arcade-client.js"></script>
 </head>
 <body class="screen-registration registration-ui-pending">
 
@@ -3796,7 +3798,7 @@
                 connectSocket();
                 return false;
             }
-            socket.send(JSON.stringify(payload));
+            FDClient.send(socket, payload);
             return true;
         }
 
@@ -3811,7 +3813,7 @@
         let clientInfoTimer = null;
         function reportClientInfo() {
             if (!socket || socket.readyState !== WebSocket.OPEN) return;
-            socket.send(JSON.stringify({
+            FDClient.send(socket, {
                 action: 'CLIENT_INFO',
                 page: 'control',
                 width: window.innerWidth,
@@ -3821,7 +3823,7 @@
                 dpr: window.devicePixelRatio,
                 touch: navigator.maxTouchPoints || 0,
                 ua: navigator.userAgent
-            }));
+            });
         }
         window.addEventListener('resize', () => {
             clearTimeout(clientInfoTimer);
@@ -3840,11 +3842,12 @@
             socket = new WebSocket(`${wsProtocol}://${window.location.host}`);
 
             socket.onopen = () => {
+                FDClient.open(socket);
                 console.log('Control socket connected');
-                reportClientInfo();
             };
 
-            socket.onclose = () => {
+            socket.onclose = (event) => {
+                FDClient.close(event);
                 console.warn('Control socket closed — retrying in 1s');
                 socketReconnectTimer = setTimeout(connectSocket, 1000);
             };
@@ -3909,19 +3912,13 @@
         }
 
         function fourPlayerCapFor(gameKey) {
-            if (gameKey === 'x01') return X01_MAX_PLAYERS;
-            if (gameKey === 'cricket') return CRICKET_MAX_PLAYERS;
-            return null;
+            return lastKnownControlState?.catalogue?.find(g => g.id === gameKey)?.maxPlayers ?? null;
         }
-
         function fourPlayerGameLabel(gameKey) {
-            return gameKey === 'x01' ? 'X01' : 'Cricket';
+            return lastKnownControlState?.catalogue?.find(g => g.id === gameKey)?.title || gameKey;
         }
-
-        const SOLO_START_GAMES = new Set(['warmup', 'quick10', 'x01', 'aroundtheworld']);
-
         function gameAllowsSoloStart(gameKey) {
-            return SOLO_START_GAMES.has(gameKey);
+            return lastKnownControlState?.catalogue?.find(g => g.id === gameKey)?.minPlayers === 1;
         }
 
         function minCompetitorsMessage(state, gameKey) {
@@ -5213,7 +5210,7 @@
                 action: 'FORWARD_GAME_ACTION',
                 payload: {
                     type: 'TRIGGER_SPECIFIC_THROW',
-                    number,
+                    number: number === 'bull' ? 'bull' : Number(number),
                     multiplier,
                     sector: buildDebugSector(number, multiplier, ring)
                 }
@@ -5232,7 +5229,7 @@
             sendAction({
                 action: 'DEBUG_TEST_ANNOUNCE',
                 payload: {
-                    number,
+                    number: number === 'bull' ? 'bull' : Number(number),
                     multiplier,
                     sector: buildDebugSector(number, multiplier, ring)
                 }
@@ -5290,7 +5287,7 @@
                 return `<img src="${player.avatar}" alt="">`;
             }
             const initials = name.trim().slice(0, 2).toUpperCase() || '?';
-            return `<span class="q10-initials">${initials}</span>`;
+            return `<span class="q10-initials">${FDClient.escape(initials)}</span>`;
         }
 
         function syncQuick10HubUi(state) {
@@ -5321,7 +5318,7 @@
                     for (let i = 0; i < size; i++) {
                         const p = candidates[idx++];
                         if (!p || !p.id) continue;
-                        const name = (p.name || 'PLAYER').replace(/</g, '&lt;');
+                        const name = FDClient.escape(p.name || 'PLAYER');
                         html += `<button type="button" class="quick10-pick-card" data-player-id="${p.id}">
                             <div class="card-avatar">${quick10PickAvatarHtml(p)}</div>
                             <div class="player-name-display">${name}</div>
@@ -5561,7 +5558,7 @@
                 action: 'CORRECT_SCORE_APPLY',
                 payload: {
                     type: 'TRIGGER_SPECIFIC_THROW',
-                    number,
+                    number: number === 'bull' ? 'bull' : Number(number),
                     multiplier,
                     sector: buildDebugSector(number, multiplier, ring)
                 }
@@ -5607,12 +5604,6 @@
         });
 
         // --- Configure modal (Registration screen only) ---
-        const GAME_LABELS = {
-            demolition: 'Demolition', limbo: 'Limbo', derby: 'Derby', killer: 'Killer',
-            quackshot: 'Quackshot', shanghai: 'Shanghai',
-            warmup: 'Warm Up', quick10: 'Quick 10', x01: 'X01', cricket: 'Cricket',
-            aroundtheworld: 'Around the World',
-        };
         // Mirrors board/createBoardDriver.js's own fallback defaults — localhost,
         // assuming FlightDeck runs colocated with the engine.
         const BOARD_PROVIDER_DEFAULTS = {
@@ -5698,7 +5689,7 @@
                 input.checked = !!enabledGames[key];
                 input.dataset.gameKey = key;
                 const span = document.createElement('span');
-                span.textContent = GAME_LABELS[key] || key;
+                span.textContent = lastKnownControlState?.catalogue?.find(g => g.id === key)?.title || key;
                 label.appendChild(input);
                 label.appendChild(span);
                 gamesGrid.appendChild(label);
@@ -5805,6 +5796,8 @@
         function handleSocketMessage(event) {
             try {
                 const payload = JSON.parse(event.data);
+                FDClient.message(payload);
+                if (payload.type === 'DEVICE_ROLE') { if (payload.role !== 'viewer') reportClientInfo(); return; }
                 if (payload.type === 'BOARD_UPDATE' || payload.type === 'SCOLIA_UPDATE') {
                     renderScoliaPanel(payload.data || {});
                     return;
@@ -5834,6 +5827,10 @@
                 if (profileSelect && state.debugThrowProfile) {
                     const wantProfile = state.debugThrowProfile;
                     if (profileSelect.value !== wantProfile) profileSelect.value = wantProfile;
+                }
+                for (const game of state.catalogue || []) {
+                    const card = document.querySelector(`.game-card[data-game="${game.id}"]`);
+                    if (card) { card.dataset.category = game.category; card.querySelector('h3').textContent = game.title; }
                 }
                 applyVenueUi(state);
                 syncWakeLockFromState(state);
@@ -6355,8 +6352,8 @@
             card.className = 'player-card';
             const avatarRender = p.avatar
                 ? `<img src="${p.avatar}" alt="user" draggable="false">`
-                : `<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:3rem; color:var(--gold-glow); font-family:inherit;">${p.name[0].toUpperCase()}</div>`;
-            card.innerHTML = `<button class="card-del">×</button><div class="card-avatar">${avatarRender}</div><div class="player-name-display">${p.name}</div>`;
+                : `<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:3rem; color:var(--gold-glow); font-family:inherit;">${FDClient.escape(p.name[0].toUpperCase())}</div>`;
+            card.innerHTML = `<button class="card-del">×</button><div class="card-avatar">${avatarRender}</div><div class="player-name-display">${FDClient.escape(p.name)}</div>`;
             card.dataset.playerId = p.id;
             card._name = p.name;
             card._avatar = p.avatar || '';

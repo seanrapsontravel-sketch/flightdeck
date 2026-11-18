@@ -1,0 +1,923 @@
+{
+  "scope": "Current working tree only; excludes inherited Git history.",
+  "assets": [
+    {
+      "path": "public/assets/VIDEO-NOTICE.md",
+      "bytes": 762,
+      "sha256": "1245cb843b9b8e7b7312189ea02ad77c4272c1cbc4eae2d84b59300bb44b3c5f",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/app/keep-awake-silent.mp4",
+      "bytes": 4872,
+      "sha256": "dda52da0def81ddaf0e3f160a9416fde2b07182e09e36847033735edd6dfec18",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/app/registration-bg.jpg",
+      "bytes": 408591,
+      "sha256": "3d25453e94225cd4486e3998b6da78d39cfe0efc647e39ed1df33c700ab8c0e9",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/app/viewer_registration.png",
+      "bytes": 2319582,
+      "sha256": "cfdcc354baf4354d5821b860f334af7b8b855cbf087d583ad48c5ca8c7e21a8e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/aroundtheworld/CREDITS.md",
+      "bytes": 242,
+      "sha256": "90e67c998c5cefcd30251b811c0d632f72b876cb83922eb3f0a4afe9673acc31",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/aroundtheworld/bg.jpg",
+      "bytes": 1184559,
+      "sha256": "16777294274e9d77993a50ce0910eae88b35da8294856d0b80080ffd669bb76d",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/cricket/bg.jpg",
+      "bytes": 1479507,
+      "sha256": "92962852d57db1ab1c52e7c5703a318180fb443fd42c1b522d96d6f1655eea96",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/demolition/ATTRIBUTION.txt",
+      "bytes": 1663,
+      "sha256": "176092dbc54aed08781417cf75187419b755582bf4532cd2ea7d5df64838956d",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/demolition/bg.jpg",
+      "bytes": 685270,
+      "sha256": "55124493958934a760d16fca9b1e443162cd0ba6c9a369af637461f249a601cb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/demolition/bust-collapse.mp3",
+      "bytes": 350345,
+      "sha256": "2e75d8baa7ca50a38c69be86ff08716611d4ef4777f2f0641a28a072e1acadf5",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/derby/bg.jpg",
+      "bytes": 751793,
+      "sha256": "6e3e0026f4ab134af767951c0567847834fe5efdec2e9014bcdd37afc11687fc",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/derby/horse-racer.png",
+      "bytes": 45545,
+      "sha256": "a940fda93e86e4177f6bccb9886c24c854d189b37be07fb554d7ae0fefac3697",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/killer/ATTRIBUTION.txt",
+      "bytes": 964,
+      "sha256": "cd2f064073673b163932dc2ffcf2f96b3da0d07f06b82a85cfe2073c4e1cfd04",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/killer/bg.jpg",
+      "bytes": 540308,
+      "sha256": "2ca3db13d877dc4e1747b1f41f239e074ee3ed387898831dad520cbdb01f7d21",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/limbo/ATTRIBUTION.txt",
+      "bytes": 472,
+      "sha256": "8e8f15999c5a64dc3e74b968d2fdaa725ebd98aadcab123d43268ffdf90891f9",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/limbo/bg.jpg",
+      "bytes": 145234,
+      "sha256": "514e8622fe71b3eb023cccdfcb0de6a4a82183ce1bb8fd01f4810f7115c3542c",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/limbo/dino-blue.png",
+      "bytes": 85833,
+      "sha256": "20d521861aa7eabbc16a24ff87aa56ea5fb531acb113b5f17926ad24c64d5606",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/limbo/dino-red.png",
+      "bytes": 85846,
+      "sha256": "074ad0f124f30ec29829ccab0916eda123fd98bd20f1278a6ea6044862d00a46",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/quackshot/bg.jpg",
+      "bytes": 425844,
+      "sha256": "85f98847c8076971ed3e31b40fc163a339fbf9ce9ee00872c8bce57c0e281485",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/quackshot/ducky-icon.svg",
+      "bytes": 512,
+      "sha256": "31675729e4a195e0017b810f2407615c083ab11361e38b2cc22e692cdb4cd9af",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/quick10/bg.jpg",
+      "bytes": 1069296,
+      "sha256": "c94941d317727d52f3e4ee69b84f223cac4644f0894412807f1cfb56cb1b9253",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/shanghai/bg.jpg",
+      "bytes": 1175724,
+      "sha256": "411f2f6b3e4ad6fbb06e5b0cd5700a433189dc91461518bb26f7b3edbe55e622",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/shared/ATTRIBUTION.txt",
+      "bytes": 1958,
+      "sha256": "a5a876f63eaa3968ea9b4aeaf3457afaaa88ccb68144ad6eb8bdb7214a3fac06",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/shared/winner-cheers.mp3",
+      "bytes": 166911,
+      "sha256": "1868575f736b260a1b15b2a331e2a9c9bd1eb79d463bb4780552fc7844d7f7a9",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d1.mp3",
+      "bytes": 6884,
+      "sha256": "e13ab2e51141cceeaff46edefa089073649a7367a589d5844298fb9faf1d956c",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d10.mp3",
+      "bytes": 7340,
+      "sha256": "2c3bd51753813af6dffe36c3a0fccbbe01be6f68afea4ca74e4fb4607d739523",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d11.mp3",
+      "bytes": 7748,
+      "sha256": "d1a3e946c5d19186f24049f627ceef0f973a15b62f0560b74917c5e51244bcfb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d12.mp3",
+      "bytes": 8420,
+      "sha256": "1012efdba8db98682a1ec64026225c057b766f170fe78e0d077c0da9552dcabd",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d13.mp3",
+      "bytes": 8900,
+      "sha256": "353226b1b116af5b45940bc14347932edc6c5694d3b4619d037e2dbb0a03d97b",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d14.mp3",
+      "bytes": 8948,
+      "sha256": "c2c630800c80a84198af618afb527d0dff1749187b43eb8d5415fbcece92df74",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d15.mp3",
+      "bytes": 8948,
+      "sha256": "8fb8cf6fc664814b44b7f1eb585294c4845aae226cac2c87d10b8a4744eb31c5",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d16.mp3",
+      "bytes": 10124,
+      "sha256": "c11237096f09dfddd60c0b59e3ac24e70895035b2ab7e6be37b9fc5b2a3805a8",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d17.mp3",
+      "bytes": 10484,
+      "sha256": "cccc78ec952f3eae1469c0d1c7faafea38f40c729e0bfb09d3a554d47887c7db",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d18.mp3",
+      "bytes": 8660,
+      "sha256": "b356b8f5df37b0d81c2bee13c5f6b5b963fd42ea10bdb7df8a174ca8a6d9e1e9",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d19.mp3",
+      "bytes": 8780,
+      "sha256": "ab180db7a41f5d914f7516abc6c5de65a2f6e0529d785b989d21bd3cc7687039",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d2.mp3",
+      "bytes": 7388,
+      "sha256": "e30e887595d82c35bd7b3dbc7c23ab98cb5c72bc90bb47e5d9b38560cfeaf0bc",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d20.mp3",
+      "bytes": 8612,
+      "sha256": "d24cad32a2e5156f5587f3891f60df44fa2e28fe1b2739b35a597d3e78f6382c",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d3.mp3",
+      "bytes": 7436,
+      "sha256": "83f45e8b8265e78e51f4d9db741517e06f0254739121fa6cef6489ace9e1af27",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d4.mp3",
+      "bytes": 6620,
+      "sha256": "718aa0d3912438a5d6289f9490524ee7ac414a41615d6d3fd47840fbbe4563f1",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d5.mp3",
+      "bytes": 7868,
+      "sha256": "d0de8abf55f628fee050fc9e11be3bf7f543fb489619d374bdad7c5402d81efc",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d6.mp3",
+      "bytes": 7844,
+      "sha256": "a513e619b9e9dd63af1dfe7e4a5c358015a814ccf36becd0773f506bd5e1e7ac",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d7.mp3",
+      "bytes": 8012,
+      "sha256": "335282c0eabf5451de155ed09038be23d5b397926c1033bbf6215a5ec065c268",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d8.mp3",
+      "bytes": 7076,
+      "sha256": "ae73ae87c3fa578efb86102a37d51c22d153b2f2219c6a85441c40624000befb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/d9.mp3",
+      "bytes": 7364,
+      "sha256": "2282e98765fc80540c6389612e7e29a042695d1741d2c7384969ed614e14927e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/dbull.mp3",
+      "bytes": 8396,
+      "sha256": "49dc0dfb4d12315c264c31dbe9748739019d5a85afe71ab675b1cfbee05da246",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/miss.mp3",
+      "bytes": 4940,
+      "sha256": "3cf960a7c109f86b4e130e4f1173eee53d0036fe9dd0e625e42b221d37370110",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s1.mp3",
+      "bytes": 4508,
+      "sha256": "646205765a0d9ee633d1ea68590256d5853235822131571fb1fbf0c29a67bc28",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s10.mp3",
+      "bytes": 4340,
+      "sha256": "b2d8aa26f508e834854877a08716351de8a3ef4bce50e450799fc753ee0fe9e4",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s11.mp3",
+      "bytes": 5276,
+      "sha256": "815440a065479be461eef2ee18f100e009794032549312652835ea587b2aaedb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s12.mp3",
+      "bytes": 5036,
+      "sha256": "93a52cc6e4cf10996fc207dff46996fd2f7cd89d0c3fe70ec5fb41f74f6c1122",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s13.mp3",
+      "bytes": 7316,
+      "sha256": "859d5e32a2d214c3e19a6604cdad0935252e8af140fb33fa433bfd282fcfbdcb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s14.mp3",
+      "bytes": 7076,
+      "sha256": "21ce7974e4cd938281d27f01bd20baf74e0fd7074c6fb950edb91b2e3d3b3d05",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s15.mp3",
+      "bytes": 6620,
+      "sha256": "0bc7e2aac110e1ae3bcf8f74a0c3214a9808c48d9e4148daca76d573bd0bfa3a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s16.mp3",
+      "bytes": 7796,
+      "sha256": "a907a57e8f4a952f2f6f8c4aa3c5584af188399938b14d3a01d61b93035a9eba",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s17.mp3",
+      "bytes": 7724,
+      "sha256": "870c6a12c152d63f65f18579b59e77617e6057204e66afb08aaa018cef3cc7f3",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s18.mp3",
+      "bytes": 6620,
+      "sha256": "76fd0360045c97044a1e4db53f521a04edffc7aafe55c63cea3544eb339e8777",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s19.mp3",
+      "bytes": 6980,
+      "sha256": "3aee96f97b223864bbf6c31bd2124dea38e9d1164d1bf7f61be5c7aa7265be7d",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s2.mp3",
+      "bytes": 4316,
+      "sha256": "4bb26816f7e7ede35ab577b33461ce665dbabc1e3555291ff6b06934634d59cd",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s20.mp3",
+      "bytes": 6428,
+      "sha256": "ae5d3f025473659f72cc8cdf9ad40e82e478236a8843dfce9d900a10127bb980",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s3.mp3",
+      "bytes": 5108,
+      "sha256": "10d899b91842e1707002b497ae384328bf8d86000bca39b96727d9a441cb7773",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s4.mp3",
+      "bytes": 4460,
+      "sha256": "98907134c7fe34698bed37172aecc373d8474b825c3237907c4c637bd80020a5",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s5.mp3",
+      "bytes": 4916,
+      "sha256": "a3d101852699bc006d69939ef1cbdadd97629040d7970e28046429ed084f3c55",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s6.mp3",
+      "bytes": 4988,
+      "sha256": "a4dcbd74dd010acb2ce5f5ec08f321be034238c34160a8ba82b75c143e971a73",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s7.mp3",
+      "bytes": 5324,
+      "sha256": "642f570c689d6f03db4fb9fe85b9a6bec050b57d46a4c74aa280d93ee86e989a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s8.mp3",
+      "bytes": 4388,
+      "sha256": "7e9332cc951b9907b83bde564f063a951928a5bffaa19f9a02c6e1bb39bf50e7",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/s9.mp3",
+      "bytes": 4508,
+      "sha256": "aaebe7b70c9290d913ccef9babb729a30b1b32e61fee00e3bdf8659ac6b82cc8",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/sbull.mp3",
+      "bytes": 5828,
+      "sha256": "b82c3808b0d32234550d72d251fe97696efe0fe402900072175f5ecdd664baa2",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t1.mp3",
+      "bytes": 7268,
+      "sha256": "7582d1ad7d1368551efeade98d123dba2ec63f1c0c6cd588a57ce7ae9ce154a8",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t10.mp3",
+      "bytes": 7532,
+      "sha256": "9bbc7e82f2557ac2abbc2d85593244b1766849c1b83468fb22be1eb72ad17a59",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t11.mp3",
+      "bytes": 8084,
+      "sha256": "c0137a18000ae84b8c34b9a075d37119a8c9634b3cd861fa464e49cf6fdf2c99",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t12.mp3",
+      "bytes": 8516,
+      "sha256": "7d6753db52775ba20df8a7f55358e05cbd69d3155a4133a6b809b1a13922f6c7",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t13.mp3",
+      "bytes": 9644,
+      "sha256": "77bc0a6f1e6227498138c2b2c450049850beeb0d3b63ca57472438323708a079",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t14.mp3",
+      "bytes": 9332,
+      "sha256": "2a2124aeb2696649bde769e03778fa5939816e6ef1bb79e702d5c7e7b41664e4",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t15.mp3",
+      "bytes": 9500,
+      "sha256": "362c4ea98a88a865827f3e8226b66ea00ee0c2aa6ff3eef8aa7a7b57e7456aca",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t16.mp3",
+      "bytes": 10316,
+      "sha256": "262f2d6f4ff9c4b3c15c6f415bf46b2e0df500c4c66c9056b226515db7aac0e1",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t17.mp3",
+      "bytes": 10748,
+      "sha256": "26a6589ba3ade858eacd1b91a33e9d8add7c7ade3cf073590882a561f276d3d6",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t18.mp3",
+      "bytes": 8948,
+      "sha256": "ad35eb8826f4b747071a3afb9a735fd8326007cf7fcf9515cf5981dc6ca3b19c",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t19.mp3",
+      "bytes": 9092,
+      "sha256": "fbb57dd94cd1ca8ce73cf4403f63ab0f84d325b26305330e10b7c45633b100ff",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t2.mp3",
+      "bytes": 7652,
+      "sha256": "3da1bc4d499eefebe0420fe462f3330876e1b23ba1b02dfc58bd947828f9eee1",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t20.mp3",
+      "bytes": 8828,
+      "sha256": "1bd674167db96e028ba83617f156358cef5e6c6ca801413812a2f75610e4e24e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t3.mp3",
+      "bytes": 7604,
+      "sha256": "cf6e1ca8f5c7e8dd5a4457c49e3f7686a884b4032fa2d47888fefc459f01548e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t4.mp3",
+      "bytes": 7604,
+      "sha256": "0028193091692758808ca285accaa2823d43587929d05bff8bc91a18b131db42",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t5.mp3",
+      "bytes": 7700,
+      "sha256": "23c2fbc2a998bed28b195082fc5132e056f32985e9c46af3fd75b156603b7c8d",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t6.mp3",
+      "bytes": 8492,
+      "sha256": "94e1070c1ce70735426aa5c2ce7b9b2bb0f7f330c92bc51dd68bb4e4256b036f",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t7.mp3",
+      "bytes": 8420,
+      "sha256": "06d1ef1246fb5fef7f7991898a97e9c9fb69e3d6d37123056eb9af0ae328cd47",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t8.mp3",
+      "bytes": 7436,
+      "sha256": "e880e3baa5b3815fe2eb2c041df386f897a526bad9621ceae7108b2c1ad7c840",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Bella/t9.mp3",
+      "bytes": 7580,
+      "sha256": "8a6f8943ef92b872ee072d53888cf60efd01af879368e2f5f1e87be44db59708",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d1.mp3",
+      "bytes": 8948,
+      "sha256": "4e60761a5980590970528a8d2f5b06eb54eca3b58cece89a7d25a3eaa3c85bc9",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d10.mp3",
+      "bytes": 9308,
+      "sha256": "f4775db0cf9179bebac612dcf4d5351704ba6609e78d61bba99d8a19592d1d70",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d11.mp3",
+      "bytes": 10508,
+      "sha256": "74561ddb50c5ef9428bb47fee0667afe301a69fb4ea969e3bd9c14e7df240967",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d12.mp3",
+      "bytes": 10076,
+      "sha256": "360f7d0f5fd4141bdad53cb38707a7d375e89b744437ab2c55f5113c32d155e0",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d13.mp3",
+      "bytes": 11444,
+      "sha256": "ff6fdedf292df7087249815f54f107a6f844e3a74c1c7039ba0a1a34c5877bcb",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d14.mp3",
+      "bytes": 11732,
+      "sha256": "880719da88c83baecfdecd426ded96b3a71556e6b99696596b8f419facbf3dbf",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d15.mp3",
+      "bytes": 11780,
+      "sha256": "4bf375394dcbcb849a313c9126afd21a0198250c72833417e16eabf9bfe9276b",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d16.mp3",
+      "bytes": 11492,
+      "sha256": "a845f27f79c695bd7bbfaa06b5fe6e65dbbee2f29d091f9ab76846327731f0a7",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d17.mp3",
+      "bytes": 12236,
+      "sha256": "b9343d76578db0432fddc2b823f78f648220da41e79d0a351cc7036fa1db2ad6",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d18.mp3",
+      "bytes": 11348,
+      "sha256": "335f9a75882a475270442b48692a5edf95c9f758ec64042c9fa48a432625fd67",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d19.mp3",
+      "bytes": 10820,
+      "sha256": "7510f3c56486a67b852b7076a7203e675ac7e137ac33ea1b5c4a776b7528265d",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d2.mp3",
+      "bytes": 8924,
+      "sha256": "8a5d1350f73567ac8c23105d7151213eb3b1c026df8c91ad09a7d4f35c8dbfc4",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d20.mp3",
+      "bytes": 10676,
+      "sha256": "80c97f92ddc39b7032955faa091448774c02baa96b23fd7473bf3488a310cfc1",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d3.mp3",
+      "bytes": 8756,
+      "sha256": "23c62a89b64abcfa3704d92d7ccb1527218cda61814000bd5f71258c7c513b21",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d4.mp3",
+      "bytes": 8612,
+      "sha256": "574c1835790b473711f5e19bd112e5ba8308216b810d7a25a2b2828b98a808c7",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d5.mp3",
+      "bytes": 9284,
+      "sha256": "1787d7169d52016479fb56ce2b9cbf8322dd9e147d354bb7b3043badf412aded",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d6.mp3",
+      "bytes": 8612,
+      "sha256": "d401644de682d0f1fd3132be956acb9e381fa5d0e1101bfceb547193fd69cb3a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d7.mp3",
+      "bytes": 10220,
+      "sha256": "57baa2d10297d19e128ba0088ecef9e598ed11ef840de774bc0159cd57c8bd91",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d8.mp3",
+      "bytes": 8468,
+      "sha256": "0f8b659d54d278018f91afb0ca296b8edea375c0e83a9b97acef3102b038f6d0",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/d9.mp3",
+      "bytes": 9332,
+      "sha256": "c8229bfcb9572582ab4864ae6645267ab66772ce0cc7e36369aca1907e15e3c2",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/dbull.mp3",
+      "bytes": 11252,
+      "sha256": "f8d7111526fcc2048e4924afc0c06eef854a4a6d3a84e23319dccc48e0bb7930",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/miss.mp3",
+      "bytes": 6740,
+      "sha256": "b7a00eb44b9bdfdfc5748ff023eaccdcfea76691da4b0d959e09e89bcaaf1ff1",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s1.mp3",
+      "bytes": 5828,
+      "sha256": "6f8f74178b51cb076f25391f473ad110b3eae5782b781fbf8f8d7f17a9478cd6",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s10.mp3",
+      "bytes": 5588,
+      "sha256": "a5de055465ec2f53eb55a5c052a72dbc2b1e5b6fcec4e634e68a756d4c495eab",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s11.mp3",
+      "bytes": 8036,
+      "sha256": "2d07b5fd411942bdbe7978672c8301b2ac2b44420ead07dd81ee93de396a32af",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s12.mp3",
+      "bytes": 6740,
+      "sha256": "12b67c95a2e713c7afd07f251f0966beacc0002ae55a8517c345bef2e74d6376",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s13.mp3",
+      "bytes": 8300,
+      "sha256": "42075829ec735173f5e63a11d80908cc82c4a2a34cc2cdd18934fe35fd383712",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s14.mp3",
+      "bytes": 8468,
+      "sha256": "a6f4d7aadd4d59322c0b2b82992378691fb49cfb1cc5fa3fc546aa35e616c552",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s15.mp3",
+      "bytes": 9092,
+      "sha256": "6772ff51a6fbb246eec232439e76f57cd4c10d8cf6c2b5a0f3575b080678a5e5",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s16.mp3",
+      "bytes": 9452,
+      "sha256": "15a5173bc5776c1c4fd434a3be6a4feb98e085eef1c7d293acbbb4e3b41b8f99",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s17.mp3",
+      "bytes": 9836,
+      "sha256": "55328f4d3685e60f8b7b24721abc596ab96a0d1101a8441e1216bfda57a9f6f0",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s18.mp3",
+      "bytes": 8132,
+      "sha256": "58e595b3ad5718ef16efc25e5b41ccf29f099c5d8b73fb070e4b4eaa631953a8",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s19.mp3",
+      "bytes": 8972,
+      "sha256": "100c35b306ea50bff58416af9f060aa89fee1ce8931e2ffb2dd3b269eb67032a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s2.mp3",
+      "bytes": 5852,
+      "sha256": "b64ecc3e35fdd5ba410faf0788000ec6e17ce39bde7e097285277fc144df714a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s20.mp3",
+      "bytes": 7148,
+      "sha256": "b01408f7f6b453b32674bda620f197a53bea18d3697696851f07589978ccc4b9",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s3.mp3",
+      "bytes": 6740,
+      "sha256": "4a06121b1c1f788cf7063b58130dff070b034570cdc6e4828bb0862abeab4d3f",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s4.mp3",
+      "bytes": 6836,
+      "sha256": "425b0119834254f8d60d9aa21fc83f6a818fda5b6126f3f34c209304de233aa3",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s5.mp3",
+      "bytes": 6716,
+      "sha256": "8054cba5a5f9cab1939cbc344aa0a69eb9170f99a264fe258031ba2a6b7ff83b",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s6.mp3",
+      "bytes": 6380,
+      "sha256": "96920a8fdde39b0963e31f019badf19c61814c45ccf47ba4707604ef78a518cc",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s7.mp3",
+      "bytes": 7292,
+      "sha256": "de3f8e74be59814399f963fdccc9e9431b43e422fa812072f9a61ec3be6f7ab0",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s8.mp3",
+      "bytes": 5540,
+      "sha256": "0c7fd7dd03bf84def5c14565c5e8e77dbd4b9ea6b2722354347fc4f9baad2247",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/s9.mp3",
+      "bytes": 7748,
+      "sha256": "2280507cd03d5ac6089808e485fa81540c020bdcfa576c65e66ca0b23d64c9a5",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/sbull.mp3",
+      "bytes": 7724,
+      "sha256": "f782949e75acd36885b0d6cf922a115c8c76b74797559c9a5e1c2374d21a2001",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t1.mp3",
+      "bytes": 8660,
+      "sha256": "ae6474f250345afdd3a144de13460d9082cde99851c95233ee63fc5016646f9c",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t10.mp3",
+      "bytes": 9356,
+      "sha256": "5659652358f14aeff63a02247464bd03d49cf3a695cedc525275dc46b3f0f36e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t11.mp3",
+      "bytes": 10700,
+      "sha256": "594b9d9ce35162b195d3c795781d126e706fe017f83eab51a228e9e580d83416",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t12.mp3",
+      "bytes": 10268,
+      "sha256": "c7203fd657dfa40ba529e60422e1bb7959e2265c68bfd8de4c4906afda443216",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t13.mp3",
+      "bytes": 11804,
+      "sha256": "c7d98505f3653204bfef44c169fb8908a7fefa99437ff8a65c9a8c720b5f8e84",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t14.mp3",
+      "bytes": 11516,
+      "sha256": "296f0eae8b2c3a32d89c9c3c00290da7cf98ba61eed2dccc9d4af33674277ac2",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t15.mp3",
+      "bytes": 11156,
+      "sha256": "a1344d20ad99f4d62434371d714d640953edfacca13ed46a8d86871b3cbec424",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t16.mp3",
+      "bytes": 11540,
+      "sha256": "a9303162f6f43a9e35f6c5cb0aa8204ba24612c93cc925741a1f75e56688f304",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t17.mp3",
+      "bytes": 11948,
+      "sha256": "ad06291581f094509d1f622efd035b64f09d4c62e61c3ae211b197779bf455fe",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t18.mp3",
+      "bytes": 11132,
+      "sha256": "bc8e33dc7a4f803c18e52b4bf8f9b116ed3fa96d0660b1add757771307b0f511",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t19.mp3",
+      "bytes": 11396,
+      "sha256": "b5028f83b34fdb39da784c5e72dea98293fd305792a4644df8d41b324ee83516",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t2.mp3",
+      "bytes": 8756,
+      "sha256": "fd27abe732b4fafe965033e063fea18d2ea6dbaacc2949a92951a818c5c67049",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t20.mp3",
+      "bytes": 10220,
+      "sha256": "525635fc276d79ee49256ad583924b9871f0826ca690ccbde056ffc11d20b61a",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t3.mp3",
+      "bytes": 8996,
+      "sha256": "c4a1f795e4db5ce4f423e606258799190c23e14f104c2326f2c54a19c307bfe3",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t4.mp3",
+      "bytes": 8612,
+      "sha256": "372463010b653d71cfdbfa3e52344f98b132cdde93e6c6b0602ec443ccfc0f80",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t5.mp3",
+      "bytes": 9164,
+      "sha256": "ac4a63836e57c64d57e8da3b7d619d145cbbed55537ea37271dda28a2c37f643",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t6.mp3",
+      "bytes": 8996,
+      "sha256": "27fab7ee551cba010e7e7771cad9502f9fda2bf379f80d42d650642033c26dc8",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t7.mp3",
+      "bytes": 9908,
+      "sha256": "53d99c3ea9090a3862e738a98cbb0ab9ffb53cdfa99d2b3dcc579a18fb9ed9ba",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t8.mp3",
+      "bytes": 8708,
+      "sha256": "f7844f2d41d20e55f41cd295d09b853a94096e837d82329e025a38fcb263b91e",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/Daniel/t9.mp3",
+      "bytes": 8732,
+      "sha256": "7490809a06ec1fb2c5c60ca9d55158c182bba894b94b64310b2846d55873231f",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/sounds/callouts/README.md",
+      "bytes": 1655,
+      "sha256": "bde8707527bc81d47fd4f54d197528d54ac84c91accc640849ede96ca4ffc97f",
+      "rights": "Provenance/documentation; retain upstream notices."
+    },
+    {
+      "path": "public/assets/warmup/bg.jpg",
+      "bytes": 623502,
+      "sha256": "16c8702577c7ebb47fb3d6cea7c3e095b4099b06381c50d267a18495b7f02ee7",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    },
+    {
+      "path": "public/assets/x01/bg.jpg",
+      "bytes": 1427635,
+      "sha256": "33c48ad0f5555fb240ee49cb8d906d03364a8e3c005823e7cb9535487ef4274b",
+      "rights": "Unverified; see ASSET-REGISTER.md. Not cleared for commercial distribution."
+    }
+  ]
+}

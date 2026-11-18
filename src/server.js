@@ -1,3 +1,5 @@
+const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(Number);
+if (nodeMajor < 22 || nodeMajor === 22 && nodeMinor < 14) throw new Error('FlightDeck requires Node 22.14+ or Node 24 LTS.');
 const express = require('express');
 const https = require('https');
 const http = require('http');
@@ -5,7 +7,13 @@ const net = require('net');
 const fs = require('fs');
 const WebSocket = require('ws');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('node:crypto');
+const { SessionStore, atomicWrite } = require('./storage');
+const validation = require('./validation');
+const { playerStore } = require('./players');
+const { createDevices } = require('./devices');
+const catalogue = require('./catalogue');
+const arcade = require('./session');
 
 /**
  * Repo root. Application code lives in src/; the directories the server reads
@@ -13,6 +21,17 @@ const { v4: uuidv4 } = require('uuid');
  * constant rather than a '..' on each join, so the relationship is stated once.
  */
 const ROOT = path.join(__dirname, '..');
+const DATA_DIR = path.resolve(process.env.FD_DATA_DIR || path.join(ROOT, 'data'));
+const devices = createDevices(DATA_DIR);
+const sessionStore = new SessionStore(DATA_DIR);
+const restored = sessionStore.load();
+let recoveryRequired = !!restored?.state?.gameData || !!(restored?.state?.session && restored.state.session.status !== 'ended');
+let acceptedCommands = restored?.acceptedCommands || {};
+let acceptedThrows = restored?.acceptedThrows || {};
+let pendingHistory = restored?.pendingHistory || [];
+let snapshotQueued = false;
+let pendingSignals = [];
+let storageFailed = false;
 
 // Bumped alongside the two HTML version badges + CHANGELOG.md (see the
 // deploy-to-prod runbook) — also doubles as a reliable "did nodemon
@@ -44,7 +63,7 @@ const APP_VERSION = `v${require('../package.json').version}`;
  * networked disk that is a stutter mid-visit which is near-impossible to
  * diagnose afterwards.
  */
-const LOG_PATH = path.join(ROOT, 'data', 'server.log');
+const LOG_PATH = path.join(DATA_DIR, 'server.log');
 const LOG_MAX_BYTES = 10 * 1024 * 1024;
 const LOG_KEEP_BYTES = 5 * 1024 * 1024;
 let logStream = null;
@@ -117,13 +136,25 @@ const sslOptions = {
     cert: fs.readFileSync(path.join(ROOT, 'certs', 'server.crt'))
 };
 const server = https.createServer(sslOptions, app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ server, maxPayload: 320 * 1024, verifyClient: info => devices.validOrigin(info.req) });
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'same-origin');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
+    next();
+});
+app.post('/api/pair', express.json({ limit: '1kb' }), devices.pair);
+app.get('/api/device', (req, res) => res.json({ role: devices.role(req) }));
+app.get('/api/catalogue', (req, res) => res.json(catalogue.games));
+
 
 const CLIPS_DIR = path.join(ROOT, 'public', 'clips');
 
 /** Phase-2 spike: Mini POSTs raw mp4 body; returns playable /clips/… URL. */
 app.post(
     '/api/debug/winner-clip',
+    devices.operator,
     express.raw({ type: () => true, limit: '50mb' }),
     (req, res) => {
         try {
@@ -173,7 +204,7 @@ app.post(
  * GET /api/health reports the code that is RUNNING (the commit read at
  * startup), not the checkout, so it can confirm a deploy actually landed.
  */
-const UPDATE_FILE = path.join(ROOT, 'data', 'update.json');
+const UPDATE_FILE = path.join(DATA_DIR, 'update.json');
 const STARTED_AT = new Date().toISOString();
 const RUNNING_BUILD = (() => {
     const git = (args) => {
@@ -186,7 +217,7 @@ const RUNNING_BUILD = (() => {
 
 app.get('/api/health', (req, res) => {
     res.json({
-        ok: true,
+        ok: !storageFailed,
         version: APP_VERSION,
         build: RUNNING_BUILD,
         startedAt: STARTED_AT,
@@ -195,7 +226,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-app.post('/api/restart', express.json({ limit: '4kb' }), (req, res) => {
+app.post('/api/restart', devices.operator, express.json({ limit: '4kb' }), (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const update = body.update === true;
     const force = body.force === true;
@@ -213,7 +244,7 @@ app.post('/api/restart', express.json({ limit: '4kb' }), (req, res) => {
             if (fs.existsSync(UPDATE_FILE)) cfg = JSON.parse(fs.readFileSync(UPDATE_FILE, 'utf8')) || {};
             cfg.updateOnNextRestart = true;
             fs.mkdirSync(path.dirname(UPDATE_FILE), { recursive: true });
-            fs.writeFileSync(UPDATE_FILE, JSON.stringify(cfg, null, 2) + '\n');
+            atomicWrite(UPDATE_FILE, cfg);
         } catch (err) {
             res.status(500).json({ ok: false, error: `could not set the update flag: ${err.message}` });
             return;
@@ -230,8 +261,7 @@ app.post('/api/restart', express.json({ limit: '4kb' }), (req, res) => {
 // the shorter path as an alternative.
 app.use(express.static(path.join(ROOT, 'public'), { extensions: ['html'] }));
 
-const DATA_DIR = path.join(ROOT, 'data');
-const PLAYERS_FILE = path.join(DATA_DIR, 'players.json');
+const { load: loadPersistedPlayers, save: savePersistedPlayers } = playerStore(DATA_DIR);
 const THROW_QUEUE_MAX = 3;
 /** Delay between bot darts / before first dart on a bot turn. */
 const BOT_DART_DELAY_MS = 1200;
@@ -438,7 +468,7 @@ function advanceTvmToCheckout(reason) {
     pendingSchedule = null;
     const result = applyScheduledAction(gameState.gameData, { next: 'demolition_show_checkout' });
     gameState.gameData = result.gameData;
-    maybePersistQuick10(result);
+    // Quick 10 history is derived at the checkpoint boundary.
     logEvent('PHASE_ADVANCE', { next: 'demolition_show_checkout', reason: reason || 'tvm done' });
     logDebugEvent('TVM', `advance → checkout (${reason || 'done'})`);
     broadcastState();
@@ -464,7 +494,7 @@ function advancePendingBust(reason) {
     const prevPhase = currentPhaseType();
     const result = applyScheduledAction(gameState.gameData, scheduleNow);
     gameState.gameData = result.gameData;
-    maybePersistQuick10(result);
+    // Quick 10 history is derived at the checkpoint boundary.
     maybeTvmRecorderDumpForTvm(prevPhase, result);
     logEvent('PHASE_ADVANCE', { next: scheduleNow.next, reason: reason || 'bust video ended' });
     logDebugEvent('BUST_VIDEO', `advance → ${scheduleNow.next} (${reason || 'ended'})`);
@@ -512,61 +542,25 @@ function listSharedWinnerVideos() {
 
 let phaseTimer = null;
 /** Pending overlay schedule (so Correct Score can flush without waiting). */
-let pendingSchedule = null;
+let pendingSchedule = restored?.pendingSchedule || null;
 /** Bot auto-throw timer (v1). */
 let botThrowTimer = null;
-let boardSync = {
-    awaitingTakeout: false
-};
+let boardSync = restored?.boardSync || { awaitingTakeout: false };
 /** Throws that arrived during an overlay — applied when phase returns to playing. */
-let throwQueue = [];
+let throwQueue = restored?.throwQueue || [];
 let drainingThrowQueue = false;
 
 /** Last accepted throw undo (pre-throw snapshot). Last dart only. */
-let lastThrowUndo = null;
+let lastThrowUndo = restored?.lastThrowUndo || null;
 /**
  * Active Correct Score session.
  * Heavy snapshots stay here — only { active, wasLabel } is broadcast.
  */
-let scoreCorrection = null;
+let scoreCorrection = restored?.scoreCorrection || null;
 
 function ensureDataDir() {
     if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-}
-
-function loadPersistedPlayers() {
-    try {
-        ensureDataDir();
-        if (!fs.existsSync(PLAYERS_FILE)) return [];
-        const raw = fs.readFileSync(PLAYERS_FILE, 'utf8');
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [];
-        return parsed
-            .filter(p => p && typeof p.name === 'string' && p.name.trim())
-            .map(p => ({
-                id: p.id || uuidv4(),
-                name: p.name.trim(),
-                avatar: p.avatar || null
-            }));
-    } catch (err) {
-        console.error('Failed to load persisted players:', err.message);
-        return [];
-    }
-}
-
-function savePersistedPlayers(players) {
-    try {
-        ensureDataDir();
-        const slim = (players || []).map(p => ({
-            id: p.id,
-            name: p.name,
-            avatar: p.avatar || null
-        }));
-        fs.writeFileSync(PLAYERS_FILE, JSON.stringify(slim, null, 2), 'utf8');
-    } catch (err) {
-        console.error('Failed to save persisted players:', err.message);
     }
 }
 
@@ -676,22 +670,11 @@ function cricketRosterCount() {
     return getSinglesSeatedIds().length;
 }
 
-function fourPlayerCapFor(gameType) {
-    if (gameType === 'x01') return X01_MAX_PLAYERS;
-    if (gameType === 'cricket') return CRICKET_MAX_PLAYERS;
-    return null;
-}
+function fourPlayerCapFor(gameType) { return catalogue.byId[gameType]?.maxPlayers ?? null; }
 
-function fourPlayerGameLabel(gameType) {
-    return gameType === 'x01' ? 'X01' : 'Cricket';
-}
+function fourPlayerGameLabel(gameType) { return catalogue.byId[gameType]?.title || gameType; }
 
-/** Warmup / Quick 10 / X01 / Around the World may start with a single competitor; everyone else needs 2+. */
-const SOLO_START_GAMES = new Set(['warmup', 'quick10', 'x01', 'aroundtheworld']);
-
-function gameAllowsSoloStart(gameType) {
-    return SOLO_START_GAMES.has(gameType);
-}
+function gameAllowsSoloStart(gameType) { return catalogue.byId[gameType]?.minPlayers === 1; }
 
 function syncPlayersFromDoublesTeams() {
     gameState.players = flattenDoublesTeamsToPlayers(gameState.doublesTeams, gameState.players);
@@ -992,6 +975,12 @@ function playerNameTaken(players, name, exceptId = null) {
 function createFreshState(players = []) {
     return {
         matchId: uuidv4(),
+        session: null,
+        results: [],
+        playOrder: 'fixed',
+        matchParticipants: [],
+        matchSessionId: null,
+        matchSimulated: false,
         currentScreen: 'REGISTRATION',
         players: [...players],
         selectedGame: firstEnabledGame(venueConfig),
@@ -1028,7 +1017,7 @@ function createFreshState(players = []) {
     };
 }
 
-let gameState = createFreshState(loadPersistedPlayers());
+let gameState = restored?.state || createFreshState(loadPersistedPlayers());
 ensureWaitingOrder();
 if (gameState.players.length) {
     logBootPlayers(gameState.players.length);
@@ -1077,6 +1066,7 @@ function logDebugEvent(actionType, message, details = null) {
 }
 
 function logEvent(action, details = null) {
+    if (gameState.eventLog.length >= 200) gameState.eventLog.splice(0, gameState.eventLog.length - 199);
     gameState.eventLog.push({
         id: uuidv4(),
         timestamp: Date.now(),
@@ -1285,9 +1275,21 @@ function isVenueWakeLockDesired(now = Date.now()) {
     return (now - last) < idleMs;
 }
 
+const publicPhotos = new Map();
+app.get('/api/photos/:hash', (req, res) => {
+    const photo = publicPhotos.get(req.params.hash);
+    if (!photo) return res.sendStatus(404);
+    res.type(photo.type).set('Cache-Control', 'private, max-age=3600').send(photo.bytes);
+});
 function getPublicGameState() {
     const pub = {
         ...gameState,
+        eventLog: [],
+        results: (gameState.results || []).filter(r => r.sessionId === gameState.session?.id),
+        catalogue: catalogue.games,
+        recoveryRequired,
+        serverNow: Date.now(),
+        standings: arcade.standings(gameState.session, gameState.results),
         appVersion: APP_VERSION,
         wakeLockDesired: isVenueWakeLockDesired(),
         canCorrectScore: !!(lastThrowUndo && !isScoreCorrectionActive()),
@@ -1316,7 +1318,18 @@ function getPublicGameState() {
             };
         }
     }
-    return pub;
+    const avatarArrays = new WeakSet();
+    return JSON.parse(JSON.stringify(pub, function (key, value) {
+        if (key === 'avatars' && Array.isArray(value)) avatarArrays.add(value);
+        if (/avatar$/i.test(key) || avatarArrays.has(this)) {
+            if (!value) return null;
+            try { validation.avatar(value); } catch { return null; }
+            const hash = require('node:crypto').createHash('sha256').update(value).digest('hex');
+            if (!publicPhotos.has(hash)) publicPhotos.set(hash, { type: value.slice(5, value.indexOf(';')), bytes: Buffer.from(value.slice(value.indexOf(',') + 1), 'base64') });
+            return `/api/photos/${hash}`;
+        }
+        return value;
+    }));
 }
 
 /**
@@ -1340,22 +1353,28 @@ function cachedTopMatches(gameType, spec) {
  * included, so the corrected result is saved again under the same ids and
  * replaces the first.
  */
+function stageHistory(record) {
+    pendingHistory = pendingHistory.filter(r => r.id !== record.id).concat(record);
+}
 function maybePersistMatchResults() {
     const gd = gameState.gameData;
     if (!gd || !gd.resultReady || gd.resultPersisted) return;
-    gd.resultPersisted = true;
     const records = matchRecordsFor(gd);
     if (!records.length) return;
-    let saved = 0;
-    for (const record of records) {
-        const res = appendMatch(DATA_DIR, record);
-        if (res.ok) saved++;
-        else logDebugEvent('MATCH_PERSIST_FAIL', res.error || 'Failed to append match', { gameType: gd.gameType });
+    records.forEach(stageHistory);
+    gd.resultPersisted = true;
+}
+function flushHistory() {
+    for (const record of pendingHistory) {
+        const saved = appendMatch(DATA_DIR, record);
+        if (!saved.ok) {
+            storageFailed = true;
+            wss.clients.forEach(c => c.close(1011, 'Unable to save results. Check host storage.'));
+            throw new Error(saved.error);
+        }
+        leaderboardCache.delete(record.gameType);
     }
-    leaderboardCache.delete(gd.gameType);
-    logDebugEvent('MATCH_PERSIST', `Saved ${saved} ${gd.gameType} leaderboard result(s)`, {
-        results: records.map((r) => `${r.player.name}: ${r.totalScore}`)
-    });
+    pendingHistory = [];
 }
 
 /** Apply any pending overlay chain immediately (no delays / no re-animation waits). */
@@ -1369,7 +1388,7 @@ function flushPendingPhaseActions() {
         const result = applyScheduledAction(gameState.gameData, scheduleNow);
         gameState.gameData = result.gameData;
         awaitTakeoutIfVisitEndedEarly();
-        maybePersistQuick10(result);
+        // Quick 10 history is derived at the checkpoint boundary.
         logEvent('PHASE_ADVANCE', { next: scheduleNow.next, flushed: true });
         if (result.schedule) {
             pendingSchedule = result.schedule;
@@ -1386,7 +1405,8 @@ function captureThrowUndo(payload) {
         payload: payload ? { ...payload } : null,
         label: formatThrowLabel(payload),
         parts: describeThrowParts(null, payload),
-        boardThrowIndex
+        boardThrowIndex,
+        source: lastAppliedDartSource
     };
 }
 
@@ -1461,7 +1481,7 @@ function enqueueThrow(payload, source) {
     return true;
 }
 
-let lastAppliedDartSource = null;
+let lastAppliedDartSource = restored?.lastAppliedDartSource || null;
 
 /**
  * An engine can end a visit before its third dart -- Derby does once a horse is
@@ -1488,7 +1508,7 @@ function awaitTakeoutIfVisitEndedEarly() {
 function schedulePhaseAction(schedule) {
     if (!schedule) return;
     clearPhaseTimer();
-    pendingSchedule = schedule;
+    pendingSchedule = { ...schedule, dueAt: schedule.dueAt || Date.now() + (Number(schedule.delayMs) || 0) };
     let delayMs = Number(schedule.delayMs) || 0;
     // Let the bust video finish before advancing when Video toggle is on.
     // Viewer sends BUST_VIDEO_COMPLETE on ended → advancePendingBust; this delay is the safety max.
@@ -1511,6 +1531,10 @@ function schedulePhaseAction(schedule) {
     if (schedule.delayMsWithVideo != null && gameState.viewerVideoEnabled) {
         delayMs = Math.max(delayMs, Number(schedule.delayMsWithVideo) || 0);
     }
+    pendingSchedule.dueAt = schedule.dueAt || Date.now() + delayMs;
+    delayMs = Math.max(0, pendingSchedule.dueAt - Date.now());
+    broadcastState();
+    if (recoveryRequired || gameState.session?.status === 'paused' || gameState.session?.status === 'ended') return;
     phaseTimer = setTimeout(() => {
         phaseTimer = null;
         if (!gameState.gameData) {
@@ -1524,7 +1548,7 @@ function schedulePhaseAction(schedule) {
         const result = applyScheduledAction(gameState.gameData, scheduleNow);
         gameState.gameData = result.gameData;
         awaitTakeoutIfVisitEndedEarly();
-        maybePersistQuick10(result);
+        // Quick 10 history is derived at the checkpoint boundary.
         maybeTvmRecorderDumpForTvm(prevPhase, result);
         logEvent('PHASE_ADVANCE', { next: scheduleNow.next });
         broadcastState();
@@ -1538,13 +1562,48 @@ function schedulePhaseAction(schedule) {
     }, delayMs);
 }
 
-function broadcastState() {
-    maybePersistMatchResults();
-    const payload = JSON.stringify({ type: 'STATE_UPDATE', data: getPublicGameState() });
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(payload);
+function persistCheckpoint() {
+    if (storageFailed) throw new Error('Storage is unavailable. Restart after freeing space.');
+    try {
+        arcade.tickSession(gameState.session, gameState.gameData, boardSync.awaitingTakeout, isScoreCorrectionActive());
+        if (!isScoreCorrectionActive()) {
+            arcade.upsertResult(gameState);
+            if (gameState.session?.status === 'ended' && !arcade.terminal(gameState.gameData)) arcade.upsertResult(gameState, 'abandoned');
         }
+        maybePersistQuick10({ persistQuick10: true });
+        maybePersistMatchResults();
+        sessionStore.save({ state: gameState, pendingSchedule, boardSync, throwQueue, lastThrowUndo,
+            scoreCorrection, acceptedCommands, acceptedThrows, lastAppliedDartSource, pendingHistory });
+    } catch (err) {
+        storageFailed = true;
+        clearPhaseTimer();
+        clearBotThrowTimer();
+        console.error('[STORAGE] Play stopped: checkpoint failed:', err.message);
+        // No further scoring or acknowledgements can escape this process.
+        wss.clients.forEach(c => c.close(1011, 'Unable to save. Check host storage.'));
+        throw err;
+    }
+}
+
+function broadcastState() {
+    if (snapshotQueued || storageFailed) return;
+    snapshotQueued = true;
+    // A synchronous scoring operation sets its score, takeout gate AND schedule
+    // before this commit. Signals, state and command acknowledgements follow it.
+    queueMicrotask(() => {
+        snapshotQueued = false;
+        try {
+            persistCheckpoint();
+            if (pendingHistory.length) { flushHistory(); persistCheckpoint(); }
+            const payload = JSON.stringify({ type: 'STATE_UPDATE', data: getPublicGameState() });
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    for (const signal of pendingSignals) client.send(signal);
+                    client.send(payload);
+                }
+            });
+            pendingSignals = [];
+        } catch (err) { console.error('[CHECKPOINT]', err.message); }
     });
 }
 
@@ -1572,22 +1631,14 @@ function visitEndedAfterThrow(gameType, gameData) {
 }
 
 function maybePersistQuick10(result) {
-    if (!result || !result.persistQuick10 || !gameState.gameData) return;
-    if (gameState.gameData.gameType !== 'quick10') return;
-    if (gameState.gameData.persisted || !gameState.gameData.readyToPersist) return;
-    const record = buildQuick10MatchRecord(gameState.gameData, uuidv4());
+    const gd = gameState.gameData;
+    if (!result?.persistQuick10 || gd?.gameType !== 'quick10' || gd.persisted || !gd.readyToPersist) return;
+    const record = buildQuick10MatchRecord(gd, gd.matchKey);
     if (!record) return;
-    const saved = appendMatch(DATA_DIR, record);
-    if (saved.ok) {
-        gameState.gameData.persisted = true;
-        gameState.gameData.readyToPersist = false;
-        gameState.gameData.savedMatchId = record.id;
-        logDebugEvent('QUICK10_PERSIST', `Saved match ${record.id} — ${record.player.name} scored ${record.totalScore}`, {
-            integrity: record.integrity
-        });
-    } else {
-        logDebugEvent('QUICK10_PERSIST_FAIL', saved.error || 'Failed to append match');
-    }
+    stageHistory(record);
+    gd.persisted = true;
+    gd.readyToPersist = false;
+    gd.savedMatchId = record.id;
 }
 
 function deriveHeaderStatus(base, awaitingTakeout) {
@@ -1750,6 +1801,7 @@ function setAwaitingTakeout(value) {
         return;
     }
     boardSync.awaitingTakeout = next;
+    broadcastState();
     broadcastScolia();
 }
 
@@ -1777,7 +1829,7 @@ function processGameAction(payload, throwSource = null, profileOverride = null) 
         debugThrowProfile: profileOverride || gameState.debugThrowProfile || DEFAULT_THROW_PROFILE
     });
     gameState.gameData = result.gameData;
-    maybePersistQuick10(result);
+    // Quick 10 history is derived at the checkpoint boundary.
     broadcastState();
     if (result.schedule) {
         schedulePhaseAction(result.schedule);
@@ -1918,11 +1970,7 @@ let dartSignalSeq = 0;
  * everything else, including when the card goes away.
  */
 function broadcastDartSignal(signal) {
-    if (!signal) return;
-    const payload = JSON.stringify({ type: 'DART_ANNOUNCE', data: signal });
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) client.send(payload);
-    });
+    if (signal) pendingSignals.push(JSON.stringify({ type: 'DART_ANNOUNCE', data: signal }));
 }
 
 /** Apply a throw and update takeout sync. Returns whether an overlay was scheduled. */
@@ -1933,10 +1981,12 @@ function applyThrowPayload(payload, source, profileOverride = null) {
     const prevPhase = currentPhaseType();
     const dartSource = resolveThrowSource(source);
     lastAppliedDartSource = dartSource;
+    if (dartSource === 'debug' || dartSource === 'bot' || dartSource === 'mock') gameState.matchSimulated = true;
     const actionType = throwDebugActionType(dartSource);
 
     const thrower = getActiveThrowerEntity(gameState.gameData, gameState.selectedGame);
     captureThrowUndo(payload);
+    if (dartSource === 'correct') gameState.gameData.usedCorrection = true;
 
     logEvent('GAME_ACTION', payload);
     const result = handleGameAction(gameState.gameData, gameState.selectedGame, payload, {
@@ -1944,7 +1994,7 @@ function applyThrowPayload(payload, source, profileOverride = null) {
         debugThrowProfile: profileOverride || gameState.debugThrowProfile || DEFAULT_THROW_PROFILE
     });
     gameState.gameData = result.gameData;
-    maybePersistQuick10(result);
+    // Quick 10 history is derived at the checkpoint boundary.
     // Skip TVM when TVMRecorder/Video off, or checkout by a bot (no face cam worth showing)
     if (
         result.schedule
@@ -2008,6 +2058,7 @@ function applyThrowPayload(payload, source, profileOverride = null) {
 }
 
 function drainThrowQueue() {
+    if (recoveryRequired || storageFailed || ['paused', 'ended'].includes(gameState.session?.status)) return;
     if (drainingThrowQueue) return;
     drainingThrowQueue = true;
     try {
@@ -2045,6 +2096,11 @@ function drainThrowQueue() {
  * Keeps FlightDeck visit counts aligned with physical board throws.
  */
 function acceptScoringThrow(payload, source, profileOverride = null) {
+    if (storageFailed || recoveryRequired || !validation.validThrow(payload)) return;
+    arcade.tickSession(gameState.session, gameState.gameData, boardSync.awaitingTakeout, isScoreCorrectionActive());
+    if (source !== 'correct' && ['paused', 'ended'].includes(gameState.session?.status)) { broadcastState(); return; }
+    const eventId = payload.eventId && `${source}:${payload.eventId}`;
+    if (eventId && acceptedThrows[eventId]) return;
     if (!gameState.gameData || gameState.currentScreen !== 'IN_GAME') return;
 
     const resolved = resolveThrowSource(source);
@@ -2061,11 +2117,13 @@ function acceptScoringThrow(payload, source, profileOverride = null) {
     }
     if (phase && phase !== 'playing') {
         touchVenueActivity();
-        enqueueThrow(payload, resolved);
+        if (enqueueThrow(payload, resolved) && eventId) acceptedThrows[eventId] = Date.now();
+        broadcastState();
         return;
     }
 
     touchVenueActivity();
+    if (eventId) acceptedThrows[eventId] = Date.now();
     const scheduled = applyThrowPayload(payload, resolved, profileOverride);
     if (!scheduled) {
         drainThrowQueue();
@@ -2084,6 +2142,7 @@ function clearBotThrowTimer() {
 
 /** If the active thrower is a bot and the board is playable, schedule a profiled dart. */
 function nudgeBotAutoThrow(reason) {
+    if (recoveryRequired || storageFailed || ['paused', 'ended'].includes(gameState.session?.status)) return;
     clearBotThrowTimer();
     if (!gameState.gameData || gameState.currentScreen !== 'IN_GAME') return;
     if (isScoreCorrectionActive()) return;
@@ -2135,6 +2194,7 @@ function runBotThrowTick(reason) {
 }
 
 function handleScoliaGameplayEvent(type, payload) {
+    if (recoveryRequired || storageFailed) return;
     if (type === 'BOARD_DETECTION_STOPPED') {
         onAutodartsDetectionStopped(payload);
         return;
@@ -2206,7 +2266,7 @@ function handleScoliaGameplayEvent(type, payload) {
     }
 
     const provider = currentBoardProvider();
-    const mapped = isMappedThrow ? payload : mapScoliaThrow(payload);
+    const mapped = isMappedThrow ? payload : { ...mapScoliaThrow(payload), eventId: payload?.eventId || payload?.throwId || payload?.id || null };
     acceptScoringThrow(mapped, provider);
 }
 
@@ -2334,15 +2394,54 @@ function testTcpConnection(host, port, timeoutMs = 3000) {
     });
 }
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
+    if (storageFailed) { ws.close(1011, 'Unable to save. Check host storage.'); return; }
+    ws.deviceRole = new URL(req.url, 'https://localhost').searchParams.get('surface') === 'viewer' ? 'viewer' : devices.role(req);
+    ws.send(JSON.stringify({ type: 'DEVICE_ROLE', role: ws.deviceRole }));
+    let rateWindow = Date.now(), rateCount = 0;
     logDebugEvent('SOCKET_CONNECT', 'A control or viewer terminal linked up.');
     ws.send(JSON.stringify({ type: 'STATE_UPDATE', data: getPublicGameState() }));
     ws.send(JSON.stringify({ type: 'BOARD_UPDATE', data: getEnrichedScoliaState() }));
     ws.send(JSON.stringify({ type: 'SCOLIA_UPDATE', data: getEnrichedScoliaState() }));
 
     ws.on('message', (message) => {
+        let request;
         try {
-            const request = JSON.parse(message);
+            if (storageFailed) throw new Error('Storage is unavailable.');
+            if (Date.now() - rateWindow > 1000) { rateWindow = Date.now(); rateCount = 0; }
+            if (++rateCount > 30) throw new Error('Too many commands.');
+            request = JSON.parse(message);
+            if (!request || typeof request !== 'object' || Array.isArray(request)) throw new Error('Invalid command.');
+            const action = request.action || request.type;
+            if (request.payload?.eventId != null && (typeof request.payload.eventId !== 'string' || request.payload.eventId.length > 160)) throw new Error('Invalid throw identity.');
+            if (!devices.allowed(ws.deviceRole, action, request, isMockMode())) throw new Error('This device does not have permission for that action.');
+            if (acceptedCommands[request.commandId]) {
+                ws.send(JSON.stringify({ type: 'COMMAND_ACK', commandId: request.commandId, duplicate: true })); return;
+            }
+            if (recoveryRequired && !['RESUME_SESSION', 'CLIENT_INFO'].includes(action)) throw new Error('Resume the recovered session first.');
+            if (typeof request.commandId !== 'string' || !/^[a-zA-Z0-9_-]{8,100}$/.test(request.commandId)) throw new Error('Command identity required.');
+            const commandKey = request.commandId;
+            if (acceptedCommands[commandKey]) {
+                persistCheckpoint();
+                ws.send(JSON.stringify({ type: 'COMMAND_ACK', commandId: commandKey, duplicate: true }));
+                return;
+            }
+            if (!Number.isFinite(request.issuedAt) || Math.abs(Date.now() - request.issuedAt) > 24 * 60 * 60000) throw new Error('Command expired.');
+            if (action === 'ADD_PLAYER') {
+                if (request.name !== undefined || action === 'ADD_PLAYER') request.name = validation.playerName(request.name);
+                if (request.avatar !== undefined) request.avatar = validation.avatar(request.avatar);
+                if (action === 'ADD_PLAYER' && gameState.players.length >= 100) throw new Error('The roster is full. Remove unused players first.');
+            }
+            if (action === 'NAVIGATE' && !['REGISTRATION', 'GAME_SELECTION'].includes(request.screen)) throw new Error('Invalid screen.');
+            if (['FORWARD_GAME_ACTION', 'CORRECT_SCORE_APPLY'].includes(action)) {
+                const p = request.payload;
+                const types = ['TRIGGER_THROW', 'TRIGGER_SPECIFIC_THROW', 'TOGGLE_HELP', 'TOGGLE_LEADERBOARD', 'SELECT_QUICK10_PLAYER', 'CONFIRM_X01_SETUP', 'CONFIRM_ATW_SETUP'];
+                if (!p || !types.includes(p.type) || (p.type.startsWith('TRIGGER_') && !validation.validThrow(p))) throw new Error('Invalid dart or game action.');
+            }
+            arcade.tickSession(gameState.session, gameState.gameData, boardSync.awaitingTakeout, isScoreCorrectionActive());
+            const expiry = Date.now() - 24 * 60 * 60000;
+            for (const [id, at] of Object.entries(acceptedCommands)) if (at < expiry) delete acceptedCommands[id];
+
 
             // Autodarts camera standby: any meaningful Control action wakes detection
             if (request && request.action) {
@@ -2358,6 +2457,42 @@ wss.on('connection', (ws) => {
                 || (request.type === 'BUST_VIDEO_COMPLETE' ? 'BUST_VIDEO_COMPLETE' : null);
 
             switch (wsAction) {
+                case 'RESUME_SESSION': {
+                    recoveryRequired = false;
+                    arcade.tickSession(gameState.session, gameState.gameData, boardSync.awaitingTakeout, isScoreCorrectionActive());
+                    if (pendingSchedule) schedulePhaseAction(pendingSchedule);
+                    else { drainThrowQueue(); nudgeBotAutoThrow('resumed'); }
+                    broadcastState();
+                    break;
+                }
+                case 'START_SESSION': {
+                    if (gameState.currentScreen === 'IN_GAME' || gameState.session && gameState.session.status !== 'ended') throw new Error('Finish the current session first.');
+                    if (gameState.lineupMode !== 'singles') throw new Error('Timed championships use singles.');
+                    gameState.session = arcade.startSession(getSeatedPlayers(), request.minutes);
+                    gameState.currentScreen = 'GAME_SELECTION';
+                    logEvent('START_SESSION', { minutes: request.minutes });
+                    broadcastState();
+                    break;
+                }
+                case 'PAUSE_SESSION':
+                case 'CONTINUE_SESSION':
+                case 'EXTEND_SESSION':
+                case 'END_SESSION': {
+                    arcade.sessionCommand(gameState.session, action, request.minutes);
+                    if (action === 'PAUSE_SESSION' || action === 'END_SESSION') { clearPhaseTimer(); clearBotThrowTimer(); }
+                    else if (pendingSchedule) schedulePhaseAction({ ...pendingSchedule, dueAt: Date.now() + 200 });
+                    else nudgeBotAutoThrow('session continued');
+                    if (action === 'END_SESSION' && !arcade.terminal(gameState.gameData)) arcade.upsertResult(gameState, 'abandoned');
+                    logEvent(action, { minutes: request.minutes });
+                    broadcastState();
+                    break;
+                }
+                case 'SET_PLAY_ORDER': {
+                    if (!['fixed', 'random'].includes(request.order)) throw new Error('Choose fixed or random order.');
+                    gameState.playOrder = request.order;
+                    broadcastState();
+                    break;
+                }
                 case 'ADD_PLAYER': {
                     const rawName = typeof request.name === 'string' ? request.name.trim() : '';
                     if (!rawName) {
@@ -2545,6 +2680,7 @@ wss.on('connection', (ws) => {
                 case 'NAVIGATE': {
                     const leftGame = gameState.currentScreen === 'IN_GAME'
                         && (request.screen === 'GAME_SELECTION' || request.screen === 'REGISTRATION');
+                    if (leftGame && !arcade.terminal(gameState.gameData)) arcade.upsertResult(gameState, 'abandoned');
                     gameState.currentScreen = request.screen;
                     if (request.screen === 'GAME_SELECTION' || request.screen === 'REGISTRATION') {
                         cancelPhaseChain();
@@ -2614,6 +2750,8 @@ wss.on('connection', (ws) => {
                     break;
 
                 case 'SELECT_GAME': {
+                    if (gameState.session && gameState.session.status !== 'active') throw new Error('The session is paused or finished.');
+                    if (gameState.currentScreen === 'IN_GAME') throw new Error('Return to game selection first.');
                     // isGameEnabled() fails OPEN for a key it's never heard of (forward-
                     // compat with games added after a venue.json was last saved) — so a
                     // gameType removed from ALL_GAMES entirely (not just disabled) needs
@@ -2682,10 +2820,15 @@ wss.on('connection', (ws) => {
                     }
                     gameState.gameData = initGameData(request.gameType, matchPlayers, {
                         lineupMode: gameState.lineupMode,
-                        doublesTeams: gameState.doublesTeams
+                        doublesTeams: gameState.doublesTeams,
+                        playOrder: gameState.playOrder
                     });
                     // Names this match's leaderboard entries (see maybePersistMatchResults).
                     if (gameState.gameData) gameState.gameData.matchKey = uuidv4();
+                    gameState.matchParticipants = matchPlayers.map(p => ({ id: p.id, name: p.name }));
+                    gameState.matchIsDoubles = gameState.lineupMode === 'doubles';
+                    gameState.matchSessionId = gameState.session?.id || null;
+                    gameState.matchSimulated = currentBoardProviderId() === 'mock' || matchPlayers.some(p => p.isBot);
                     cancelPhaseChain();
                     clearThrowQueue('New match');
                     clearThrowUndo();
@@ -2792,6 +2935,10 @@ wss.on('connection', (ws) => {
                         break;
                     }
                     const boardThrowIndex = scoreCorrection.boardThrowIndex;
+                    if (gameState.results?.some(r => r.id === gameState.gameData.matchKey)) arcade.upsertResult(gameState, 'pending_correction');
+                    if (gameState.selectedGame === 'quick10') {
+                        stageHistory({ id: gameState.gameData.matchKey, gameType: 'quick10', status: 'pending_correction' });
+                    }
                     // Already on pre-throw state from BEGIN. Leave correction mode, then score normally.
                     clearScoreCorrection();
                     cancelPhaseChain();
@@ -2861,6 +3008,7 @@ wss.on('connection', (ws) => {
                     clearThrowQueue('Debug preview forced');
                     clearThrowUndo();
                     clearScoreCorrection();
+                    gameState.matchSimulated = true;
                     gameState.gameData.phase = phase;
                     // Limbo bar previews also nudge the live target so the pole moves
                     if (gameState.selectedGame === 'limbo' && phase.type === 'bar_status' && phase.data.barValue != null) {
@@ -2981,14 +3129,32 @@ wss.on('connection', (ws) => {
                     break;
                 }
 
+                default: throw new Error('Unknown command.');
             }
+            acceptedCommands[commandKey] = Date.now();
+            persistCheckpoint();
+            ws.send(JSON.stringify({ type: 'COMMAND_ACK', commandId: request.commandId }));
+            broadcastState();
         } catch (err) {
-            console.error("Socket warning:", err);
+            ws.send(JSON.stringify({ type: 'COMMAND_ERROR', commandId: request?.commandId, error: err.message }));
+            console.error("Socket warning:", err.message);
         }
     });
 });
 
 ensureDataDir();
+setInterval(() => {
+    if (storageFailed || recoveryRequired) return;
+    if (gameState.session && !['ended', 'paused'].includes(gameState.session.status)) {
+        const before = gameState.session.status;
+        arcade.tickSession(gameState.session, gameState.gameData, boardSync.awaitingTakeout, isScoreCorrectionActive());
+        if (gameState.session.status === 'ended') { clearPhaseTimer(); clearBotThrowTimer(); clearThrowQueue('Session ended'); if (!arcade.terminal(gameState.gameData)) arcade.upsertResult(gameState, 'abandoned'); }
+        if (before !== gameState.session.status || gameState.session.status === 'active') broadcastState();
+    }
+}, 1000).unref();
+// Pairing codes stay on the terminal, never in public state or server logs.
+process.stdout.write(`\nPair tablet: ${devices.codes.control}  ·  Pair operator: ${devices.codes.operator} (15 minutes)\n`);
+if (pendingHistory.length) { flushHistory(); persistCheckpoint(); }
 boardDriver.start();
 applyBoardStandbyFromVenue();
 

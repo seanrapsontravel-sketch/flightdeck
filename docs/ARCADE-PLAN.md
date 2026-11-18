@@ -1,6 +1,6 @@
 # Darts Arcade improvement plan
 
-**Status: proposed plan for review. Gameplay improvements have not been implemented.**
+**Status: milestones 1–3 implemented in the working branch; see [operations and rules](ARCADE-OPERATIONS.md) and [implementation evidence](IMPLEMENTATION-STATUS.md). Milestones 4–7 remain planned.**
 
 Prepared 16 November 2026 from an executed source and browser audit of FlightDeck 0.24.0, commit `9bfc6cf1516d262d003584efd22ca32a1ad43eb7`.
 
@@ -19,7 +19,7 @@ The first important milestone is a reliable evening of play: players can move be
 - This plan, an [audit baseline](AUDIT-BASELINE.md) and an [asset register](ASSET-REGISTER.md).
 - Fourteen third-party example video clips removed from the current files. The inherited Git history still includes them; this is not yet a commercially cleared distribution.
 
-The original game code has not been redesigned or rewritten. Tests, security fixes, recovery, timed sessions and new games below are **planned work**.
+The existing engines and controller are retained. Security fixes, automated tests, recovery, timed sessions and championship standings are implemented in this branch. New games and commercial packaging below remain **planned work**.
 
 ## The order of work
 

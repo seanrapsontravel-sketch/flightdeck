@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 3D Quackshot ("Duck Row"). Milestone 1 greybox: plays the real game (viewer.html?quackshot=3d) and ?demo=1.
+         Becomes games/quackshot.html at Milestone 4. ?lookdev=… is the Milestone 0 duck look-dev page. -->
+    <title>Quackshot</title>
+    <script src="/games/shared-player-theme.js"></script>
+    <script src="/games/dart-callout.js"></script>
+    <script src="/games/dart-announcer.js"></script>
+    <script src="/games/event-videos.js"></script>
+    <script type="importmap">{ "imports": { "three": "/vendor/three-0.160.0/three.module.min.js" } }</script>
+    <style>
+        :root { font-size: calc(100vh / 108); --gold: #ffc94a; --cream: #f4ead2; --candy: #d3212f; --ink: #1a1208; --cond: "Avenir Next Condensed", "DIN Condensed", "Roboto Condensed", "Arial Narrow", Arial, sans-serif; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #0a1030; color: var(--cream); font-family: var(--cond); }
+        #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+        .qs3-loader { position: fixed; inset: 0; display: grid; place-items: center; z-index: 50; background: radial-gradient(ellipse at 50% 60%, #1a2766, #050a20 70%); transition: opacity 1s ease .2s; }
+        .qs3-loader h1 { margin: 0; font: 900 11rem/0.9 var(--cond); letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); text-shadow: 0 0.6rem 0 #7a1d1d; }
+        body.booted .qs3-loader { opacity: 0; pointer-events: none; }
+        body.no-webgl .qs3-loader h1::after { content: ' — 3D unavailable'; font-size: 3rem; }
+
+        .qs3-hud { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+        /* a ticket: cream card, scalloped by a dashed inner border, team colour down the side */
+        .qs3-ticket, .qs3-round, .qs3-thrower, .qs3-col { background: linear-gradient(180deg, #f7eed8, #e9dab4); color: var(--ink); box-shadow: 0 1rem 2.6rem rgba(0, 0, 0, 0.45); border-radius: 0.6rem; }
+
+        .qs3-round { position: absolute; top: 2.8rem; left: 3rem; display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.8rem; outline: 0.25rem dashed rgba(122, 90, 42, 0.5); outline-offset: -0.8rem; }
+        .qs3-round-label { font: 800 1.7rem var(--cond); letter-spacing: 0.3em; color: #7a1d1d; }
+        .qs3-round-num { font: 900 3.6rem/1 var(--cond); }
+        .qs3-round-dots { display: flex; gap: 0.7rem; }
+        .qs3-round-dots i { width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #cdbb92; box-shadow: inset 0 0.2rem 0.3rem rgba(0,0,0,.25); }
+        .qs3-round-dots i.is-done { background: #8a6a2a; }
+        .qs3-round-dots i.is-on { background: var(--candy); box-shadow: 0 0 1rem var(--candy); }
+        .qs3-final { display: none; font: 900 2.2rem var(--cond); color: #fff; background: var(--candy); padding: 0.2rem 1rem; border-radius: 0.4rem; letter-spacing: 0.06em; }
+        .qs3-round.is-final .qs3-final { display: inline-block; animation: qsPulse 0.9s ease-in-out infinite alternate; }
+        @keyframes qsPulse { to { transform: scale(1.08); filter: brightness(1.2); } }
+
+        /* top right, clear of the marquee in the master shot */
+        .qs3-thrower { position: absolute; top: 2.8rem; right: 3rem; width: 37rem; padding: 1rem 1.8rem 1.2rem; transform: translateX(140%); transition: transform .5s cubic-bezier(.2, .9, .3, 1.2); border-left: 1rem solid var(--team, var(--gold)); outline: 0.25rem dashed rgba(122, 90, 42, 0.45); outline-offset: -0.8rem; text-align: center; }
+        .qs3-thrower.is-on { transform: translateX(0); }
+        .qs3-label { font: 800 1.4rem var(--cond); letter-spacing: 0.4em; color: #7a1d1d; }
+        .qs3-tname { font: 900 3.6rem/1 var(--cond); text-transform: uppercase; margin: 0.3rem 0 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .qs3-tteam { font: 700 1.6rem var(--cond); letter-spacing: 0.1em; text-transform: uppercase; color: #6a5530; margin-bottom: 0.4rem; }
+        .qs3-pips { display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.6rem; }
+        .qs3-pip { flex: 1; min-width: 0; height: 3.6rem; display: grid; place-items: center; padding: 0 0.4rem; font: 800 1.9rem var(--cond); white-space: nowrap; overflow: hidden; border: 0.2rem dashed #b49b6a; border-radius: 0.4rem; color: transparent; }
+        .qs3-pip.is-thrown { color: #fff; border-style: solid; animation: pip .35s cubic-bezier(.2, 1.6, .4, 1); }
+        .qs3-pip.is-plus { background: #1f8a4c; border-color: #1f8a4c; }
+        .qs3-pip.is-minus { background: var(--candy); border-color: var(--candy); }
+        @keyframes pip { from { transform: scale(1.5); filter: brightness(2); } }
+
+        .qs3-cols { position: absolute; left: 3rem; right: 3rem; bottom: 2.6rem; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 1.2rem; }
+        .qs3-col { position: relative; padding: 1.4rem 1.4rem 1.1rem; overflow: hidden; display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "av name score" "av ducks score" "dots dots dots"; column-gap: 1.1rem; align-items: center; transition: transform .45s cubic-bezier(.2, .9, .3, 1.3), box-shadow .45s; outline: 0.2rem dashed rgba(122, 90, 42, 0.4); outline-offset: -0.6rem; }
+        .qs3-col.is-active { transform: translateY(-1.2rem); box-shadow: 0 0 0 0.4rem var(--team), 0 1.4rem 3.2rem rgba(0, 0, 0, 0.55); }
+        .qs3-col-bar { position: absolute; left: 0; right: 0; top: 0; height: 0.7rem; background: var(--team); }
+        .qs3-avs { grid-area: av; display: flex; }
+        .qs3-avs.is-duo .qs3-av + .qs3-av { margin-left: -1.6rem; }
+        .qs3-av { width: 5.4rem; height: 5.4rem; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--team); color: #fff; font: 900 2.2rem var(--cond); border: 0.3rem solid #fff8e8; }
+        .qs3-av img { width: 100%; height: 100%; object-fit: cover; }
+        .qs3-col-name { grid-area: name; font: 800 2.3rem/1.1 var(--cond); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+        .qs3-score { grid-area: score; font: 900 5.6rem/1 var(--cond); color: var(--ink); min-width: 5rem; text-align: right; }
+        .qs3-col.is-neg .qs3-score { color: var(--candy); }
+        .qs3-score.bump-up { animation: bumpUp .6s cubic-bezier(.2, 1.6, .4, 1); }
+        .qs3-score.bump-down { animation: bumpDown .6s ease; }
+        @keyframes bumpUp { from { transform: scale(1.5); color: #1f8a4c; } }
+        @keyframes bumpDown { 20% { transform: translateX(-0.6rem); } 40% { transform: translateX(0.6rem); } 60% { transform: translateX(-0.3rem); } }
+        .qs3-ducks { grid-area: ducks; display: flex; align-items: center; gap: 0.2rem; height: 2.8rem; font: 800 2rem var(--cond); }
+        .qs3-ducks img { height: 2.6rem; }
+        .qs3-dots { grid-area: dots; display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.6rem; height: 1.2rem; }
+        .qs3-dots i { width: 1.2rem; height: 1.2rem; border-radius: 50%; background: #cdbb92; opacity: 0; }
+        .qs3-col.is-active .qs3-dots i { opacity: 1; }
+        .qs3-dots i.is-on { background: var(--team); box-shadow: 0 0 0.6rem var(--team); }
+
+        /* title cards: a big ticket that stamps in; a safe zone in the upper middle, clear of the target's bull */
+        .qs3-title { position: absolute; left: 50%; top: 21%; transform: translate(-50%, -50%) scale(0.6) rotate(-4deg); opacity: 0; padding: 1.6rem 5rem 2rem; text-align: center; background: linear-gradient(180deg, #f7eed8, #e6d4a8); color: var(--ink); border-radius: 0.8rem; box-shadow: 0 1.6rem 4rem rgba(0, 0, 0, 0.55); border: 0.6rem solid var(--team, var(--gold)); outline: 0.3rem dashed rgba(122, 90, 42, 0.55); outline-offset: -1.4rem; transition: opacity .2s; }
+        .qs3-title.is-on { opacity: 1; animation: stamp .45s cubic-bezier(.2, 1.5, .4, 1) forwards; }
+        .qs3-title.is-out { opacity: 0; transition: opacity .35s; }
+        @keyframes stamp { from { transform: translate(-50%, -50%) scale(1.6) rotate(-9deg); } to { transform: translate(-50%, -50%) scale(1) rotate(-3deg); } }
+        .qs3-title-main { font: 900 9rem/0.95 var(--cond); text-transform: uppercase; letter-spacing: 0.02em; color: var(--team, var(--candy)); text-shadow: 0 0.4rem 0 rgba(0,0,0,.18); }
+        .qs3-title-sub { margin-top: 0.8rem; font: 800 2.6rem var(--cond); letter-spacing: 0.12em; text-transform: uppercase; max-width: 80rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .qs3-title.k-winner { top: 26%; }
+        /* a draw holds the master: keep the marquee's tied scores and the lit stations clear, sit over the target */
+        .qs3-title.k-draw { top: 52%; }
+        .qs3-title.k-winner .qs3-title-main::before, .qs3-title.k-draw .qs3-title-main::before { content: '★ '; }
+        .qs3-title.k-winner .qs3-title-sub, .qs3-title.k-draw .qs3-title-sub { font-size: 4.6rem; letter-spacing: 0.04em; }
+
+        .qs3-help { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 70rem; padding: 3rem 4rem; background: linear-gradient(180deg, #f7eed8, #e9dab4); color: var(--ink); border-radius: 1rem; box-shadow: 0 2rem 5rem rgba(0,0,0,.6); opacity: 0; transition: opacity .25s; z-index: 6; }
+        .qs3-help.is-on { opacity: 1; }
+        .qs3-help h2 { margin: 0 0 1.6rem; font: 900 5rem var(--cond); text-transform: uppercase; color: #7a1d1d; }
+        .qs3-help-row { display: grid; grid-template-columns: 18rem 1fr; gap: 1.6rem; font: 600 2.4rem/1.3 var(--cond); padding: 0.5rem 0; border-top: 0.15rem dashed #c8b48a; }
+        .qs3-help-row b { font-weight: 900; text-transform: uppercase; }
+
+        .qs3-lens { position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: 0; backdrop-filter: blur(7px) brightness(1.25) saturate(1.2); -webkit-backdrop-filter: blur(7px) brightness(1.25); background: rgba(190, 230, 255, 0.08); }
+        .qs3-lens-glint { position: absolute; inset: 0; background-size: 100% 100%; }
+        .qs3-lens.is-on { animation: lens 1.5s ease-out forwards; }
+        @keyframes lens { 0% { opacity: 0; transform: scale(1.15); filter: blur(2px); } 8% { opacity: 1; transform: scale(1); filter: blur(0); } 45% { opacity: .85; transform: translateY(1.5%); } 100% { opacity: 0; transform: translateY(7%); } }
+        .qs3-video { position: fixed; inset: 0; z-index: 30; display: none; background: #000; }
+        .qs3-video.is-on { display: block; }
+        .qs3-video video { width: 100%; height: 100%; object-fit: cover; }
+        body.capture .qs3-hud * { animation-duration: 0s !important; transition: none !important; }
+    </style>
+</head>
+<body>
+    <canvas id="stage"></canvas>
+    <div class="qs3-loader"><h1>Duck Row</h1></div>
+    <script type="module">
+        // ?lookdev=… is the Milestone 0 duck look-dev page; otherwise the game
+        const q = new URLSearchParams(location.search);
+        if (q.has('lookdev')) { document.querySelector('.qs3-loader').remove(); import('/games/quackshot/lookdev.js'); }
+        else import('/games/quackshot/main.js');
+    </script>
+</body>
+</html>

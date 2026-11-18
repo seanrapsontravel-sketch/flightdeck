@@ -845,7 +845,8 @@
         <p>• Eight rounds — round 1 targets 1, round 2 targets 2, … through 8.</p>
         <p>• Three darts each turn. Only hits on the current number score.</p>
         <p>• Single = N, Double = 2×N, Triple = 3×N. Everything else is zero.</p>
-        <p>• Highest total after round 8 wins. Ties are a draw.</p>
+        <p>• Shanghai! A single, double and treble of the number in one visit wins on the spot.</p>
+        <p>• Otherwise the highest total after round 8 wins. Ties are a draw.</p>
     </div>
 
     <div class="arena">
@@ -974,7 +975,7 @@
             function renderAvatarHtml(avatar, name) {
                 if (avatar) return `<img src="${avatar}" alt="">`;
                 const initials = (name || '?').trim().slice(0, 2).toUpperCase();
-                return `<div class="initials">${initials}</div>`;
+                return `<div class="initials">${FC_escapeHtml(initials)}</div>`;
             }
 
             function buildRoundDots(currentRound) {
@@ -1217,7 +1218,7 @@
                                 `<div class="sh-avatar">${renderAvatarHtml(m.avatar, m.name)}</div>`
                             ).join('')}</div>`
                             : `<div class="sh-avatar">${renderAvatarHtml(c.avatar, c.name)}</div>`;
-                        return `<div class="sh-draw-col">${avatars}<div class="sh-name">${c.name || 'PLAYER'}</div></div>`;
+                        return `<div class="sh-draw-col">${avatars}<div class="sh-name">${FC_escapeHtml(c.name || 'PLAYER')}</div></div>`;
                     }).join('')}</div>`;
                     document.getElementById('shName').textContent = '';
                 } else if (isDuo) {
@@ -1300,11 +1301,11 @@
                 if (phase.type === 'winner') {
                     const d = phase.data || {};
                     showOverlay('winner', {
-                        eyebrow: 'Shanghai Champion',
+                        eyebrow: d.reason === 'shanghai' ? 'Shanghai!' : 'Shanghai Champion',
                         name: d.winnerName || 'PLAYER',
                         avatar: d.avatar,
                         members: d.members,
-                        quip: 'Highest Score',
+                        quip: d.reason === 'shanghai' ? `Single · Double · Treble of ${d.targetNumber || ''}` : 'Highest Score',
                         score: d.score != null ? d.score : 0
                     });
                     return;
@@ -1334,6 +1335,7 @@
             }
 
             window.addEventListener('message', (event) => {
+                if (event.origin !== location.origin || event.source !== window.parent) return;
                 const msg = event.data;
                 if (!msg || msg.type !== 'SYNC_STATE' || !msg.state) return;
                 const state = msg.state;

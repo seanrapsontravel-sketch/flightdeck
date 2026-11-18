@@ -25,7 +25,15 @@ public/assets/shared/winner-star-wars-throne.mp4
 
 This is a genuine GitHub fork and preserves upstream history. **The inherited history still contains the original clips.** Do not describe a full repository clone as a cleared commercial package. A future release needs a verified asset manifest and a reviewed distribution/export process. The original attribution and media-warning documents are retained as provenance records; their presence does not mean the removed files are still shipped in the current tree.
 
-Existing game code still contains video references. Use **Viewer Video off** in Configure for this planning-stage fork. Removing dead references and verifying the video-free presentation are Milestone 1 work.
+Dead example-clip references have been removed. Viewer Video defaults to off, and text/animation presentation works without example clips. Custom, operator-supplied clips can still be used. The remaining assets are enumerated with sizes and SHA-256 hashes in [ASSET-MANIFEST.json](ASSET-MANIFEST.json); unresolved rights remain explicitly unverified. No commercial asset clearance is claimed.
+
+## 3D Derby
+
+`public/vendor/three-0.160.0/three.module.min.js` is three.js r160, MIT licensed (licence alongside it). Everything the 3D Derby draws (horses, jockeys, course, crowd, sky, textures and signage) is generated in code at load time in `public/games/derby/`. It ships no image, model, font or audio files. The display typefaces are system fonts already on the Mac TV host (Didot, Avenir Next Condensed), with generic fallbacks.
+
+## 3D Killer
+
+Everything the 3D Killer page draws (the club, the glass and the city beyond it, the rain, the floor board, the agents, darts, particles and signage) is generated in code at load time in `public/games/killer/` and `public/games/lib3d/`. It ships no image, model, font or audio files. In video mode it plays the venue's winner clips through `event-videos.js` like every other page, and it will play operator-supplied Killer moment clips at `public/assets/killer/{became-charon,lost-excommunicado,elim-skyfall-take-the-shot}.mp4` only if such files are present (they were removed from this tree; see above). The 2D original is kept as `public/games/killer-classic.html`.
 
 ## Remaining assets requiring a decision
 

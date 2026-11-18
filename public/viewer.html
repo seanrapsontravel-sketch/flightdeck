@@ -371,6 +371,8 @@
             to { opacity: 1; }
         }
     </style>
+<link rel="stylesheet" href="/arcade.css">
+<script src="/arcade-client.js"></script>
 </head>
 <body>
 
@@ -658,9 +660,10 @@
                 socketReconnectTimer = null;
             }
 
-            socket = new WebSocket(`${wsProtocol}://${window.location.host}`);
-            socket.onopen = () => console.log('Viewer socket connected');
-            socket.onclose = () => {
+            socket = new WebSocket(`${wsProtocol}://${window.location.host}/?surface=viewer`);
+            socket.onopen = () => { FDClient.open(socket); console.log('Viewer socket connected'); };
+            socket.onclose = (event) => {
+                FDClient.close(event);
                 console.warn('Viewer socket closed — retrying in 1s');
                 socketReconnectTimer = setTimeout(connectSocket, 1000);
             };
@@ -697,7 +700,7 @@
         function pushStateToGameFrame() {
             const frame = document.getElementById('gameFrame');
             if (frame && frame.contentWindow && lastKnownState) {
-                frame.contentWindow.postMessage({ type: 'SYNC_STATE', state: lastKnownState }, '*');
+                frame.contentWindow.postMessage({ type: 'SYNC_STATE', state: lastKnownState }, location.origin);
             }
         }
 
@@ -729,13 +732,14 @@
 
         function handleSocketMessage(event) {
             const msg = JSON.parse(event.data);
+            FDClient.message(msg);
 
             // A dart's call and card, ahead of the full state: straight into the
             // game frame, before the roster redraw and everything else below.
             if (msg.type === 'DART_ANNOUNCE') {
                 const frame = document.getElementById('gameFrame');
                 if (frame && frame.contentWindow) {
-                    frame.contentWindow.postMessage({ type: 'DART_ANNOUNCE', data: msg.data }, '*');
+                    frame.contentWindow.postMessage({ type: 'DART_ANNOUNCE', data: msg.data }, location.origin);
                 }
                 return;
             }
@@ -801,7 +805,18 @@
                     arenaContainer.classList.add('active-arena');
                     frame.classList.add('active-frame');
                     
-                    const desiredSrc = `games/${state.selectedGame}.html`;
+                    let desiredSrc = state.catalogue?.find(g => g.id === state.selectedGame)?.view?.replace(/^\//, '') || `games/${state.selectedGame}.html`;
+                    // viewer.html?derby=classic (or ?classic=derby) shows the original 2D version of a game rebuilt in 3D,
+                    // for side-by-side comparison; only games that keep a games/<id>-classic.html copy are switchable
+                    {
+                        const classicId = desiredSrc.match(/^games\/(derby|demolition|limbo|killer|quackshot|shanghai)\.html$/)?.[1];
+                        const qs = new URLSearchParams(location.search);
+                        if (classicId && (qs.get(classicId) === 'classic' || qs.get('classic') === classicId)) desiredSrc = `games/${classicId}-classic.html`;
+                        // ?quackshot=3d previews the 3D rebuild before it is swapped in as games/quackshot.html (QUACKSHOT-3D.md M4)
+                        if (classicId === 'quackshot' && qs.get('quackshot') === '3d') desiredSrc = 'games/quackshot-3d.html';
+                        // ?shanghai=3d previews the 3D rebuild before it is swapped in as games/shanghai.html (SHANGHAI-3D.md M4)
+                        if (classicId === 'shanghai' && qs.get('shanghai') === '3d') desiredSrc = 'games/shanghai-3d.html';
+                    }
                     if (!frame.src.includes(desiredSrc)) {
                         frame.src = desiredSrc;
                         frame.onload = () => {
@@ -815,16 +830,6 @@
         }
 
         connectSocket();
-
-        window.addEventListener('message', (event) => {
-            const data = event && event.data;
-            if (!data || (data.type !== 'TVM_COMPLETE' && data.type !== 'BUST_VIDEO_COMPLETE')) return;
-            if (!socket || socket.readyState !== WebSocket.OPEN) return;
-            try {
-                // Server switch listens on `action` (Control convention)
-                socket.send(JSON.stringify({ action: data.type, type: data.type }));
-            } catch (_) {}
-        });
 
         // Forward a genuine gesture into the active game iframe so it can unlock
         // audio/video (WebKit/Chrome autoplay-with-sound policy needs an unmuted

@@ -23,19 +23,7 @@ const core = require('./core');
  * must not be an error: a game missing from venueConfig's ALL_GAMES is
  * rejected before any engine call.
  */
-const ENGINE_FILES = [
-    { name: 'demolition', path: './demolition' },
-    { name: 'limbo', path: './limbo' },
-    { name: 'derby', path: './derby' },
-    { name: 'killer', path: './killer' },
-    { name: 'quackshot', path: './quackshot' },
-    { name: 'shanghai', path: './shanghai' },
-    { name: 'cricket', path: './cricket' },
-    { name: 'x01', path: './x01' },
-    { name: 'warmup', path: './warmup' },
-    { name: 'quick10', path: './quick10' },
-    { name: 'aroundtheworld', path: './aroundtheworld' },
-];
+const ENGINE_FILES = require('../catalogue').games.map(game => ({ name: game.id, path: `./${game.id}` }));
 
 function loadOptional(path, name) {
     try {

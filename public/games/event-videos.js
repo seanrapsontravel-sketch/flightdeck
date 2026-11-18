@@ -153,7 +153,7 @@
 
     function signalBustVideoComplete() {
         try {
-            window.parent.postMessage({ type: 'BUST_VIDEO_COMPLETE' }, '*');
+            window.parent.postMessage({ type: 'BUST_VIDEO_COMPLETE' }, location.origin);
         } catch (_) {}
     }
 

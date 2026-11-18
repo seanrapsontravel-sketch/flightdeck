@@ -1,19 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ALL_GAMES = [
-    'demolition',
-    'limbo',
-    'derby',
-    'killer',
-    'quackshot',
-    'shanghai',
-    'warmup',
-    'quick10',
-    'x01',
-    'cricket',
-    'aroundtheworld',
-];
+const ALL_GAMES = require('./catalogue').games.map(g => g.id);
 
 const DART_CALLOUT_MODES = ['card', 'sound', 'both', 'off'];
 /** Subdir names under public/assets/sounds/callouts/ — see that folder's README. */
@@ -31,7 +19,7 @@ const DEFAULT_VENUE = {
      *  Not exposed in any UI yet — hand-edit venue.json (config/debug panels TBD). */
     dartCalloutVoice: 'Bella',
     /** Bust/event clips on the viewer. Configurable from Control's Configure modal. */
-    viewerVideoEnabled: true,
+    viewerVideoEnabled: false,
     /** Registration: release avatar camera after this much quiet (ms). */
     registrationIdleMs: 10 * 60 * 1000,
     /** IN_GAME: release screen wake lock after this much quiet (ms). */
@@ -95,7 +83,7 @@ function normalizeGames(raw) {
 
 function normalizeVenueConfig(raw) {
     const src = raw && typeof raw === 'object' ? raw : {};
-    const arenaName = String(src.arenaName != null ? src.arenaName : DEFAULT_VENUE.arenaName).trim()
+    const arenaName = String(src.arenaName != null ? src.arenaName : DEFAULT_VENUE.arenaName).trim().slice(0, 80)
         || DEFAULT_VENUE.arenaName;
     return {
         arenaName,

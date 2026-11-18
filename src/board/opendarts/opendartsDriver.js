@@ -354,7 +354,7 @@ function createOpenDartsDriver({ host, port, onUpdate, onEvent }) {
             summary: { visit: visitId, index, sector: dart.sector, ring: dart.ring, value: dart.value, source },
             raw: dart
         });
-        pushEvent('THROW', mapped);
+        pushEvent('THROW', { ...mapped, eventId: visitId == null ? null : `${visitId}:${index}` });
     }
 
     /**

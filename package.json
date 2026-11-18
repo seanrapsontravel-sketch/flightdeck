@@ -1,27 +1,30 @@
 {
   "name": "flightdeck",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "A control panel + kiosk display for running a real dartboard as a party/venue game system.",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "node src/server.js",
     "dev": "SCORING_MODE=mock PORT=4000 nodemon src/server.js",
-    "test": "node tests/engine-golden.js && node tests/derby-finish.js && node tests/aroundtheworld.js && node tests/leaderboards.js && node tests/opendarts-backfill.js",
-    "test:update": "node tests/engine-golden.js --update"
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "playwright test",
+    "check": "node scripts/check.js",
+    "setup": "node scripts/setup.js",
+    "setup:trusted": "node scripts/setup.js --trusted"
   },
   "keywords": [],
   "author": "Richie Lai",
   "license": "MIT",
   "type": "commonjs",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.14.0"
   },
   "dependencies": {
-    "express": "^5.2.1",
-    "uuid": "^14.0.1",
-    "ws": "^8.21.0"
+    "express": "5.3.0",
+    "ws": "8.23.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@playwright/test": "1.65.1",
+    "nodemon": "3.1.11"
   }
 }

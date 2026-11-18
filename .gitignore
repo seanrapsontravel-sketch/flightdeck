@@ -18,3 +18,13 @@ certs/
 .DS_Store
 **/.DS_Store
 .tmp-verify/
+
+# Browser verification artifacts
+output/playwright/
+test-results/
+playwright-report/
+
+# Generated look-dev / review renders (hundreds of MB; each set regenerates from one command in docs/plans/tools/)
+# and third-party reference photos (reference only, never shipped)
+docs/plans/*-lookdev/
+docs/plans/intros/
