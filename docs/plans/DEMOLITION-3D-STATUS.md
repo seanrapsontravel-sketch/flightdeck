@@ -1,6 +1,6 @@
 # Demolition 3D — status and what's left
 
-Last updated 2026-11-17. The full brief (rules contract, art direction, quality gates) is
+Last updated 2026-11-18. The full brief (rules contract, art direction, quality gates) is
 [`DEMOLITION-3D.md`](DEMOLITION-3D.md); this file tracks progress against it.
 
 ## Where it stands
@@ -10,13 +10,13 @@ Last updated 2026-11-17. The full brief (rules contract, art direction, quality 
 | 1. Foundation | **Done.** `demolition-classic.html` kept; viewer `?demolition=classic` / `?classic=<derby\|demolition>`; engine extracted to `public/games/lib3d/engine.js` (presets `day`, `night`); Derby verified unchanged. |
 | 2. Look-dev | **Done — signed off by Sean** ("The look is fantastic"). Night construction yard, glossy block towers, crane + wrecking ball, stills + 15 s clip. |
 | 3. Destruction | **Partly done.** Rigid-body physics, wrecking-ball strike, hit-stop, shake, dust/sparks/chips. Other attacks not started. |
-| 4. Game flow | **MVP done** (built early so Sean could play it). Not yet swapped in as the real game. |
+| 4. Game flow | **Swapped in 2026-11-18** — `demolition.html` IS the 3D page and plays the real game (classic at `?demolition=classic`). Remaining M4 items below. |
 | 5. Audio | Not started. |
 | 6. Polish + perf + verification | Not started. |
 
 ### Try it
 
-- Simulated game: `https://localhost:4000/games/demolition-3d.html?demo=1` (`&players=2..6`, `&speed=2`, `&seed=n`).
+- Simulated game: `https://localhost:4000/games/demolition.html?demo=1` (`demolition-3d.html` now redirects here) (`&players=2..6`, `&speed=2`, `&seed=n`).
   Console: `__demolitionDemo.set(lane, score)` jumps a lane near the finish.
 - Look-dev loop (no game): `games/demolition-3d.html`, or hold a camera with `?shot=wide|establish|hero|low|close|strike|strike2|checkout`.
 - Classic 2D on the TV: `viewer.html?demolition=classic`.
@@ -25,7 +25,7 @@ Last updated 2026-11-17. The full brief (rules contract, art direction, quality 
 
 ### Code map
 
-`public/games/demolition-3d.html` (shell + HUD CSS; becomes `demolition.html` in M4) and `public/games/demolition/`:
+`public/games/demolition.html` (shell + HUD CSS) and `public/games/demolition/`:
 `blocks.js` (bevelled block geometry + material), `tower.js` (layouts 180/60, plinth, LED ticker, crown, drop-in),
 `yard.js` (wet ground + planar reflection, night sky, skyline, floodlights, barriers, containers, jumbotron),
 `crane.js` (lattice tower cranes, ball rig), `attacks.js` (wrecking ball, `releaseTop`),
@@ -59,15 +59,16 @@ fallback, clearance). The move was verified pixel-identical on seeded fixed-step
 
 ### Milestone 4 — Game flow (finish)
 
-- [ ] Swap in: `demolition.html` → the 3D shell (classic stays as `demolition-classic.html`); keep `?demo=1`.
+- [x] Swap in: `demolition.html` → the 3D shell (classic stays as `demolition-classic.html`); keep `?demo=1`. (2026-11-18)
 - [ ] TV Moment: face clip on the jumbotron as a video texture, DOM fallback, `TVM_COMPLETE` (today it posts
       `TVM_COMPLETE` at once and skips the clip).
-- [ ] Load the shared page scripts (`event-videos`, `dart-callout`, `dart-announcer`) like the classic page does.
-- [ ] Help overlay (`helpVisible`), avatars on the thrower card (`data:`/`/`/`http` only), doubles/team naming
-      checked against the real server (`isDoublesLineup`, `throwerIndices`).
+- [x] Load the shared page scripts (`event-videos`, `dart-callout`, `dart-announcer`) like the classic page does. Winner/bust
+      videos are not wired to the 3D screens yet (videos are off on Sean's rig — clips removed).
+- [x] Help overlay (`helpVisible`), avatar/initials on the thrower card (solo lanes only). Doubles naming still to check
+      against the real server (`isDoublesLineup`, `throwerIndices`).
 - [ ] `demo.js` `force(kind)` for screenshots: `playing, bust, intermission, single, double, treble, bull, miss,
       checkout, tvm, playoff, winner, doubles, nearfinish`.
-- [ ] Playwright: Demolition 3D on the TV through the real server — no errors, each lane's standing block count equals
+- [x] Playwright `tests/browser/demolition.spec.cjs` (window.__demolition.truth()): Demolition 3D on the TV through the real server — no errors, each lane's standing block count equals
       `teamScores[i]` after every dart settles (including bust and playoff), winner name present as DOM text.
 - [ ] Adapt `docs/plans/tools/e2e.cjs` for Demolition (`teamScores` / `activeTurnIndex`).
 
@@ -86,6 +87,12 @@ fallback, clearance). The move was verified pixel-identical on seeded fixed-step
       else procedural, system fonts).
 - [ ] Nothing committed yet (branch `feat/arcade-platform` also carries Sean's uncommitted 0.25.0 work) — commit only
       when Sean asks.
+
+### Fixed at swap-in (2026-11-18)
+
+- Lane OUT tag read `checkedOutThisRound` (a list of indices) as per-lane booleans: the wrong lane showed OUT.
+- The jumbotron scoreboard only redrew on a tower rebuild; it now follows every score change.
+- Shared `lib3d/kit/hud.js` initials skip symbols ("Christopher & Maximilian" → CM, was C&) — Limbo/Killer too.
 
 ### Known rough edges in the MVP
 

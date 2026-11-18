@@ -1,7 +1,17 @@
 // Broadcast graphics over the yard: the thrower card (top centre) with three dart pips and the checkout hint, the
 // lane strip (bottom) with a rolling score per lane, and slam-in title cards for BUST / CHECKOUT / SUDDEN DEATH /
-// WINNER / NEXT UP. Everything a player typed goes in via textContent.
+// WINNER / NEXT UP, and the help overlay (helpVisible). Everything a player typed goes in via textContent; avatars only
+// from data:image, same-origin or http(s) URLs (lib3d/kit/hud.js avatarEl).
+import { avatarEl, helpOverlay } from '../lib3d/kit/hud.js';
 const el = (tag, cls, parent) => { const e = document.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; };
+
+const HELP = [
+    ['Start', 'Every player starts with a 180-block tower.'],
+    ['Score', 'Each dart knocks its score off your tower. Three darts a visit.'],
+    ['Finish', 'Hit exactly zero to bring it down. Going below zero is a bust: the visit is undone.'],
+    ['Last round', 'When someone checks out, everyone left still finishes the round.'],
+    ['Sudden death', 'Two or more checkouts in one round go to a playoff from 60.'],
+];
 
 export function dartLabel(t) {
     if (!t) return '';
@@ -27,6 +37,7 @@ export class Hud {
         this.root = root;
         // thrower card
         const card = el('div', 'dm-thrower', root);
+        this.tAv = el('div', 'dm-tav', card); this.avKey = null;
         el('div', 'dm-label', card).textContent = 'Now throwing';
         this.tName = el('div', 'dm-tname', card);
         const row = el('div', 'dm-darts', card);
@@ -44,7 +55,10 @@ export class Hud {
         this.tSub = el('div', 'dm-title-sub', this.title);
         this.titleTimer = null;
         this.shown = new Map();
+        this.help = helpOverlay(root, 'dm', 'How to play Demolition', HELP);
     }
+
+    setHelp(on) { this.help.set(on); }
 
     setTeams(teams) {
         this.strip.textContent = '';
@@ -68,9 +82,13 @@ export class Hud {
     /** snap a lane's display (bust rewinds jump straight back) */
     snap(i, s) { const L = this.lanes[i]; if (L) { L.shown = L.target = s; L.score.textContent = String(s); } }
 
-    thrower(name, color, darts, score) {
+    /** avatar: the thrower's registration photo; null in doubles/teams (two people share a lane) */
+    thrower(name, color, darts, score, avatar = null, showAv = false) {
         this.card.style.setProperty('--team', color);
         this.tName.textContent = name;
+        const ak = showAv ? `${name}|${avatar || ''}` : '';
+        if (ak !== this.avKey) { this.avKey = ak; this.tAv.replaceChildren(...(showAv ? [avatarEl(avatar, name, 'dm-tav-in')] : [])); }
+        this.card.classList.toggle('has-av', showAv);
         this.pips.forEach((p, i) => { const d = darts[i]; p.textContent = d || ''; p.classList.toggle('is-thrown', !!d); p.classList.toggle('is-miss', d === 'MISS'); });
         const h = checkoutHint(score);
         this.need.textContent = score > 0 ? (h ? `Need ${score} · ${h}` : `Need ${score}`) : '';

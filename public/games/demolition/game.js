@@ -56,20 +56,26 @@ export class Game {
         }
         const prev = this.prev, T = S.towers;
         // scores → targets (hits and busts)
+        let moved = false;
         gd.teamScores.forEach((s, i) => {
             const tw = T[i]; if (!tw) return;
             const was = tw.target;
             tw.target = s;
+            if (s !== was) moved = true;
             if (s < was) this.hit(i, was - s);
             else if (s > was) this.restore(i);
         });
+        // the jumbotron scoreboard follows the scores
+        if (moved) S.yard.drawJumbo(T.map((t) => ({ name: t.name, color: '#' + t.color.getHexString(), score: t.target })));
         // thrower card: pips for this visit
         const a = gd.activeTurnIndex;
         const vk = `${key}/${a}/${gd.roundInitialScores ? gd.roundInitialScores[a] : ''}`;
         if (vk !== this.visitKey && gd.dartsThrownThisTurn === 0) { this.visitKey = vk; this.pips = []; this.newVisit(a); }
         if (prev && gd.dartsThrownThisTurn > prev.dartsThrownThisTurn && gd.lastThrow) this.pips[gd.dartsThrownThisTurn - 1] = dartLabel(gd.lastThrow);
         S.ctx.active = a;
-        S.hud.thrower(this.teamName(gd, a), this.colorOf(gd, a), this.pips, gd.teamScores[a]);
+        const solo = (gd.teams[a] || []).length === 1;
+        S.hud.thrower(this.teamName(gd, a), this.colorOf(gd, a), this.pips, gd.teamScores[a], solo ? gd.teams[a][0].avatar : null, solo);
+        S.hud.setHelp(gd.helpVisible);
         // final-round banner
         if (gd.finishRoundMode && gd.phase.type === 'playing') {
             const left = gd.teams.length - a;
@@ -178,7 +184,9 @@ export class Game {
             S.yard.skylineU.uFlash.value.copy(this.flash).multiplyScalar(k);
             S.yard.skyU.uFlash.value.copy(this.flash).multiplyScalar(k * 0.15);
         }
-        S.hud.setScores(S.towers.map((t) => (t.anim ? t.target : t.standing)), S.ctx.active, this.prev ? this.prev.checkedOutThisRound : []);
+        // checkedOutThisRound is a list of lane indices
+        const out = (this.prev && this.prev.checkedOutThisRound) || [];
+        S.hud.setScores(S.towers.map((t) => (t.anim ? t.target : t.standing)), S.ctx.active, S.towers.map((_, i) => out.includes(i)));
     }
 
     /** fallback when the ball can't get there in time: the top just bursts off */

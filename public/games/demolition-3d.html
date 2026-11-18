@@ -2,71 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 3D Demolition, look-dev build (milestone 2). Becomes games/demolition.html once it plays the real game. -->
+    <!-- 3D Demolition moved to games/demolition.html (milestone 4). Kept so demo/capture links keep working. -->
     <title>Demolition</title>
-    <script src="/games/shared-player-theme.js"></script>
-    <script type="importmap">{ "imports": { "three": "/vendor/three-0.160.0/three.module.min.js" } }</script>
-    <style>
-        :root { font-size: calc(100vh / 108); --hazard: #f5b72c; --ink: #f2f4f8; --cond: "Avenir Next Condensed", "DIN Condensed", "Roboto Condensed", "Arial Narrow", Arial, sans-serif; }
-        * { box-sizing: border-box; }
-        html, body { margin: 0; height: 100%; overflow: hidden; background: #05070c; color: var(--ink); font-family: var(--cond); }
-        #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
-        .dm-loader { position: fixed; inset: 0; display: grid; place-items: center; z-index: 50; background: radial-gradient(ellipse at 50% 60%, #151b27, #040509 70%); transition: opacity 1s ease .2s; }
-        .dm-loader h1 { margin: 0; font: 900 10rem/0.9 var(--cond); letter-spacing: 0.02em; text-transform: uppercase; color: #fff; }
-        .dm-loader i { display: block; height: 1.6rem; margin-top: 2.4rem; background: repeating-linear-gradient(-45deg, var(--hazard) 0 1.6rem, #111 1.6rem 3.2rem); background-size: 200% 100%; animation: crawl 1.2s linear infinite; }
-        @keyframes crawl { to { background-position: -4.5rem 0; } }
-        body.booted .dm-loader { opacity: 0; pointer-events: none; }
-        body.no-webgl .dm-loader h1::after { content: ' — 3D unavailable'; font-size: 3rem; }
-
-        /* ---------------------------------------------------------- HUD */
-        .dm-hud { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
-        .dm-panel, .dm-thrower, .dm-lane { background: linear-gradient(180deg, rgba(16, 20, 30, 0.86), rgba(6, 8, 13, 0.92)); box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07); backdrop-filter: blur(0.8rem); }
-
-        .dm-thrower { position: absolute; top: 3rem; left: 50%; min-width: 46rem; padding: 1.3rem 2.4rem 1.5rem 2.8rem; transform: translate(-50%, -140%); transition: transform .5s cubic-bezier(.2, .9, .3, 1.2); border-left: 0.8rem solid var(--team, var(--hazard)); clip-path: polygon(0 0, 100% 0, calc(100% - 2rem) 100%, 0 100%); }
-        .dm-thrower.is-on { transform: translate(-50%, 0); }
-        .dm-label { font: 700 1.3rem var(--cond); letter-spacing: 0.4em; text-transform: uppercase; color: var(--hazard); }
-        .dm-tname { font: 900 5rem/1 var(--cond); text-transform: uppercase; letter-spacing: 0.01em; margin: 0.3rem 0 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60rem; }
-        .dm-darts { display: flex; gap: 0.9rem; }
-        .dm-pip { width: 8.4rem; height: 3.8rem; display: grid; place-items: center; font: 800 2.3rem var(--cond); border: 2px solid rgba(255, 255, 255, 0.16); color: transparent; background: rgba(255, 255, 255, 0.03); transition: all .25s; }
-        .dm-pip.is-thrown { color: #fff; border-color: var(--team); background: color-mix(in srgb, var(--team) 32%, transparent); animation: pip .35s cubic-bezier(.2, 1.6, .4, 1); }
-        .dm-pip.is-miss { color: #9aa3b5; border-color: rgba(255, 255, 255, 0.3); background: transparent; }
-        @keyframes pip { from { transform: scale(1.5); filter: brightness(2.5); } }
-        .dm-need { margin-top: 0.9rem; font: 700 1.9rem var(--cond); letter-spacing: 0.14em; text-transform: uppercase; color: #cfd6e4; min-height: 2.2rem; }
-
-        .dm-strip { position: absolute; left: 3rem; right: 3rem; bottom: 3rem; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 1.2rem; }
-        .dm-lane { position: relative; padding: 1.4rem 1.8rem 1.2rem; overflow: hidden; transition: transform .45s cubic-bezier(.2, .9, .3, 1.3), box-shadow .45s; }
-        .dm-lane-bar { position: absolute; left: 0; right: 0; top: 0; height: 0.6rem; background: var(--team); }
-        .dm-lane-name { font: 800 2.2rem var(--cond); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #dfe5ef; }
-        .dm-lane-score { font: 900 6.4rem/1 var(--cond); font-variant-numeric: tabular-nums; color: #fff; margin-top: 0.2rem; }
-        .dm-lane-meter { height: 0.5rem; margin-top: 0.8rem; background: rgba(255, 255, 255, 0.08); }
-        .dm-lane-meter b { display: block; height: 100%; background: var(--team); transform-origin: left; transition: transform .15s linear; }
-        .dm-lane.is-active { transform: translateY(-1.4rem); box-shadow: 0 0 0 2px var(--team), 0 0 3.6rem color-mix(in srgb, var(--team) 55%, transparent), 0 1.2rem 3rem rgba(0, 0, 0, 0.5); }
-        .dm-lane.is-active .dm-lane-score { color: var(--team); text-shadow: 0 0 2.4rem color-mix(in srgb, var(--team) 60%, transparent); }
-        .dm-lane.tick .dm-lane-score { animation: tick .12s ease-out; }
-        @keyframes tick { from { transform: translateY(-0.4rem); } }
-        .dm-lane.is-out::after { content: 'OUT'; position: absolute; right: 1.6rem; top: 1.6rem; font: 900 1.8rem var(--cond); letter-spacing: 0.2em; color: var(--team); }
-
-        .dm-banner { position: absolute; left: 50%; bottom: 19rem; transform: translateX(-50%) scaleY(0); padding: 0.9rem 3.2rem; font: 900 2.6rem var(--cond); letter-spacing: 0.24em; text-transform: uppercase; color: #111; background: repeating-linear-gradient(-45deg, var(--hazard) 0 1.4rem, #ffd368 1.4rem 2.8rem); transition: transform .3s; }
-        .dm-banner.is-on { transform: translateX(-50%) scaleY(1); }
-
-        .dm-title { position: absolute; left: 0; right: 0; top: 36%; text-align: center; opacity: 0; transform: scale(2.6); filter: blur(1.4rem); }
-        .dm-title.is-on { animation: slam .42s cubic-bezier(.2, 1.4, .3, 1) forwards; }
-        .dm-title.is-out { animation: titleOut .35s ease-in forwards; }
-        @keyframes slam { 0% { opacity: 0; transform: scale(2.6); filter: blur(1.4rem); } 60% { opacity: 1; filter: blur(0); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
-        @keyframes titleOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9) translateY(-2rem); } }
-        .dm-title-main { font: 900 15rem/0.9 var(--cond); text-transform: uppercase; letter-spacing: 0.02em; color: #fff; text-shadow: 0 0 4rem color-mix(in srgb, var(--team) 70%, transparent), 0 0.6rem 0 rgba(0, 0, 0, 0.5); -webkit-text-stroke: 0.3rem var(--team); }
-        .dm-title-sub { display: inline-block; margin-top: 1.6rem; padding: 0.6rem 2.4rem; font: 800 2.8rem var(--cond); letter-spacing: 0.3em; text-transform: uppercase; color: #111; background: var(--team); }
-        .dm-title.k-bust .dm-title-main { color: #ff3b4e; -webkit-text-stroke: 0.3rem #fff; }
-        .dm-title.k-next .dm-title-main { font-size: 9rem; }
-        .dm-title.k-next { top: 40%; }
-        .dm-title.k-winner .dm-title-main { font-size: 17rem; }
-        .dm-title.k-winner .dm-title-sub { order: -1; }
-    </style>
+    <script>location.replace('/games/demolition.html' + location.search);</script>
 </head>
-<body>
-    <canvas id="stage"></canvas>
-    <div class="dm-loader"><div><h1>Demolition</h1><i></i></div></div>
-    <script type="module" src="/games/demolition/main.js"></script>
-</body>
+<body></body>
 </html>

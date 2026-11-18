@@ -220,6 +220,18 @@ window.__demolition = {
     engine, yard, towers, crane, rig, world, fx, director, wrecker, feel, THREE,
     get game() { return game; }, get hud() { return hud; },
     strike, rebuild,
+    /** what's on screen now, for the nothing-lies check (tests/browser/demolition.spec.cjs): blocks standing per
+     *  lane, the lane strip's numbers, and whether every swing / drop-in has finished */
+    truth: () => {
+        if (!game) return null;
+        const busy = towers.filter((t) => t.anim || wrecker.pending(t) || t.standing !== t.target).map((t) => t.name);
+        if (game.waiting) busy.push('waiting');
+        return {
+            settled: !busy.length && hud.lanes.every((L) => L.shown === L.target), busy,
+            standing: towers.map((t) => t.standing), lanes: hud.lanes.map((L) => Number(L.score.textContent)),
+            names: hud.lanes.map((L) => L.name.textContent),
+        };
+    },
     shot: (name, p = {}) => director.set(name, p, true),
     /** capture mode: advance n frames of dt seconds each (renders every frame) */
     step(n = 1, dt = 1 / 60) { for (let i = 0; i < n; i++) tick(dt * 1000); },
