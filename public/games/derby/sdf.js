@@ -12,6 +12,9 @@ export function smin(a, b, k) {
     return Math.min(a, b) - h * h * k * 0.25;
 }
 
+/** smooth maximum: carve or intersect with a soft edge (smax(d, -groove, k) cuts a groove) */
+export function smax(a, b, k) { return -smin(-a, -b, k); }
+
 /** ellipsoid (IQ's bound): centre c, radii r */
 export function ellipsoid(px, py, pz, c, r) {
     const x = (px - c[0]) / r[0], y = (py - c[1]) / r[1], z = (pz - c[2]) / r[2];
@@ -54,17 +57,47 @@ export function segDist(p, a, b) {
  * Surface nets over [min,max] at the given cell size. f(x,y,z) < 0 inside.
  * Returns positions, normals (from the gradient) and triangle indices.
  */
-export function surfaceNets(f, min, max, cell) {
+export function surfaceNets(f, min, max, cell, opts = {}) {
     const nx = Math.ceil((max[0] - min[0]) / cell) + 1;
     const ny = Math.ceil((max[1] - min[1]) / cell) + 1;
     const nz = Math.ceil((max[2] - min[2]) / cell) + 1;
     const field = new Float32Array(nx * ny * nz);
     const id = (i, j, k) => i + nx * (j + ny * k);
-    for (let k = 0; k < nz; k++) {
-        const z = min[2] + k * cell;
-        for (let j = 0; j < ny; j++) {
-            const y = min[1] + j * cell;
-            for (let i = 0; i < nx; i++) field[id(i, j, k)] = f(min[0] + i * cell, y, z);
+    if (opts.band) {
+        // narrow band, two levels: blocks clearly away from the surface (tested at their centre) take that value — only
+        // its sign matters there — and only the thin shell round the surface is sampled exactly. Far blocks fill
+        // first so exact samples win on shared faces.
+        const fill = (i0, j0, k0, B, d) => {
+            for (let k = k0; k <= Math.min(nz - 1, k0 + B); k++) for (let j = j0; j <= Math.min(ny - 1, j0 + B); j++)
+                for (let i = i0; i <= Math.min(nx - 1, i0 + B); i++) field[id(i, j, k)] = d;
+        };
+        const test = (i0, j0, k0, B) => {
+            const d = f(min[0] + (i0 + B / 2) * cell, min[1] + (j0 + B / 2) * cell, min[2] + (k0 + B / 2) * cell);
+            return Math.abs(d) < Math.sqrt(3) * B * cell * 0.5 * 1.35 + cell * 1.5 ? null : d;
+        };
+        const B1 = 8, B2 = 2, near = [];
+        for (let bk = 0; bk < nz; bk += B1) for (let bj = 0; bj < ny; bj += B1) for (let bi = 0; bi < nx; bi += B1) {
+            const d = test(bi, bj, bk, B1);
+            if (d !== null) { fill(bi, bj, bk, B1, d); continue; }
+            for (let ck = bk; ck < Math.min(nz, bk + B1); ck += B2) for (let cj = bj; cj < Math.min(ny, bj + B1); cj += B2)
+                for (let ci = bi; ci < Math.min(nx, bi + B1); ci += B2) {
+                    const e = test(ci, cj, ck, B2);
+                    if (e !== null) fill(ci, cj, ck, B2, e); else near.push(ci, cj, ck);
+                }
+        }
+        for (let q = 0; q < near.length; q += 3) {
+            const bi = near[q], bj = near[q + 1], bk = near[q + 2];
+            for (let k = bk; k <= Math.min(nz - 1, bk + B2); k++) { const z = min[2] + k * cell;
+                for (let j = bj; j <= Math.min(ny - 1, bj + B2); j++) { const y = min[1] + j * cell;
+                    for (let i = bi; i <= Math.min(nx - 1, bi + B2); i++) field[id(i, j, k)] = f(min[0] + i * cell, y, z); } }
+        }
+    } else {
+        for (let k = 0; k < nz; k++) {
+            const z = min[2] + k * cell;
+            for (let j = 0; j < ny; j++) {
+                const y = min[1] + j * cell;
+                for (let i = 0; i < nx; i++) field[id(i, j, k)] = f(min[0] + i * cell, y, z);
+            }
         }
     }
     const cellVert = new Int32Array(nx * ny * nz).fill(-1);
@@ -116,7 +149,7 @@ export function surfaceNets(f, min, max, cell) {
     const e = cell * 0.35;
     for (let p = 0; p < positions.length; p += 3) {
         let x = positions[p], y = positions[p + 1], z = positions[p + 2];
-        for (let it = 0; it < 2; it++) {
+        for (let it = 0, its = opts.band ? 1 : 2; it < its; it++) {
             const d = f(x, y, z);
             let gx = f(x + e, y, z) - f(x - e, y, z), gy = f(x, y + e, z) - f(x, y - e, z), gz = f(x, y, z + e) - f(x, y, z - e);
             const gl = Math.hypot(gx, gy, gz) || 1;

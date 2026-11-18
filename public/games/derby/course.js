@@ -2,6 +2,7 @@
 // living crowd, marquees, trees, a lake and rolling country out to the haze.
 import * as THREE from 'three';
 import { mergeGeometries } from './merge.js';
+import { crowdMaterial, personGeometry } from './people.js';
 
 export const TICK = 20;          // metres per mark
 export const FINISH = 9 * TICK;  // score 9
@@ -325,22 +326,16 @@ transformed.z+=w;transformed.y-=k*k*.12;`)
     }
 
     // ------------------------------------------------------------------ crowd: thousands of instanced people
+    // Lofted low-poly racegoers (people.js): the rail crowd in full, the stand (seen over the rows in front) as
+    // a lighter upper-body version. Same wardrobe shader for both.
     crowd() {
         const r = rng(11);
-        const part = (g, v) => { const c = new Float32Array(g.attributes.position.count).fill(v); g.setAttribute('aPart', new THREE.BufferAttribute(c, 1)); return g; };
-        const legs = new THREE.CapsuleGeometry(0.15, 0.55, 1, 6).scale(1.15, 1, 0.8).translate(0, 0.43, 0);
-        const torso = new THREE.CapsuleGeometry(0.19, 0.34, 2, 8).scale(1.12, 1, 0.78).translate(0, 1.07, 0);
-        const head = new THREE.SphereGeometry(0.115, 8, 6).translate(0, 1.55, 0);
-        const armL = new THREE.CapsuleGeometry(0.05, 0.46, 1, 4).translate(0.255, 1.08, 0);
-        const armR = new THREE.CapsuleGeometry(0.05, 0.46, 1, 4).translate(-0.255, 1.08, 0);
-        const hat = mergeGeometries([new THREE.CylinderGeometry(0.22, 0.22, 0.02, 10).translate(0, 1.64, 0), new THREE.CylinderGeometry(0.11, 0.12, 0.11, 8).translate(0, 1.7, 0)]);
-        const geo = mergeGeometries([part(legs, 0), part(torso, 1), part(head, 2), part(armL, 3), part(armR, 3), part(hat, 4)]);
-        const spots = [];
+        const rail = [], stand = [];
         // seated rows in the stand
         for (const row of this.tierRows) {
             for (let x = this.stand.x0 + 1; x < this.stand.x1 - 1; x += 0.62 + r() * 0.25) {
                 if (r() < 0.1) continue;
-                spots.push([x + r() * 0.1, row.y - 0.3, row.z + (r() - 0.5) * 0.2, 0.92 + r() * 0.12, 1]);
+                stand.push([x + r() * 0.1, row.y - 0.3, row.z + (r() - 0.5) * 0.2, 0.92 + r() * 0.12, 1]);
             }
         }
         // standing along the apron rail, thickest toward the finish
@@ -348,51 +343,29 @@ transformed.z+=w;transformed.y-=k*k*.12;`)
             const x = -10 + Math.pow(r(), 0.65) * 225;
             const zz = -RAIL_Z - 1.6 - Math.pow(r(), 1.6) * 9;
             if (x > 162 && x < 198 && zz > -16) continue; // flower beds at the post
-            spots.push([x, 0, zz, 0.95 + r() * 0.15, 0]);
+            rail.push([x, 0, zz, 0.95 + r() * 0.15, 0]);
         }
-        const n = spots.length;
-        const mesh = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ roughness: 0.8 }), n);
-        const shirt = ['#c8202a', '#1d3a8a', '#f2efe8', '#f2c230', '#2c7a52', '#202326', '#e98bb0', '#6fa8dc', '#e86a2a', '#8e5bb5', '#efe1c2', '#405e7d'].map((c) => new THREE.Color(c));
+        const mat = crowdMaterial(this.time, this.excite);
+        const shirt = ['#c8202a', '#1d3a8a', '#f2efe8', '#f2c230', '#2c7a52', '#202326', '#e98bb0', '#6fa8dc', '#e86a2a', '#8e5bb5', '#efe1c2', '#405e7d', '#2b2d33', '#3c4a6b'].map((c) => new THREE.Color(c));
         const M = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
-        const skin = new Float32Array(n);
-        spots.forEach(([x, y, z, s, seated], i) => {
-            q.setFromAxisAngle(up, (r() - 0.5) * 0.6);
-            M.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(s, seated ? s * 0.82 : s, s));
-            mesh.setMatrixAt(i, M);
-            mesh.setColorAt(i, shirt[(r() * shirt.length) | 0].clone().multiplyScalar(0.75 + r() * 0.3));
-            skin[i] = r();
-        });
-        geo.setAttribute('aSkin', new THREE.InstancedBufferAttribute(skin, 1));
-        const ex = this.excite, tm = this.time;
-        mesh.material.onBeforeCompile = (sh) => {
-            sh.uniforms.uTime = tm; sh.uniforms.uEx = ex;
-            sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uTime,uEx;attribute float aPart;attribute float aSkin;varying float vPart;varying float vSkin;varying float vY;')
-                .replace('#include <begin_vertex>', `#include <begin_vertex>
-vPart=aPart;vSkin=aSkin;vY=position.y;
-float ph=aSkin*6.283+float(gl_InstanceID)*.37;
-float ex=uEx*(.45+.55*fract(aSkin*13.7));
-float hatOn=step(.68,fract(aSkin*7.31));
-if(aPart>3.5&&hatOn<.5)transformed=vec3(0.,1.5,0.);
-// a cheer: arms swing up round the shoulder, a bounce
-if(aPart>2.5&&aPart<3.5){float sd=sign(position.x);vec2 sp=vec2(.255*sd,1.33);vec2 q=transformed.xy-sp;
-  float a=-sd*ex*(2.4+.5*sin(uTime*7.+ph))-sd*.08;float c=cos(a),s=sin(a);transformed.xy=sp+vec2(c*q.x-s*q.y,s*q.x+c*q.y);}
-transformed.y+=max(0.,sin(uTime*(5.+aSkin*3.)+ph))*.14*ex+sin(uTime*1.3+ph)*.01;`);
-            sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vPart;varying float vSkin;varying float vY;')
-                .replace('#include <color_fragment>', `#include <color_fragment>
-{ float k=fract(vSkin*31.7);
-  vec3 skin=mix(vec3(.62,.42,.31),vec3(.2,.12,.08),vSkin*vSkin);
-  vec3 trou=k<.4?vec3(.06,.07,.1):k<.7?vec3(.28,.24,.17):k<.85?vec3(.5,.48,.44):vec3(.12,.16,.26);
-  vec3 hair=k<.3?vec3(.05,.035,.025):k<.6?vec3(.22,.14,.07):k<.8?vec3(.5,.4,.25):vec3(.4,.4,.4);
-  vec3 hatc=mix(vec3(.9,.86,.8),diffuseColor.rgb*1.2,step(.5,fract(vSkin*3.1)));
-  if(vPart<.5)diffuseColor.rgb=trou;
-  else if(vPart<1.5){}
-  else if(vPart<2.5)diffuseColor.rgb=mix(skin,hair,smoothstep(1.57,1.6,vY));
-  else if(vPart<3.5)diffuseColor.rgb=mix(diffuseColor.rgb,skin,step(.5,fract(vSkin*5.3))*smoothstep(1.05,.95,vY));
-  else diffuseColor.rgb=hatc; }`);
+        const build = (spots, detail) => {
+            const geo = personGeometry(detail), n = spots.length;
+            const mesh = new THREE.InstancedMesh(geo, mat, n);
+            const skin = new Float32Array(n);
+            spots.forEach(([x, y, z, s, seated], i) => {
+                q.setFromAxisAngle(up, (r() - 0.5) * 0.6);
+                M.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(s, seated ? s * 0.82 : s, s));
+                mesh.setMatrixAt(i, M);
+                mesh.setColorAt(i, shirt[(r() * shirt.length) | 0].clone().multiplyScalar(0.75 + r() * 0.3));
+                skin[i] = r();
+            });
+            geo.setAttribute('aSkin', new THREE.InstancedBufferAttribute(skin, 1));
+            mesh.castShadow = false; mesh.receiveShadow = true;
+            this.root.add(mesh);
+            return mesh;
         };
-        mesh.castShadow = false; mesh.receiveShadow = true;
-        this.root.add(mesh);
-        this.crowdMesh = mesh;
+        this.crowdMesh = build(rail, 'hi');
+        this.standMesh = build(stand, 'lo');
     }
 
     // ------------------------------------------------------------------ hospitality marquees and parasols on the apron lawn

@@ -4,7 +4,7 @@ import { Intro, holdDemo } from '../lib3d/kit/intro.js';
 import { INTRO } from './intro.js';
 import { Engine } from './engine.js';
 import { Course } from './course.js';
-import { prepareHorses } from './horse.js';
+import { prepareHorsesAsync } from './horse.js';
 import { Fx } from './fx.js';
 import { Director } from './director.js';
 import { Hud } from './hud.js';
@@ -24,7 +24,7 @@ addEventListener('resize', fit);
 
 const course = new Course(engine);
 engine.bakeEnvironment();
-prepareHorses();
+await prepareHorsesAsync();
 const fx = new Fx(engine.scene, engine);
 fx.fountainOn = course.fountain;
 const director = new Director(engine.camera);
