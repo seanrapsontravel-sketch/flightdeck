@@ -6,6 +6,7 @@ const games = [
     ['killer', 'Killer', 'social', 2, 6],
     ['quackshot', 'Quackshot', 'social', 2, 6],
     ['shanghai', 'Shanghai', 'social', 2, 6],
+    ['zerohour', 'Zero Hour', 'social', 2, 6],
     ['warmup', 'Warm Up', 'classic', 1, 6],
     ['quick10', 'Quick 10', 'classic', 1, 6],
     ['x01', 'X01', 'classic', 1, 4],

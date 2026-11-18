@@ -1318,6 +1318,13 @@ function getPublicGameState() {
             };
         }
     }
+    // A game's private draw secret (Zero Hour's, see src/engines/zerohour.js) never leaves the server: the TV and
+    // the tablet would otherwise know every future draw. The engine reveals it in its own state once the match is over.
+    // ('spin' in the two match-over lists above is Zero Hour's final spin: a dart then belongs to nobody.)
+    if (pub.gameData && pub.gameData.secret !== undefined) {
+        const { secret: _secret, ...rest } = pub.gameData;
+        pub.gameData = rest;
+    }
     const avatarArrays = new WeakSet();
     return JSON.parse(JSON.stringify(pub, function (key, value) {
         if (key === 'avatars' && Array.isArray(value)) avatarArrays.add(value);
@@ -1453,7 +1460,7 @@ function throwDebugActionType(source) {
 function enqueueThrow(payload, source) {
     const phase = currentPhaseType();
     const resolved = resolveThrowSource(source);
-    if (phase === 'winner' || phase === 'draw' || phase === 'complete' || phase === 'pick_player' || phase === 'setup' || phase === 'pick_mode') {
+    if (phase === 'winner' || phase === 'draw' || phase === 'complete' || phase === 'pick_player' || phase === 'setup' || phase === 'pick_mode' || phase === 'spin') {
         logDebugEvent('THROW_IGNORED', `Match over or waiting (${phase}) — not queued`, {
             source: resolved,
             sector: payload && payload.sector
@@ -2073,7 +2080,7 @@ function drainThrowQueue() {
             }
 
             const phase = currentPhaseType();
-            if (phase === 'winner' || phase === 'draw' || phase === 'complete' || phase === 'pick_player' || phase === 'setup' || phase === 'pick_mode') {
+            if (phase === 'winner' || phase === 'draw' || phase === 'complete' || phase === 'pick_player' || phase === 'setup' || phase === 'pick_mode' || phase === 'spin') {
                 clearThrowQueue(`Match over or waiting (${phase})`);
                 break;
             }

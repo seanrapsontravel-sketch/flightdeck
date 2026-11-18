@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Zero Hour ("Salle Zéro"), docs/plans/ZERO-HOUR.md. Plays the real game (viewer.html) and ?demo=1. -->
+    <title>Zero Hour</title>
+    <script src="/games/shared-player-theme.js"></script>
+    <script src="/games/dart-callout.js"></script>
+    <script src="/games/dart-announcer.js"></script>
+    <script src="/games/event-videos.js"></script>
+    <script type="importmap">{ "imports": { "three": "/vendor/three-0.160.0/three.module.min.js" } }</script>
+    <style>
+        :root {
+            font-size: calc(100vh / 108);
+            --zh-gold: #e7b85a; --zh-gold2: #ffd98a; --zh-ivory: #efe6d2; --zh-ink: #120b08; --zh-lacq: rgba(14, 8, 6, 0.86);
+            --zh-red: #b01226;
+            --zh-serif: "Didot", "Bodoni 72", "Bodoni MT", "Playfair Display", "Times New Roman", serif;
+            --zh-sans: "Avenir Next", "Gill Sans", "Helvetica Neue", Arial, sans-serif;
+            --ki-font: var(--zh-sans);
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0606; color: var(--zh-ivory); font-family: var(--zh-sans); }
+        #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+        .zh-loader { position: fixed; inset: 0; display: grid; place-items: center; z-index: 50; background: radial-gradient(ellipse at 50% 60%, #2a1010, #0a0606 70%); transition: opacity 1s ease .2s; }
+        .zh-loader h1 { margin: 0; font: italic 700 11rem/0.9 var(--zh-serif); letter-spacing: 0.02em; color: var(--zh-gold); }
+        body.booted .zh-loader { opacity: 0; pointer-events: none; }
+        body.no-webgl .zh-loader h1::after { content: ' — 3D unavailable'; font-size: 3rem; }
+
+        .zh-hud { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+        .zh-round, .zh-thrower, .zh-card, .zh-title, .zh-placings, .zh-help {
+            background: var(--zh-lacq); border: 0.15rem solid rgba(231, 184, 90, 0.55); box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.55), inset 0 0 0 0.35rem rgba(0, 0, 0, 0.4), inset 0 0 0 0.45rem rgba(231, 184, 90, 0.18); border-radius: 0.4rem;
+        }
+
+        /* round + hot numbers, top left */
+        .zh-round { position: absolute; top: 2.4rem; left: 2.8rem; display: flex; align-items: stretch; gap: 1.8rem; padding: 1rem 1.8rem; }
+        .zh-round-l { display: grid; align-content: center; }
+        .zh-round-label, .zh-hot-label, .zh-label { font: 700 1.4rem var(--zh-sans); letter-spacing: 0.42em; color: var(--zh-gold); }
+        .zh-round-of { font: 700 4.4rem/1 var(--zh-serif); font-variant-numeric: lining-nums; }
+        .zh-round-tag { font: italic 600 1.9rem var(--zh-serif); color: var(--zh-gold2); min-height: 0; }
+        .zh-round-tag:empty { display: none; }
+        .zh-hot { display: grid; justify-items: center; align-content: center; padding: 0.4rem 1.6rem 0.6rem; border-left: 0.12rem solid rgba(231, 184, 90, 0.4); }
+        .zh-hot-nums { display: flex; gap: 1rem; margin-top: 0.4rem; }
+        .zh-hot-nums span { display: grid; place-items: center; width: 6.4rem; height: 6.4rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffe7a8, #d9a344 60%, #8a5a18); color: #1a0e04; font: 700 3.8rem/1 var(--zh-serif); box-shadow: 0 0 2.2rem rgba(255, 207, 106, 0.55), inset 0 -0.3rem 0.6rem rgba(0, 0, 0, 0.3); }
+        .zh-hot-nums.is-new span { animation: zhHot .7s cubic-bezier(.2, 1.6, .4, 1); }
+        @keyframes zhHot { from { transform: scale(0.3) rotate(-30deg); opacity: 0; } }
+
+        /* the thrower, top right */
+        .zh-thrower { position: absolute; top: 2.4rem; right: 2.8rem; width: 44rem; padding: 1rem 1.8rem 1.2rem; transform: translateY(-170%); transition: transform .5s cubic-bezier(.2, .9, .3, 1.2); border-left: 0.9rem solid var(--team, var(--zh-gold)); text-align: center; }
+        .zh-thrower.is-on { transform: none; }
+        .zh-tname { font: 700 4rem/1.05 var(--zh-serif); margin: 0.3rem 0 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .zh-tteam { font: 600 1.6rem var(--zh-sans); letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 0.3rem; }
+        .zh-pips { display: flex; gap: 0.8rem; justify-content: center; margin-top: 0.6rem; }
+        .zh-pip { flex: 1; min-width: 0; height: 4rem; display: grid; place-items: center; font: 700 2.2rem var(--zh-sans); white-space: nowrap; overflow: hidden; border: 0.15rem dashed rgba(231, 184, 90, 0.45); border-radius: 0.3rem; color: transparent; }
+        .zh-pip.is-thrown { color: var(--zh-ivory); border-style: solid; background: rgba(255, 255, 255, 0.06); animation: zhPip .35s cubic-bezier(.2, 1.6, .4, 1); }
+        .zh-pip.is-hot { background: linear-gradient(180deg, #ffe0a0, #d49b3a); color: #1a0e04; border-color: #ffd98a; box-shadow: 0 0 1.6rem rgba(255, 207, 106, 0.6); }
+        .zh-pip.is-zero { color: rgba(239, 230, 210, 0.5); }
+        @keyframes zhPip { from { transform: scale(1.5); filter: brightness(2); } }
+        .zh-visit { margin-top: 0.7rem; display: flex; justify-content: center; align-items: baseline; gap: 1rem; font: 700 1.4rem var(--zh-sans); letter-spacing: 0.4em; color: var(--zh-gold); }
+        .zh-visit b { font: 700 3.4rem var(--zh-serif); letter-spacing: 0; color: var(--zh-ivory); font-variant-numeric: lining-nums tabular-nums; }
+
+        /* the standings strip, bottom: ordered by chance */
+        .zh-strip { position: absolute; left: 2.8rem; right: 2.8rem; bottom: 2.2rem; display: flex; gap: 1.1rem; }
+        .zh-card { position: relative; flex: 1 1 0; min-width: 0; padding: 0.9rem 1.2rem 0.9rem 1.6rem; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-areas: "chip av name crown" "led led led led" "pts pts pts pts"; column-gap: 0.9rem; row-gap: 0.25rem; align-items: center; transition: transform .45s cubic-bezier(.2, .9, .3, 1.3), box-shadow .45s; }
+        .zh-card.is-active { transform: translateY(-1.1rem); box-shadow: 0 0 0 0.35rem var(--team), 0 1.4rem 3.2rem rgba(0, 0, 0, 0.6); }
+        .zh-card-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 0.6rem; background: var(--team); border-radius: 0.4rem 0 0 0.4rem; }
+        .zh-chip { grid-area: chip; width: 3.6rem; height: 3.6rem; border-radius: 50%; background: var(--team); border: 0.35rem dashed var(--zh-ivory); position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 0.2rem; padding: 0.5rem; }
+        .zh-chip i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--zh-ivory); }
+        .zh-avs { grid-area: av; display: flex; }
+        .zh-avs.is-duo .zh-av + .zh-av { margin-left: -1.4rem; }
+        .zh-av { width: 4rem; height: 4rem; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #2a1a12; color: var(--zh-ivory); font: 700 1.7rem var(--zh-sans); border: 0.2rem solid var(--zh-gold); }
+        .zh-av img { width: 100%; height: 100%; object-fit: cover; }
+        .zh-card-name { grid-area: name; font: 700 2.7rem/1.1 var(--zh-serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+        .zh-crown { grid-area: crown; font-size: 3rem; line-height: 1; color: var(--zh-gold2); text-shadow: 0 0 1.2rem rgba(255, 207, 106, 0.8); opacity: 0; transform: scale(0.4); transition: opacity .4s, transform .5s cubic-bezier(.2, 1.6, .4, 1); }
+        .zh-card.is-fav .zh-crown { opacity: 1; transform: none; }
+        .zh-card.is-fav { border-color: var(--zh-gold2); }
+        .zh-led { grid-area: led; font: 700 2.5rem var(--zh-sans); letter-spacing: 0.06em; color: var(--zh-ivory); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+        .zh-pts { grid-area: pts; font: 600 1.9rem var(--zh-sans); letter-spacing: 0.14em; color: var(--zh-gold); font-variant-numeric: tabular-nums; }
+        .zh-pts.bump { animation: zhBump .6s cubic-bezier(.2, 1.6, .4, 1); }
+        @keyframes zhBump { from { transform: scale(1.4); color: var(--zh-gold2); } }
+
+        /* title cards: centred high, clear of the table */
+        .zh-title { position: absolute; left: 50%; top: 24%; transform: translate(-50%, -50%) scale(0.85); opacity: 0; padding: 1.6rem 5rem 2rem; text-align: center; border-top: 0.5rem solid var(--team, var(--zh-gold)); max-width: 92vw; transition: opacity .2s; }
+        .zh-title.is-on { opacity: 1; animation: zhIn .45s cubic-bezier(.2, 1.3, .4, 1) forwards; }
+        .zh-title.is-out { opacity: 0; transition: opacity .35s; }
+        @keyframes zhIn { from { transform: translate(-50%, -50%) scale(0.7); } to { transform: translate(-50%, -50%) scale(1); } }
+        .zh-title-main { font: 700 8rem/0.95 var(--zh-serif); letter-spacing: 0.01em; color: var(--team, var(--zh-gold)); text-shadow: 0 0.3rem 1.4rem rgba(0, 0, 0, 0.6); white-space: nowrap; }
+        .zh-title-sub { margin-top: 0.9rem; font: 700 2.6rem var(--zh-sans); letter-spacing: 0.14em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .zh-title.k-hot .zh-title-main, .zh-title.k-bets .zh-title-main { color: var(--zh-gold2); }
+        .zh-title.k-winner .zh-title-main { font-size: 9.5rem; }
+        .zh-title.k-number .zh-title-main { font-size: 11rem; }
+
+        .zh-placings { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%) scale(0.9); width: 72rem; padding: 2.2rem 3rem; opacity: 0; transition: opacity .4s, transform .5s cubic-bezier(.2, 1.3, .4, 1); }
+        .zh-placings.is-on { opacity: 1; transform: translate(-50%, -50%); }
+        .zh-pl-head { font: 700 1.8rem var(--zh-sans); letter-spacing: 0.4em; color: var(--zh-gold); text-align: center; margin-bottom: 1.2rem; }
+        .zh-pl-row { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 14rem 22rem; align-items: center; gap: 1.2rem; padding: 0.7rem 1rem; border-top: 0.1rem solid rgba(231, 184, 90, 0.25); border-left: 0.6rem solid var(--team); }
+        .zh-pl-place { font: 700 3.4rem var(--zh-serif); color: var(--zh-gold2); }
+        .zh-pl-name { font: 700 3rem var(--zh-serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .zh-pl-chips { font: 700 2rem var(--zh-sans); letter-spacing: 0.06em; text-align: right; }
+        .zh-pl-move { font: 600 1.8rem var(--zh-sans); letter-spacing: 0.04em; text-align: right; opacity: 0.75; }
+        .zh-pl-move.is-up { color: #8fe3a5; opacity: 1; }
+        .zh-pl-move.is-down { color: #f09a9a; }
+
+        .zh-commit { position: absolute; right: 2.8rem; bottom: 0.5rem; font: 600 1rem var(--zh-sans); letter-spacing: 0.2em; opacity: 0.35; }
+        .zh-help { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 78rem; padding: 3rem 4rem; opacity: 0; transition: opacity .25s; z-index: 6; }
+        .zh-help.is-on { opacity: 1; }
+        .zh-help h2 { margin: 0 0 1.6rem; font: italic 700 5.4rem var(--zh-serif); color: var(--zh-gold); }
+        .zh-help-row { display: grid; grid-template-columns: 16rem 1fr; gap: 1.6rem; font: 500 2.4rem/1.3 var(--zh-sans); padding: 0.6rem 0; border-top: 0.1rem solid rgba(231, 184, 90, 0.3); }
+        .zh-help-row b { font: 700 2.6rem var(--zh-serif); color: var(--zh-gold2); }
+
+        .zh-video { position: fixed; inset: 0; z-index: 30; display: none; background: #000; }
+        .zh-video.is-on { display: block; }
+        .zh-video video { width: 100%; height: 100%; object-fit: cover; }
+        body.capture .zh-hud * { animation-duration: 0s !important; transition: none !important; }
+    </style>
+</head>
+<body>
+    <canvas id="stage"></canvas>
+    <div class="zh-loader"><h1>Zero Hour</h1></div>
+    <script type="module" src="/games/zerohour/main.js"></script>
+</body>
+</html>

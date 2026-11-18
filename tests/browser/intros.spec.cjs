@@ -9,7 +9,7 @@ test.afterAll(async()=>{if(host){await host.stop();fs.rmSync(host.dataDir,{recur
 
 // docs/plans/GAME-INTROS-3D.md: every 3D game opens on its "How to play" explainer (how it works, how to score, how
 // to win), holds the demo while it's up, and gets out of the way the moment the first dart lands.
-const GAMES=[['Quackshot','quackshot-3d.html','__quackshotDemo'],['Killer','killer.html','__killerDemo'],['Limbo','limbo.html','__limboDemo'],['Derby','derby.html','__derbyDemo'],['Demolition','demolition-3d.html','__demolitionDemo']];
+const GAMES=[['Quackshot','quackshot-3d.html','__quackshotDemo'],['Killer','killer.html','__killerDemo'],['Limbo','limbo.html','__limboDemo'],['Derby','derby.html','__derbyDemo'],['Demolition','demolition-3d.html','__demolitionDemo'],['Zero Hour','zerohour.html','__zerohourDemo']];
 for(const [title,file,demo] of GAMES){
     test(`${title}: the How to play explainer opens the game and leaves on the first dart`,async({page})=>{
         const errors=[];page.on('pageerror',e=>errors.push(e.message));

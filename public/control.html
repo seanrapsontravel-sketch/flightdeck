@@ -3253,6 +3253,10 @@
                     <h3>Shanghai</h3>
                     <p>Eight rounds, one number each. Singles, doubles, and triples on the target count — highest total wins.</p>
                 </div>
+                <div class="game-card" data-game="zerohour" data-category="social">
+                    <h3>Zero Hour</h3>
+                    <p>Five rounds in a midnight casino. Your score becomes roulette chips (two hot numbers a round score triple), then one spin decides it: most chips on the winning number wins.</p>
+                </div>
                 <div class="game-card" data-game="warmup" data-category="classic" hidden>
                     <h3>Warm Up</h3>
                     <p>Shake out the arm. Three darts, one total — then stack it and throw again. No score to chase, just heat.</p>
@@ -3538,6 +3542,15 @@
                                 <button type="button" class="debug-btn-preview" data-screen="next">Next</button>
                                 <button type="button" class="debug-btn-preview" data-screen="winner">Winner</button>
                                 <button type="button" class="debug-btn-preview" data-screen="draw">Draw</button>
+                            </div>
+                        </div>
+
+                        <div class="debug-game-group" data-game="zerohour">
+                            <p class="debug-game-label">Zero Hour</p>
+                            <div class="debug-preview-grid">
+                                <button type="button" class="debug-btn-preview" data-screen="next">Next</button>
+                                <button type="button" class="debug-btn-preview" data-screen="zh_spin">Spin</button>
+                                <button type="button" class="debug-btn-preview" data-screen="winner">Winner</button>
                             </div>
                         </div>
 
@@ -3868,7 +3881,8 @@
             shanghai: "url('/assets/shanghai/bg.jpg')",
             warmup: "url('/assets/warmup/bg.jpg')",
             quick10: "url('/assets/quick10/bg.jpg')",
-            aroundtheworld: "url('/assets/aroundtheworld/bg.jpg')"
+            aroundtheworld: "url('/assets/aroundtheworld/bg.jpg')",
+            zerohour: "url('/assets/zerohour/bg.jpg')"
         };
         /* Portrait shanghai art — fill screen width; height crops top/bottom as needed. */
         const gameBackgroundSizes = {
@@ -3893,7 +3907,8 @@
             shanghai: 'radial-gradient(circle at 50% 28%, #c45a28 0%, #8a3a18 40%, #4a2010 100%)',
             warmup: 'radial-gradient(circle at 50% 28%, #f0b35a 0%, #d4893a 35%, #8a4a18 70%, #2a1810 100%)',
             quick10: 'radial-gradient(circle at 50% 28%, #3d8ec8 0%, #1a5080 40%, #0a2038 78%, #061018 100%)',
-            aroundtheworld: 'radial-gradient(circle at 50% 28%, #1d7486 0%, #0f4a5a 42%, #07222c 100%)'
+            aroundtheworld: 'radial-gradient(circle at 50% 28%, #1d7486 0%, #0f4a5a 42%, #07222c 100%)',
+            zerohour: 'radial-gradient(circle at 50% 30%, #1d5a3e 0%, #3a1014 48%, #0a0606 100%)'
         };
         // A JPEG of the Viewer's PNG: the tablet re-decodes this after idle, and
         // the 2.3 MB PNG took ~22 ms of that on every first touch.

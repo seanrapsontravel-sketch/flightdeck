@@ -86,7 +86,7 @@ function resultFor(state, status = 'completed') {
     return { id: gd.matchKey, sessionId: state.matchSessionId, gameType: game, status, participants: ranked,
         eligible: !excluded, excluded, integrity: { simulated: !!(gd.usedDebug || state.matchSimulated), corrected: !!gd.usedCorrection },
         scoreDetails: { phase: gd.phase?.type, reason: phase.reason || null, totalScore: gd.totalScore ?? null },
-        rankingRule: ['derby', 'shanghai', 'quackshot'].includes(game) ? 'winner_then_score' : game === 'aroundtheworld' ? 'engine_standings' : 'winner_then_shared_remaining_places' };
+        rankingRule: ['derby', 'shanghai', 'quackshot'].includes(game) ? 'winner_then_score' : ['aroundtheworld', 'zerohour'].includes(game) ? 'engine_standings' : 'winner_then_shared_remaining_places' };
 }
 function upsertResult(state, status) {
     const result = resultFor(state, status);

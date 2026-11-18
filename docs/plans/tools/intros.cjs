@@ -6,7 +6,7 @@ const { startHost } = require(R + 'tests/helpers.cjs');
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const OUT = path.resolve(process.argv[2] || R + 'docs/plans/intros');
 const ONLY = process.argv[3] || '';
-const GAMES = [['quackshot', 'quackshot-3d.html', '__quackshot'], ['killer', 'killer.html', '__killer'], ['limbo', 'limbo.html', '__limbo'], ['derby', 'derby.html', '__derby', true], ['demolition', 'demolition-3d.html', '__demolition']];
+const GAMES = [['quackshot', 'quackshot-3d.html', '__quackshot'], ['killer', 'killer.html', '__killer'], ['limbo', 'limbo.html', '__limbo'], ['derby', 'derby.html', '__derby', true], ['demolition', 'demolition-3d.html', '__demolition'], ['zerohour', 'zerohour.html', '__zerohour', true]];
 (async () => {
     fs.mkdirSync(OUT, { recursive: true });
     const host = await startHost();

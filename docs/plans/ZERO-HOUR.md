@@ -1,40 +1,56 @@
 # Zero Hour — plan
 
-Written 2026-11-18 from Sean's brief "Build & Playtest ZERO HOUR — A Social Darts Roulette Game". **This file is the
-whole brief**: read it top to bottom before touching code. Its siblings are the 3D game plans (the series this game must
-sit in): [`SHANGHAI-3D.md`](SHANGHAI-3D.md) and its status, [`QUACKSHOT-3D.md`](QUACKSHOT-3D.md),
-[`KILLER-3D.md`](KILLER-3D.md) (the one that went wrong), [`GAME-INTROS-3D.md`](GAME-INTROS-3D.md).
+Rewritten 2026-11-18 from Sean's brief "ZERO HOUR — Build a Premium 3D Casino Darts Game". It was amended so the
+game sits in the 3D series. **This file is the whole brief**: read it top to bottom before touching code.
 
-Unlike the other 3D plans, this is a **new game**: the rules aren't settled, and settling them with evidence is half the
-job. So the plan has two tracks that meet in the middle:
-- **the game track:** rules, maths and simulation;
-- **the show track:** the 3D wheel, built on the same kit and to the same bar as Derby through Shanghai.
+It **supersedes** the first Zero Hour plan (versions A/B/C, Redline, a weighted wheel, the clock tower; in git at
+`f88ecb2`). The brief says to keep that plan's architectural research and drop its betting systems, so §2 (the
+codebase audit, which [`MILLION-POUND-OCHE.md`](MILLION-POUND-OCHE.md) also relies on) and the commit–reveal idea
+are kept, and everything else is new.
+
+Its siblings:
+- [`SHANGHAI-3D.md`](SHANGHAI-3D.md) and its status: the template, and the bar;
+- [`QUACKSHOT-3D.md`](QUACKSHOT-3D.md): the process that worked;
+- [`KILLER-3D.md`](KILLER-3D.md): the one that didn't, and **the art-deco world this game must not repeat** (§6);
+- [`GAME-INTROS-3D.md`](GAME-INTROS-3D.md): every 3D game opens on a How to play explainer.
+
+**Where it stands:** [`ZERO-HOUR-STATUS.md`](ZERO-HOUR-STATUS.md).
+
+This is a **new game**: there's no 2D page and no classic. It has two tracks:
+- **the game track:** the engine, the allocation, the tests, one balance check;
+- **the show track:** the table, chips and wheel, built on the same kit and to the same bar as Derby through Shanghai.
 
 ---
 
 ## 0. In one paragraph
 
-Players throw darts to earn chips; chips buy them a share of a roulette wheel; the wheel decides the winner. The
-brief's own rule (**skill earns probability, luck decides the outcome**) is the right one, but the brief's two versions
-don't yet deliver it: a first rough model (§3) says that with chips equal to darts score, **an expert beats a novice
-only ~69/31**, and "aim at treble 20" isn't even the best aim for most players. So the plan:
-1. builds one shared rules core with every mechanic as a parameter;
-2. puts Versions A and B (and a Version C that the maths suggests) through 100,000-game seeded simulations per
-   configuration;
-3. puts all of them on the real server and control tablet so they can be **played**;
-4. dresses the winner in a 3D world as good as the others: **"Midnight"**, a clock-tower observatory where the
-   wheel is a great brass clock face, the dartboard is its hub and the last spin strikes midnight (zero hour).
+Five rounds of three darts each. Each dart scores its normal points, ×3 on that round's two **hot numbers** (drawn
+from 10–20). A visit's score becomes chips, and the server scatters the chips in little stacks of two onto a standard
+0–36 roulette layout, where they stay. After the last visit, one spin of a standard single-zero wheel decides it: **whoever has the
+most chip value on the winning number wins**, and everyone else is placed by what they had there too.
 
-Then it answers honestly whether six friends would choose it over Killer, Derby or Demolition.
+The best player is the clear favourite (about 34–47% to win), third and fourth win now and then, and the order behind
+the winner really moves (§4). Every visit **steals** a number or two from someone, the favourite's crown changes hands
+about four times a six-player game, and five of six players are usually still alive when the ball is spun (§8.1).
+
+The world is **"Salle Zéro"** (working name): an original Belle Époque gaming salon on a Riviera cliff at midnight.
+It has gilt, a painted ceiling, a stained-glass laylight, emerald felt, walnut, burgundy velvet, and the harbour lights
+through tall open windows.
+- **The table is the scoreboard:** player-coloured chip stacks on the 37 cells of a standard layout.
+- **The wheel is the finale.**
+- **The signature is the sweep:** after every visit the thrower's chips slide across the felt to their numbers, the
+  way a croupier pushes stacks.
 
 ---
 
-## 1. What we carry from the 3D series (and must not relearn)
+## 1. Series lessons, and what changed from the brief
+
+### 1.1 What we carry from the 3D series (and must not relearn)
 
 Process (it worked on Quackshot and Shanghai):
-1. **Hero first, signed off before any world.** The hero here is **the wheel**, judged on clarity first (can you read
-   who's favourite from across a bar?) and beauty second.
-2. **Every element answers "what has this got to do with the game?"** (§8 table).
+1. **Hero first, signed off before any world.** The heroes here are **the chips and the table**, judged on
+   readability first (who leads each number, from across a bar) and beauty second. The wheel is the second hero.
+2. **Every element answers "what has this got to do with the game?"** (§6 table).
 3. **Gates hold**, unless Sean says to skip them (he did for Shanghai M2 → M3). The plan marks them; say so at the
    start of each run.
 4. **Review at 1:1, plus silhouettes and references.** Write the critique and fix what it finds *before* sending.
@@ -50,475 +66,603 @@ Engine and kit lessons (each one cost a day somewhere):
 - **Shaders:** precompile at boot (`renderer.compile`), or the first seconds after load jank.
 - **Instanced meshes:**
   - `frustumCulled = false` on any instanced set away from the origin;
-  - set `count` to only the instances in use (Shanghai's 448-lantern flock cost about 344k triangles when it didn't);
+  - set `count` to only the instances in use (Shanghai's 448-lantern flock cost about 344k triangles when it
+    didn't);
   - three r160 fragment shaders see `USE_COLOR`, not `USE_INSTANCING_COLOR`.
-- **Procedural grids:** keep grid counts integers (a fractional count drew past its vertex buffer at Shanghai's
-  far LOD).
+- **Procedural grids:** keep grid counts integers (a fractional count drew past its vertex buffer at Shanghai's far
+  LOD).
 - **LOD:** use a far version for anything big and distant; shadow casting only inside the key light's shadow box.
-- **Performance:** **measure fps in real Chrome on the M1** (Claude in Chrome) at ≥ 2.1 Mpx, in the master and in
-  the busiest moment, before calling look-dev done.
-- **Composition:** points made visible must never bury the scoreboard (Shanghai's lantern clouds hid the pagoda; a
-  wheel's chips must not hide the wheel).
-- **State rules:** every visit's dart 3 arrives with its takeover, so queue the dart first and land it. Guard late
-  cards with "the game hasn't ended". The nothing-lies check reads the DOM and `truth()`, and every counted thing
-  must also be on screen.
+- **Performance:** **measure fps in real Chrome on the M1** at ≥ 2.1 Mpx, in the master and in the busiest moment,
+  before calling look-dev done.
+- **Composition:** points made visible must never bury the scoreboard (Shanghai's lantern clouds hid the pagoda).
+  Here, stacks must never hide the cell numbers or each other.
+- **State rules:** every visit's dart 3 arrives with its takeover, so queue the dart first and land it, then sweep.
+  Guard late cards with "the game hasn't ended". The nothing-lies check reads the DOM and `truth()`, and every
+  counted thing must also be on screen.
 - **Kit and HUD:**
-  - use the kit (`lib3d/kit`: queue, loop, hud, intro, roster, darts, demo) and the engine presets;
+  - use the kit (`lib3d/kit`) and the engine presets;
   - the HUD's DOM is the readable truth;
   - names go in with `textContent`;
-  - use the page's own CSS prefix (the kit uses `--ki-*`);
+  - use the page's own CSS prefix;
   - every game opens on the How to play explainer.
 
+### 1.2 What changed from the brief, and why
+
+The brief's rules and vision stand. These are the changes needed to slot it into the series, plus one balance finding
+it doesn't anticipate.
+
+| # | Change | Why |
+|---|---|---|
+| 1 | **Series process with gates**: hero first (the chips and the table), then a greybox, then the wheel, then the room. ⛔ stops where marked (§13) | The brief's six milestones put the hero after the greybox and have no stops. Hero-first plus gates is what worked on Quackshot and Shanghai and what went wrong without them on Killer. Sean can say "run through" (he did for Shanghai M2→M3). |
+| 2 | **Belle Époque, not art deco** (§6) | Killer's "The Ledger" is already an art-deco club at 1 a.m.: black lacquer, gold rules, a deco serif, city bokeh. The brief's casino would be its twin. Monte Carlo's own idiom is Belle Époque (gilt, frescoes, chandeliers, onyx), which is warmer, golder and different. It's still an original, fictional salon: no real casino, no Bond. |
+| 3 | **The allocation is drawn in drops of 2 chips** (`DROP = 2` on the 37-pocket wheel; the brief's rule = 1), decided 2026-11-18 (§4) | With one random number per 5-point chip, the strongest of six wins 40–55% and the bottom two almost never. The drop size is the dial between "skill decides" and "anyone can win". A drop is a small stack of chips that lands on one number together. It keeps every chip and every point, and animates better (croupiers push stacks, not single chips). |
+| 3b | **Places 2–6 come from the winning number too** (§3) | The brief only names a winner, but the session standings rank every place. Placing by chips on the winning number is what lets the fifth-best player finish third. |
+| 4 | **"Value" is the comparison, and the HUD says it** | The brief's examples say "45 chips" but its rule says "highest chip value". Remainder chips (1–4 points) make count and value differ. The game compares **points on the number**, and the HUD prints points ("BEN 45"). |
+| 5 | **The live standing is "wins on N numbers"** | The spin is uniform over the 37 pockets, and an empty pocket re-spins, so a player's true chance is the share of **occupied** numbers they lead. It's exact, it's the brief's pre-spin "winning-number map" as a number, and it reads at a glance all game. |
+| 6 | **A standard single-zero (European) wheel and layout, 0–36** (§7.3; Sean, 2026-11-18: "this can be a standard 0-36 roulette wheel now") | The real wheel order and colours, and the real betting layout (0 at the head, twelve columns of three), so it looks like the real thing. Hot numbers are dartboard numbers (10–20), so they live on the board and the HUD, not the table. |
+| 7 | **No new server phase for the sweep** (§8) | The sweep runs inside the existing dart-3 → takeout → intermission changeover, so pace is unchanged. Hot numbers ride the existing `round_announce` phase. The only new phases are `spin` and `shootout`. |
+| 8 | **One server secret drives every draw** (allocation, hot numbers, spin), and it's stripped from the public state (§5) | `getPublicGameState` sends `gameData` whole to the TV and the tablet. A seed in `gameData` would let anyone predict the spin, and fresh randomness would let a correction re-roll it. |
+| 9 | **Sound after the look** (M6), synthesised on a shared core | It's the series rule (Limbo's sound is parked for the same reason), and no third-party audio means no licence questions. |
+| 10 | **No betting language beyond "chips"; chips are points** | It's a bar game with no money, deposits or prizes. "ALL BETS ARE DOWN" stays as theatre. |
+
 ---
 
-## 2. The codebase, as it stands (audit 2026-11-18)
+## 2. The codebase, as it stands (audit 2026-11-18, kept from the first plan and updated)
 
 **Adding a game** is one engine file, `src/engines/zerohour.js`, plus one row in `src/catalogue.js`
-(`['zerohour','Zero Hour','social',2,6]`). `registry.js` and `venueConfig.js` derive from the catalogue (the engines
-README is stale on this). The engine exports `init`, `initDoubles`, `handleThrow`, `handleAction`, `aimNumber` /
-`aimedThrow`, `scheduled{}`, `debugPreviewPhase`, `meta`, and optionally `meta.leaderboard` + `buildMatchRecords`;
-`shanghai.js` is the template. Its `scheduled` map must supply `zerohour_show_next_after_round` (the core's switch
-hard-codes that step for five other games) as well as `_advance_turn` / `_after_round_announce`.
+(`['zerohour', 'Zero Hour', 'social', 2, 6]`). `registry.js` and `venueConfig.js` derive from the catalogue (the
+engines README is stale on this). The engine exports `init`, `initDoubles`, `handleThrow`, `handleAction`,
+`aimNumber` / `aimedThrow`, `scheduled{}`, `debugPreviewPhase`, `meta`, and optionally `meta.leaderboard` +
+`buildMatchRecords`. `shanghai.js` is the template. Its `scheduled` map must supply `zerohour_show_next_after_round`
+(`core.js` `scheduleRoundThenNextPlayer` builds `${gameType}_show_next_after_round`) as well as `_advance_turn` /
+`_after_round_announce`.
 
-**Hard-coded lists a new game must be added to** (the surprises):
-- `server.js:2438`, the FORWARD_GAME_ACTION whitelist: every new action type (setup, Redline choice).
-- `server.js:1596-1615`, plus `:1456, :2076, :2114`: the phase names that end a visit or hold the throw queue. Every
-  new phase (`setup`, `redline`, `spin`) goes here.
-- `session.js:68,89`: score metric and ranking rule.
-- `control.html`: the game card, the debug group, the background map, the setup overlay.
-- `viewer.html`: the background map.
-- `tests/rules.test.cjs:16`: the per-game setup special case. A game that starts in `setup` breaks the
-  all-games loop without one.
+**Hard-coded lists a new game must be added to:**
+- `server.js` `visitEndedAfterThrow` (~:1616) plus the queue-hold checks (~:1456, :2076, :2114): add `spin` and
+  `shootout`. `playoff` is already listed (Demolition's); M1 checks whether `shootout` can simply *be* `playoff`.
+- `server.js` `getPublicGameState` (:1284): strip `gameData.secret` for Zero Hour (§5).
+- `server.js` FORWARD_GAME_ACTION whitelist (~:2436): no new actions are needed. There's no setup and there are no
+  choices; if the shootout needs one, add it here.
+- `session.js:68, :89`: add `zerohour` to the `winner_then_score` group, with the metric = total earned score.
+- `control.html`: the game card (~:3252 pattern), the debug group (~:3535), the background maps (~:3868–3893); the
+  Zero Hour card shows "Spinning…" and **must not print the spin result before the reveal**.
+- `viewer.html`: the background maps (~:682–695). There's no classic, so no `?zerohour=classic` route and no
+  `-3d.html` preview: the page is `games/zerohour.html` from day one.
+- `tests/rules.test.cjs`: the all-games loop must pass with the new engine (there's no `setup` phase, so no special
+  case).
 
-**Options:** SELECT_GAME passes no per-game options. **Copy X01's route**: init in a `setup` phase, then
-`CONFIRM_ZEROHOUR_SETUP {version, params…}` through `handleAction`, with an overlay copied from `#x01SetupOverlay`.
-(Around the World's variant selector is dead code: whitelisted and tested, but never reachable. Don't copy it.)
+**Options:** none are needed. SELECT_GAME passes no per-game options, and the brief has no choices, which is a relief.
+The drop size and pace (§4, §8) are engine constants plus a debug/env override, not a setup screen.
 
-**Mid-game decisions:** no game has one yet. Redline needs a new decision phase. Darts that arrive during it queue
-(`throwQueue`) and must be handled deliberately (§5).
+**Corrections:** Correct Score only ever edits **the last dart** (`captureThrowUndo` clones `gameData` before each
+dart; APPLY restores it and re-applies the corrected dart). So "correcting a visit" means correcting dart 3 after its
+sweep. Restoring the clone removes that visit's allocation; re-applying it must re-derive the *same* placements for
+the units that still exist (§5). All rules state lives in `gameData` as plain JSON, with no module-level state.
 
-**Randomness:** everything server-side is unseeded `Math.random()`, and nothing is seeded. Zero Hour needs its own
-injectable RNG (§5). Correct Score clones the whole `gameData`, so **all rules state, including the spin record,
-must live in `gameData` as plain JSON**: no module-level state, or a correction wouldn't roll it back.
+**Randomness:** everything server-side today is unseeded `Math.random()`. Zero Hour brings its own HMAC-derived
+draws (§5).
 
 **Bots:**
-- **Profiles:** `dummy`, `casual`, `intermediate` and `advanced` (`core.js:49-109`). They're wheel-scatter models
-  (hit, adjacent, two away, elsewhere), set per player via `isBot` / `botProfile`.
+- **Profiles:** `dummy`, `casual`, `intermediate` and `advanced` (`core.js` wheel-scatter models), set per player via
+  `isBot` / `botProfile`.
+- **Aim:** `aimNumber` aims at the treble of the **highest hot number**. A bull is never hot.
 - **Timing:** `BOT_DART_DELAY_MS = 1200`.
-- **Results:** any bot or mock dart marks the match `matchSimulated` (so it can't count as a clean result).
+- **Results:** any bot or mock dart marks the match `matchSimulated`.
 
-**Lifecycle:**
-- last-dart undo, Correct Score (BEGIN / CANCEL / APPLY restores `preGameData`), the throw queue;
-- restore after restart (`sessionStore`, "Engine Restored!");
-- timed sessions: the deadline lets the current visit finish, and ends at once during `setup`.
+**Lifecycle:** last-dart undo, Correct Score, the throw queue, restore after restart (`sessionStore`), and timed
+sessions (the deadline lets the current visit finish). **A deadline during `spin` lets the spin finish.**
 
-**TV:** the page's `stateInbox` gets `SYNC_STATE`, with the origin and parent checks in the kit. The 3D pages:
-- Derby, Limbo and Killer are swapped in;
-- Demolition, Quackshot and Shanghai still have `-3d.html` previews.
+**TV:** the page's `stateInbox` gets `SYNC_STATE` (with the kit's origin and parent checks); `serverNow` is in the
+public state for mid-spin joins. Engines are pure, so tests and the balance sim can drive `init` / `handleThrow` /
+`scheduled` with no server, as `rules.test.cjs` does.
 
-There's no Monte Carlo anywhere, but the engines are pure, so a simulator can drive `initGameData` /
-`handleGameAction` / `applyScheduledAction` with no server, as `rules.test.cjs` already does.
+**Kit to reuse:**
+- `lib3d/engine.js` (presets plus `withPreset()`; this game adds a `salon` interior preset);
+- `lib3d/director.js` (ShotDirector, eyeFit), `particles.js`, `reflection.js`, `beacons.js`;
+- `lib3d/kit/` (queue, loop, hud, intro, roster, darts, demo);
+- capture tools `docs/plans/tools/shanghai-cap.cjs` (a fake clock plus `?capture=1`) and `moments.cjs`.
 
 ---
 
-## 3. First-look evidence (a 30-line model, not the harness)
+## 3. The rules: the exact state contract
 
-A throw model with Gaussian scatter round the aim point (σ in mm per axis: novice 60, casual 38, club 24, expert 14).
-**These σ are guesses, not measured accuracy**, and the harness (§6) will make them configurable and documented.
+- **Players:** 2–6, or doubles teams. Doubles alternate throwers **by visit**
+  (`doublesAdvanceThrowerAfterVisit`); a team is one colour.
+- **The match:** five rounds. Each round, every player has one visit of three darts, in seat order.
+- **Hot numbers:** at the start of each round, **two** distinct numbers are drawn from the double figures **10–20**
+  (Sean, 2026-11-18: single figures aren't worth aiming for), the same for everyone that round. They're drawn when the round begins and announced in that round's `round_announce`. Round 1 gets one too.
+- **Dart score:** `face × multiplier`, ×3 more if the number is hot (S19 hot = 57, D19 = 114, T19 = 171; T20 not
+  hot = 60). Bull 25 / 50 is never hot. A miss is 0.
+- **Visit to chips:** a visit's points become `floor(points / 5)` five-point chips, plus one remainder chip worth
+  `points % 5` if it isn't 0. Nothing is rounded away: the sum of a player's chip values equals their total points,
+  always (tested).
+- **Allocation:** the chips are grouped into drops of `DROP = 2` chips (10 points; §4). The last drop may be
+  smaller. Each drop, and the remainder chip on its own, goes to one of 0–36 uniformly. Placements are permanent.
+  For example, a visit of 47 is 9 chips plus a 2-point remainder: four drops of 2, one of 1, and the remainder.
+- **The spin**, after the last visit of round 5:
+  - one uniform draw over the 37 pockets;
+  - an empty pocket (no player has value there) is announced ("NO CHIPS ON 7 · SPIN AGAIN") and the wheel re-spins,
+    and the chips never move;
+  - the winner is the player with the **highest value** on the pocket. A tie goes to the higher total earned score;
+    if that's tied too, the tied players have a one-dart shootout.
+- **Places 2–6:** ordered by value on the winning number too, then by total points. Anyone with nothing on it ranks
+  below everyone who has something there, ordered by total points among themselves. The session standings use this
+  order (`session.js`).
+- **Everyone on 0 points** (the all-zero match): a one-dart shootout before the roulette, as the brief says.
+- **The shootout:** one dart each, in seat order, scored at face value with no hot numbers. The highest wins;
+  players still tied throw again.
+- **Darts during `spin`** are discarded, with the usual log line. Darts during `shootout` from a non-shootout
+  player are ignored.
 
-Expected chips per dart (chips = darts score):
+**Phase list:**
+- `round_announce` (existing; it carries `{round, hot[]}`);
+- `intermission` (existing);
+- `playing`;
+- `spin`, carrying `{draws: [pocket…], startedAt, durations}`: every re-spin is drawn up front, so the TV knows the
+  whole sequence and the length of the window;
+- `shootout`;
+- `winner` (existing).
 
-| Aim | novice | casual | club | expert |
+**The public state the TV reads** (`gameData.zh`):
+```
+{ round, hot: [n,n,n], drop, commit,                    // commit = sha256(secret)
+  players: { [id]: { total, chips: [{v, pocket, round, k}] } },   // every chip, in arrival order
+  cells:   [{ pocket, byPlayer: {id: value}, leader, tie }] ×21,  // derived, but in state so the TV never computes rules
+  standings: [{ id, total, numbersLed, chancePct }],   // chancePct = numbersLed / occupied numbers (exact; ties by total)
+  favourite,                                           // the id with the highest chancePct
+  lastVisit: { playerId, round, points, hotDarts, drops: [{pocket, v}], steals: [{pocket, from, to}] },
+  spin?: { draws, startedAt, durations, pocket, margin, neighbours: [{pocket, leader}] ×2 },
+  placings?: [{ id, place, onPocket, pointsRank }],    // pointsRank lets the TV say "5th on points → 3rd"
+  shootout?, winner? }
+```
+The TV never computes a rule. `cells`, `standings`, `favourite`, `steals`, `margin` and `placings` all come from the
+engine, and the browser spec checks the TV against them.
+
+---
+
+## 4. Balance: the drop size and the placing rule (decided 2026-11-18: 2-chip drops on 0–36, places by the winning number)
+
+**What Sean wants (2026-11-18):** the best player should generally win. The third or fourth player *can* win, but
+not often. Upsets lower down, such as the fifth-best player finishing third, should happen sometimes.
+
+**How it was measured:** a full-game Monte Carlo (20,000 games a line, 2026-11-18).
+- **Throwers:** the `core.js` bot profiles, interpolated (dummy, casual … advanced), each aiming at the treble of
+  the highest hot number.
+- **Hot numbers:** three a round from 1–20, ×3 (the first draft; the build uses two from 10–20, below).
+- **The spin:** uniform, with a re-spin on an empty pocket.
+- **The script:** `scripts/zerohour-balance.cjs` will redo this on the real engine in M0.
+
+These profiles are the venue's bots, not measured human accuracy, so treat the numbers as the shape, not the decimals.
+
+**Key:** *Win %* and *Top 3 %* are listed by skill rank, best to worst. "Best last" is how often the best player
+finishes last.
+
+**Six players, a close group (advanced down to casual):**
+
+| Drop (chips that land together) | Win % | Top 3 % | Best last |
+|---|---|---|---|
+| 1 chip (the brief) | 40 26 17 10 5 3 | 80 70 57 44 30 19 | 3% |
+| 2 chips | 36 25 17 11 7 5 | 76 66 56 44 34 24 | 4% |
+| **3 chips** | **34 24 17 12 8 5** | **73 66 55 45 35 26** | 5% |
+| 5 chips | 32 23 17 13 9 6 | 72 64 54 45 36 28 | 4% |
+
+**Six players, a wide bar spread (advanced down to a total novice):**
+
+| Drop | Win % | Top 3 % |
+|---|---|---|
+| 1 chip | 55 25 11 5 2 1 | 90 76 58 37 24 14 |
+| 2 chips | 48 25 14 7 4 2 | 86 72 57 39 27 18 |
+| **3 chips** | **44 25 14 8 5 3** | **83 70 56 40 29 22** |
+| 5 chips | 42 24 15 9 6 4 | 81 68 55 40 32 24 |
+
+**Four players (advanced to casual):** 1 chip 54 28 13 5 · 2 chips 50 28 15 7 · **3 chips 47 28 16 9** · 5 chips
+45 28 17 10.
+
+**Placing rule for 2nd–6th** (six players, close group, 2-chip drops; Top 3 %):
+
+| Places after the winner by… | Top 3 % | Best last |
+|---|---|---|
+| Total points | 92 80 62 38 20 9 | 0% |
+| The winning number plus half its wheel neighbours | 85 74 58 42 27 15 | 2% |
+| **Value on the winning number, then total** | **76 66 56 44 34 24** | 4% |
+
+What it shows:
+- **Real scores are noisy** (hot trebles come and go), so the brief's rule is less one-sided than the fixed-total
+  model in the first draft of this section suggested. It still leaves the bottom of a wide group almost no chance.
+- **The drop size sets the winner spread.** Bigger drops make each number's leader more random.
+- **The placing rule sets the mixing lower down.** Placing by total points freezes the order behind the winner.
+  Placing by the winning number is what makes "fifth comes third" happen (about a third of the time in a close
+  group).
+- **Things that barely move it:** hot ×2 against ×3 (a point or two), and doubling round 5's chips (under a point).
+  Keep both for their drama, not for balance.
+- **Re-spins** stay rare at 1–3 chips (0–2% of games; 6% at four players with 5-chip drops).
+
+**The build (2026-11-18): a standard 37-pocket wheel, two hot numbers from 10–20, drops of 2 chips.** Sean moved to
+a standard 0–36 wheel and two double-figure hot numbers after the tables above. More pockets spread the same chips
+thinner (more luck per drop, more empty pockets), so the drop size came down from 3 to 2 to keep the same balance and
+keep re-spins rare. Measured on the **real engine** (`node scripts/zerohour-balance.cjs 1000`, bot profiles):
+
+| Line-up (strongest first) | Win % | Top 3 % | Steals a visit | Re-spin games |
 |---|---|---|---|---|
-| T20 | 10.1 | 12.5 | 15.2 | **22.9** |
-| T19 | **10.9** | **13.4** | **15.9** | 22.6 |
-| bull | **12.1** | 12.3 | 14.3 | 19.9 |
+| Six, close (adv · int · int · cas · cas · cas) | 42 19 17 7 8 7 | 81 60 59 34 34 32 | 2.35 | 0% |
+| Six, wide (… · dummy) | 44 20 20 6 8 3 | 81 61 66 35 38 20 | 2.18 | 0% |
+| Four (adv · int · cas · dummy) | 57 27 11 6 | 96 90 72 43 | 1.99 | 1% |
+| Four, all intermediate | 24 24 25 26 | 75 74 76 76 | 3.46 | 0% |
+| Two (adv · cas) | 80 20 | — | 1.28 | 3% |
 
-Version A win chances (15 darts each at T20, the wheel weighted by chips):
+The first draft's recommendation, kept for the record:
 
-| Line-up | Win % |
-|---|---|
-| expert v novice | 69 / 31 |
-| expert v casual | 65 / 35 |
-| club v 3 casual | 29 / 24 / 24 / 24 |
-| novice v 3 club | 18 / 27 / 27 / 27 |
-| expert v 5 novices | 31 v 14 each |
+**Recommendation (21 pockets): drops of 3 chips (15 points) and places by value on the winning number.**
 
-What that suggests (hypotheses for the harness to confirm or kill):
-- **H1, skill is too flat.** A proportional wheel on raw score compresses skill. The upset chance is generous; the
-  "substantial advantage" isn't there. Candidates: convex payouts (a double or treble worth more than face) or a
-  wheel weight of chips^k.
-- **H2, no real decisions.** On face value, the best aim barely differs between targets, so no aim is interesting.
-  Decisions must come from targets the game *changes* (hot numbers, nominations), not from the board.
-- **H3, one moment.** Version A has one moment, at the end, after about 12 minutes of adding up.
-- **H4, B's spin bonus risks a runaway.** It compounds a leader's lead unless it's capped or scaled.
-- **H5, Redline on "any hit on 20 in three darts" isn't a gamble for a decent player** (P(hit) is high), so it needs
-  a harder target and payouts by difficulty.
+| Table | Best | 3rd | 4th | 5th finishes top 3 |
+|---|---|---|---|---|
+| Six, close group | 34% | 17% | 12% | 35% |
+| Six, wide spread | 44% | 14% | 8% | 29% |
+| Four | 47% | 16% | 9% (4th = last) | — |
+
+The best player is always the clear favourite (2–3 times a fair share at six). Third and fourth win now and then.
+The order behind the winner is genuinely shuffled by the spin. If the best should win more often, use 2-chip drops
+(48% in a wide group); if less, 5-chip drops. `DROP` is one constant.
 
 ---
 
-## 4. The rules: one core, three versions, every mechanic a parameter
+## 5. Randomness, allocation, corrections and recovery
 
-One rules module, `src/engines/zerohour/rules.js`, is **pure** (no I/O, randomness passed in) and used three ways: by
-the engine (`src/engines/zerohour.js`), the simulator and the TV's `?demo=1`. One copy of the rules means no drift
-between what's simulated, what's played and what's previewed. Node 22.14 (this repo's runtime) can `require()` an
-ES module, so the shared file can be ESM; **verify this on day one** and fall back to CommonJS plus a small build
-copy if it doesn't hold.
-
-The shared shape: 2–6 players or doubles teams, five visits of three darts. Doubles alternate throwers **by visit**
-(`doublesAdvanceThrowerAfterVisit`), and a team owns one wedge of the wheel.
-
-**Chips from a dart** (params): `chips = face × payout[multiplier]`. The brief's default is `payout = {1:1, 2:1, 3:1}`
-(face value). The candidate convex payout is `{1:1, 2:2, 3:3}` *on top of face*, so D20 = 80 and T20 = 180. Bulls
-are 25 and 50, scalable; a miss is 0. A **floor** of `startChips` (e.g. 10) means nobody's wedge is ever empty
-(§5's zero rules).
-
-**Wheel weight** (params): `weight = chips^k` (k = 1 is the brief's proportional wheel; test 1, 1.5 and 2). The wheel
-shows **weights as arcs** and says so; chips are the score.
-
-### Version A — One final spin (the brief's)
-All 15 darts go into the bank; one weighted spin at the end. Optional knobs to test: convex payout, k, and Redline on
-visit 5.
-
-### Version B — Five spins (the brief's, as proposed)
-Each round:
-- **three hot numbers**, drawn by the server, worth `hotBonus ×` (param);
-- a spin weighted by **that round's** chips;
-- the spin's winner gets `spinReward` into their bank (param: a flat amount, a % of the pot, or a % of their round
-  chips);
-- the round chips reset; the banks don't.
-
-Round 5 has Redline, then the final spin on the banks.
-
-**Anti-runaway knobs to test:**
-- cap the reward;
-- scale it inversely to the bank leader's share;
-- forbid the bank leader from winning the round bonus twice running.
-
-### Version C candidates (because the evidence may say A and B aren't enough)
-- **C1 "Steal":** like B, but the round spin's winner **takes `stealPct` of the bank leader's chips** (or the
-  round's pot). It's a built-in comeback, every spin can reverse the order, and the final spin stays meaningful.
-- **C2 "The hour's number":** each round has **one** hour number (8, 9, 10, 11, 12, in the clock theme; or random),
-  worth ×3, so everyone knows the target at a glance (it reads in 2 seconds, Shanghai-style). The round spin pays a
-  **pot**. The final spin is on the banks.
-- The harness ranks A, B, C1 and C2 on the success criteria (§6.4). Only the winner, plus whichever is a close second,
-  get the full presentation.
-
-### Redline (visit 5)
-The thrower chooses **SAFE** or **REDLINE** before their visit. It's a decision phase on the tablet, with a button on
-the TV page as well.
-
-| Variant to test | Rule |
-|---|---|
-| R1 (brief) | Nominate a number; any hit in 3 darts doubles your bank, else lose half |
-| R2 | Nominate a number; must hit its **double or treble** |
-| R3 | Payout by difficulty: number 1×, double 2.5×, treble 3×, bull 4× (multipliers set so EV ≈ 0 for a *casual* player) |
-| R4 | **Stake a chosen part** of your bank (25 / 50 / 100%); payout by R3 |
-
-Measure EV and win-probability change by skill, and whether everyone rational makes the same choice (if they do, it
-isn't a decision). The recommendation is chosen from the evidence; every number stays configurable for playtests.
-
-### Zero and edge rules (defined, tested)
-- Everyone at 0: equal arcs.
-- A player at 0: they keep the floor wedge (`startChips`), so nobody's eliminated.
-- A spin while a player is mid-correction can't happen: spins only start after the scheduled step.
-- A dart during the `spin` or `redline` phase is **queued, not scored**, and released when the phase ends (it's the
-  existing throw-queue behaviour; the test proves it).
-- Undo of the dart that ended a round **before** its spin is drawn is allowed; after the draw, no (a correction
-  restores `preGameData`, spin record included, so a corrected round re-draws only if Sean wants that; default: the
-  spin stands, and only chips change).
+- **One secret per match:** `gameData.secret` (32 random bytes from `crypto`), made at `init`.
+  - It's **stripped from the public state** and never sent to the TV or the tablet.
+  - It's persisted with the session (so a restart restores it).
+  - `commit = sha256(secret)` is public from the first dart and shown in small type on the TV.
+  - The secret is revealed in the match record after the game, so anyone can recompute every draw.
+- **Every draw is `HMAC(secret, label)` → an unbiased integer** (rejection sampling, no modulo bias):
+  - hot numbers: `hot:<round>`;
+  - a drop's pocket: `drop:<playerId>:<round>:<k>`, where *k* is the drop's index in that visit;
+  - the remainder chip: `rem:<playerId>:<round>`;
+  - the spins: `spin:<n>`.
+- **What that buys:**
+  - **Corrections are deterministic.** Correcting dart 3 from T20 to S20 restores the pre-dart clone and re-applies
+    it: the first drops land exactly where they did, the surplus disappears, and no other visit is touched (they
+    were never re-drawn).
+  - **Restarts are safe.** The restored secret gives the same draws.
+  - **A correction can't re-roll the spin.** `spin:<n>` doesn't depend on chips or time. It's fixed (though unknown)
+    from the first dart, so nothing done during the match can steer it.
+  - **No manufactured drama:** the same deceleration curve for every spin, and no near-miss shaping.
+- **Mid-spin correction:** Correct Score is refused once `spin` has begun (`canCorrectScore` is false). Before that,
+  the last dart of the match can be corrected normally.
+- **The TV on reconnect or refresh:** it builds the whole table from `players[].chips` in one frame (stack position
+  is the chip's index among that player's chips in that cell), with no replay. In `spin`, it jumps to
+  `serverNow − startedAt` in the deterministic spin timeline.
+- **Repeated or delayed events:** chips are keyed `(player, round, k)`. The TV diffs the old and new chip sets:
+  - new chips sweep;
+  - vanished chips (a correction) lift and fade back to the bank;
+  - unchanged chips never move.
 
 ---
 
-## 5. Fairness, randomness and the spin record
+## 6. Creative direction — "Salle Zéro"
 
-- **The server decides; the TV shows.** The draw happens on the server when the `spin` phase begins:
-  `r = randomInt(0, totalWeight)` over **integer** weights (cumulative intervals, so it has no float bias), giving
-  the owner of `r`. The **landing angle** is also server-chosen, uniformly inside the winner's arc. The TV animates to
-  that angle from any start, at any frame rate. Animation can never change the result: the result is in the state
-  before the first frame.
-- **RNG:** an injectable source.
-  - Production: `crypto.randomInt`.
-  - Sims and tests: a seeded generator (xoshiro128** or mulberry32), with the seed in the record.
-  - Hot numbers and anything else random come from the same source.
-- **The spin record**, in `gameData` (plain JSON, so restore and correction work): `{ spinId, round, weights[], total,
-  r, winnerId, angle, commit, seed? }`.
-- **Verifiable (commit–reveal):**
-  - at the round's start the server publishes `commit = sha256(serverSeed)`;
-  - the spin uses an HMAC of `serverSeed` and the spin's inputs;
-  - after the game, `serverSeed` is revealed in the match record, so anyone can recompute every spin.
-  - It's cheap, it's honest, and the TV can show the commit hash in small type.
-- **No manufactured drama.** No re-rolls, near-miss bias, or slow-down tuned to the result's identity. The ball's
-  path is chosen from the landing angle only, and the same deceleration curve is used for every spin.
-- **The wheel is a continuous weighted wheel, not pockets:**
-  - player-coloured arcs exactly proportional to weight, with labelled percentages;
-  - fine tick marks every 1% for scale;
-  - a single ball or pointer on the bezel;
-  - no fixed equal pockets anywhere, so nothing implies equal pockets have unequal odds.
-- **Tested:**
-  - the same seed gives the same game;
-  - the observed winner frequencies over 10⁶ draws match the weights (χ² test, p > 0.01, in CI);
-  - the angle always lands inside the winner's arc;
-  - the TV's final ball angle equals the state's angle (nothing-lies check).
-
----
-
-## 6. The simulation harness
-
-`scripts/zerohour-sim.cjs` (seeded, worker threads, deterministic per seed) drives the **real** rules module.
-
-### 6.1 Throw models (documented and configurable; not presented as measured accuracy)
-- **Gaussian:**
-  - aim point plus bivariate normal scatter σ per skill (novice, casual, club, expert; §3's defaults);
-  - per-player bias optional;
-  - mapped through the regulation board (kit `RADII`, the same geometry the TV draws with).
-- **Profile:** the existing `core.js` throw profiles (wheel scatter), so results can be cross-checked against the
-  bots the venue already runs.
-
-### 6.2 Policies (how simulated players decide)
-- **Aim:**
-  - fixed T20;
-  - the best expected-value aim for their σ (precomputed per target by numerical integration);
-  - hot-number seeking (Version B);
-  - the hour's number (C2).
-- **Redline:**
-  - never;
-  - always;
-  - threshold (Redline when behind by more than X% of the leader);
-  - optimal (by simulated win-probability lookahead).
-
-### 6.3 Experiment matrix (≥ 100,000 complete games per configuration)
-For each version (A, B, C1, C2) and each table size (2, 3, 4 and 6 players, and 2v2 doubles):
-1. all equal (casual);
-2. one expert v casuals;
-3. one novice v experienced (club);
-4. mixed (novice, casual, club, expert…);
-5. extreme (expert v novices);
-6. Redline policies against each other;
-7. `hotBonus` sweep (×1.5, ×2, ×3);
-8. `spinReward` / `stealPct` sweep;
-9. payout and k sweep (A's skill-flatness fix).
-
-That's roughly 4 versions × 5 sizes × 9 mixes × a few sweeps, about 400 configurations × 10⁵ games. Each game is
-under 100 darts, so this is minutes on the M1 across workers. If any part runs long, say so and report the sample
-size used.
-
-### 6.4 What it reports (into `docs/plans/zero-hour-playtest.md`, tables with 95% intervals)
-- **Win rate by skill level.** How often the weakest wins; how often the strongest wins.
-- **The skill gradient:** the strongest's edge over a fair share, by table size. Targets, to calibrate rather than
-  decree: the strongest of 6 wins **25–35%** (fair share 16.7%); the weakest still **≥ 5–8%**.
-- **Runaway:** P(the bank leader after round 3 wins), and how often a leader with > 50% of the wheel loses.
-- **Lead changes per game** and **"alive at the last spin":** the share of players holding ≥ 10% of the final wheel.
-  This is the excitement proxy, labelled as a proxy.
-- **Redline:** EV and Δ win-probability by skill and situation; **does one choice dominate?**
-- **Hot numbers:** does chasing them pay more for better players (skill), or just add noise?
-- **Fairness checks:** observed v theoretical spin outcomes (χ²); the angle-in-arc property.
-- **Duration model:** darts × measured seconds a dart (from `data/matches.jsonl` / session logs where available,
-  else the bot pace), plus phase windows plus spin lengths. Answers whether **6 players in 15 minutes** is possible:
-  at about 30 s a visit, 6 × 5 visits alone is ~15 minutes before any spin, so it may need shorter windows, faster
-  spins, or 4 visits for 6 players. Report honestly.
-
-Statistical fairness isn't fun. The harness reports proxies; the playtest (§7) and the simulated customer read (§9)
-judge the fun, and the report keeps the two apart.
-
----
-
-## 7. Playing it: the playtest build (on the real server and tablet)
-
-- **Setup overlay** on the tablet (copied from X01's):
-  - Version A, B, C1 or C2;
-  - a parameter preset (default, "spicy", "fair") with an "advanced" drawer for the raw numbers.
-- **Players:** the existing lineup screen (2–6, doubles teams).
-- **Simulated players:** the existing bots (`isBot`), with a **per-player skill** added for Zero Hour: novice, casual,
-  club or expert, mapped to the Gaussian model through `aimedThrow`, so a bot also *chooses* its aim and Redline the
-  way the sim policy does.
-- **Darts in:**
-  - manual darts (the debug panel's number / multiplier / ring) and the real board;
-  - "auto-throw" (bots for everyone);
-  - **test speed** (×1, ×2, ×4: phase windows and animation divided down; a playtest option recorded in
-    `gameData.options`, so results are marked simulated).
-- **"Skip spin animation"** is a TV-side setting that jumps to the end frame. The result is already in the state, so
-  skipping can't change it.
-- **Redline on the tablet:** SAFE / REDLINE, the nominated target, and the stake (R4), with the odds shown before
-  confirming.
-- **TV:**
-  - the wheel (updating after every dart), the leaderboard, chips and % for everyone, the round and hot numbers;
-  - the spins, winner and replay;
-  - "Rematch" and restart through the existing RESET_MATCH / SELECT_GAME.
-- **`games/zerohour.html?demo=1`:** a simulated game on the TV page with no server (`players`, `seed`, `speed`,
-  `version`), driven by the **same rules module**.
-
----
-
-## 8. The show: "Midnight" — the clock tower observatory
-
-The seventh mood in the series:
+The eighth mood in the series:
 - Derby: golden afternoon;
 - Demolition: industrial night;
 - Limbo: lagoon dusk;
-- Killer: noir interior;
+- Killer: a cold, rainy art-deco tower;
 - Quackshot: fairground blue hour;
 - Shanghai: temple sunset to night;
-- **Zero Hour: the top of a clock tower just before midnight.**
+- Million Pound Oche: a prime-time studio;
+- **Zero Hour: a warm, gilded Belle Époque salon at midnight.**
 
-It's an original place: no casino brand, no real tower, no characters. Art deco brass, smoked glass, a great clock
-face, the city's lights far below. The game counts down five visits to midnight (the 8, 9, 10, 11 and 12 o'clock
-"hours"), and the last spin strikes zero hour.
+**Kept apart from Killer's "The Ledger" on purpose:**
+
+| | The Ledger (Killer) | Salle Zéro (Zero Hour) |
+|---|---|---|
+| Period | Art deco, 1930s | Belle Époque, 1890s |
+| Temperature | Cold: rain, blue city, black | Warm: candle-gold, emerald, burgundy |
+| Surfaces | Black lacquer, marble, chrome-brass rules | Gilt mouldings, walnut, velvet, onyx columns, painted ceiling |
+| Outside | A rain-streaked glass wall, city bokeh | Tall open windows, a terrace, harbour and yacht lights, the sea |
+| Type | Condensed deco serif | A high-contrast Didone with engraved small caps |
+
+**Originality:** a fictional salon. No real casino's name, building, logo or chip design; no "Monte Carlo" or
+"Monaco" in-game; no Bond (no 007, tuxedo silhouettes, gun barrel or theme-like music).
 
 | Element | What it is | Why it belongs |
 |---|---|---|
-| **The wheel** (hero) | The tower's great clock face, tilted toward the room: a brass bezel with fine 1% ticks; enamel arcs in each player's colour, exactly their share; each arc labelled with the name, chips and % | It's the scoreboard: ownership, the favourite, the underdog and every dart's effect, at a glance |
-| **The hub** | A dartboard at the centre of the face; darts stick in the exact bed | The truth of every dart (as in every game in the series) |
-| **Chips** | Brass-and-enamel chips that fly from the bed to the thrower's arc as it **grows** (the arc tweens to its new share) | "Each dart changes the odds", made visible. Counted chips never cover the face (the Shanghai lantern-cloud lesson) |
-| **The ball** | A polished steel ball on the bezel track | The spin |
-| **The hands** | The clock's hands show the round (8 → 12); at 12 they meet | Progress at a glance; the finale is literally midnight |
-| **Hot numbers / the hour's number** | Their wedges on the hub glow (Shanghai's gold-leaf live wedge) | What to aim for, from across a bar |
-| **Redline** | The nominated target burns red on the hub; a red line runs round the bezel to the player's arc | The stake, visible to the room |
-| **The room** | The clock tower's top: brass gearwork behind the face, tall windows, the city in bokeh; one player station each (a brass plaque, a lamp in their colour), no people | The place; quiet so the face reads |
-| **The spin theatre** | The lights dim; the face lights from behind; the arcs glow; the gears turn; the ball accelerates; the camera finds the ball; it slows and settles; the winning arc erupts (light, chips, the chime) | The brief's seven beats, in this world |
-| **The finale** | Midnight: the hands meet, the bells strike twelve, the last spin, fireworks over the city | The one moment everyone stays for |
+| **The table** (hero) | A walnut-railed table with emerald felt, the standard gold-ruled 0–36 layout, a brass border and inlays; each cell has six fixed stack spots, one per seat | The scoreboard: who's where, who leads each number, how the table filled |
+| **The chips** (hero) | Player-coloured clay-composite chips: real thickness, a bevelled edge, repeated edge spots, an inlaid centre medallion, gloss with micro-texture | Your score, made physical; every chip is a point you earned |
+| **The cashier tray** | Each seat's brass-and-walnut tray at the table's near rail | Where a visit's chips appear before the sweep; the bank total |
+| **The wheel** (finale hero) | A standard single-zero wheel at the head of the table: a walnut bowl, a brass turret and cross, an ivory ball | The one spin that decides it |
+| **The hot numbers** | Gold wedges and gold number discs on the dartboard (always on screen in the porthole), gold numbers in the HUD | What to aim for. Not on the table or the wheel: those run 0–36 and the chips land at random, so gold cells there would mislead |
+| **The porthole** | A gilt-ringed live view of the dartboard at the top of the screen (a second camera into a render target) | The master has to hold the whole 37-cell table, which leaves no room for the board; the porthole keeps every dart and the hot wedges in view without moving the camera |
+| **The dartboard** | Mounted in a gilt frame on the salon wall behind the table, in frame on the master; darts stick in the exact bed | The truth of every dart, as in every game in the series |
+| **The room** | Columns, a painted ceiling, the laylight, chandeliers (dimmable), velvet banquettes, the windows to the harbour; no people | Atmosphere, held quiet so the table reads |
+| **Escalation** | The chandeliers lower and dim round by round; round 5 is lamp-lit; the spin is a pool of light on the wheel | The night closing in toward zero hour |
 
-**Cameras** (`ShotDirector` subclass; the master by `eyeFit`):
-- `master`: the face square-on, every arc and label legible, the HUD clear;
-- `bed`: on the dart;
-- `arc`: on the arc growing;
-- `ball`: following the ball, then tight on where it settles;
-- `station`: intermission;
-- `winner`: the winning arc and the player's plaque.
+---
 
-**HUD** (deco; DOM truth):
-- per-player chips and %, favourite and underdog tags;
-- the round ("10 PM — 2 to midnight");
-- hot numbers;
-- the thrower card with each dart's chips;
-- the spin's result card: "BEN WINS ROUND 3 · +120", or the champion;
+## 7. The heroes
+
+### 7.1 The table and its layout
+- **The layout** is the standard single-zero layout: 0 in a tall cell at the wheel end, then twelve columns of three
+  (1-2-3 … 34-35-36), the 3-6-9 … 36 row farthest from the players. Filmed from the long side.
+- **A cell** holds 6 stack spots in a 3 × 2 grid, always in seat order, so seat 1 is top-left in every cell.
+  Ownership reads by position as well as colour.
+- **Scale:** 42 mm chips on a cell of 160 × 140 mm; the layout is 2.08 m with the zero, the wheel beside it.
+- **The leader light** is always on, subtly: each cell's brass rim takes the colour of its current leader (or
+  two-tone for a tie). It strengthens before the spin into the brief's "winning-number map". It comes from
+  `cells[].leader`, never computed on the TV.
+- **Readability (the first gate, ahead of beauty):** on a 1080p TV at 4 m, at 2, 4 and 6 players, round 1 and round
+  5, you can read every cell's number, every player's colour and who leads each cell.
+
+### 7.2 The chips
+- **Geometry and look:** a lathe profile with a bevel and an edge-spot band. The colours and patterns are in a
+  shader: player colour, edge spots, a centre medallion with a seat glyph, and micro-texture.
+- **Colours:** six player colours that read on emerald felt and are distinct from the hot gold and the wheel's
+  red/black/green. Start from the kit `roster` palette; replace any that fail on felt. **A second cue for colour
+  blindness:** the edge-spot count or pattern differs per seat.
+- **Remainder chips** (1–4 points) are smaller "fractional" chips (they're real value, and visibly so).
+- **Rendering:**
+  - one `InstancedMesh` for resting chips and one for chips in flight;
+  - per-instance colour and seat;
+  - `count` = only the chips in use;
+  - `frustumCulled = false`;
+  - two LODs (24 and 12 segments).
+- **Stacks:** a stack is drawn chip by chip up to 40 high. Beyond that, the stack becomes an aggregate cylinder
+  textured as stacked edges, at the exact height. The value is always printed in the DOM, so geometry never has to
+  be the number.
+- **The 1:1 review:** the edge spots, the bevel highlight, the contact shadow, and a 6-colour stack row on felt.
+
+### 7.3 The wheel
+- **37 equal pockets, the standard European wheel:** 0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8,
+  23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26 clockwise, the standard reds (1, 3, 5, 7,
+  9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36), a green 0. Recorded in `rules.mjs` as `WHEEL_ORDER` / `REDS`.
+- **Parts:** a walnut bowl, a brass cone and four-arm turret, pocket frets, diamond deflectors on the ball track,
+  and an ivory ball.
+- **Determinism:** the spin is a **timeline, not physics**:
+  - the rotor's angle *θ(t)* and the ball's *φ(t)* are closed-form decays over a fixed duration;
+  - the start phase is solved so the ball rests in the server's pocket at *t = end*;
+  - the ball's bounces are keyframes from a seeded noise (`spinId`), the same every playback and independent of fps;
+  - the browser spec checks that the final pocket under the ball equals `spin.draws[last]`.
+
+---
+
+## 8. What keeps it gripping, the moments and their timing
+
+### 8.1 Engagement design (no new rules: players still only throw darts)
+
+The brief's game has no choices, so the drama has to come from **showing, honestly, how every visit changes who can
+win**. A full-game sim at the recommended settings (§4; 10,000 games, 2026-11-18) says there's plenty to show:
+
+| Six players | |
+|---|---|
+| Numbers that change leader per visit ("steals") | **1.6 on average**: nearly every visit takes something from someone |
+| Changes of favourite (the player leading the most numbers) per game | **4.2** |
+| Players still leading at least one number at the spin | **5.1 of 6** (at least 3 alive in 100% of games) |
+| Spins where the runner-up on the winning number is within one drop (15 points) | **66%** |
+
+(At four players: 1.6 steals a visit, 2.8 favourite changes, 3.7 of 4 alive. Two players is a duel with 0.6 favourite
+changes a game; see §14.)
+
+The features that turn those numbers into moments:
+1. **Steals are the payoff of every visit.** When a drop takes a number:
+   - the cell's brass rim snaps from the old leader's colour to the new one;
+   - the old leader's stack dims for a beat;
+   - a card reads "SEAN TAKES 14 FROM BEN".
+   
+   Two or more steals in one visit get one card, "SEAN TAKES 3 NUMBERS". It comes from `lastVisit.steals`.
+2. **Live odds, always on:**
+   - the standings strip is ordered by chance, not points: "BEN · 6 NUMBERS · 29%";
+   - **the favourite** wears a small gold crown in the strip;
+   - when the crown changes hands it gets its own beat: "NEW FAVOURITE: ALI".
+   
+   Points are still shown, smaller. The chance is exact: §3's `chancePct`, because a re-spin skips empty numbers.
+3. **The hot dart is the second payoff.** "HOT ×3", the count-up and the gold flare already show it. A hot treble
+   also gets the chip close-up camera, at most once a round so it stays special.
+4. **Last Orders (round 5):** presentation only, the same rules.
+   - The salon dims to lamp light.
+   - Each player's visit opens on a card, "LAST VISIT · 4 NUMBERS · 19%".
+   - The final thrower of the match gets the visit camera and "LAST DARTS OF THE NIGHT".
+5. **The ball tells the story.** During the spin, every pocket's rim glows in its leader's colour, so as the ball
+   passes a pocket, the room sees whose number it's on. As it slows, each pass is a shout. This is honest: the rims
+   are `cells[].leader`, and the ball's path is the same deterministic curve every spin (§7.3).
+6. **The reveal says how close it was:**
+   - the winner, their value on the number and the runner-up's: "NUMBER 14 · BEN 45 · SEAN 40";
+   - "ONE DROP IN IT" when the margin is ≤ 15 (`spin.margin`);
+   - the near misses: "NEXT DOOR: 20 (ALI) · 5 (SEAN)", from `spin.neighbours`.
+7. **Upsets are celebrated, not hidden:**
+   - the final placings card shows each place with the points rank beside it ("ALI · 3RD · 5th on points ↑");
+   - a winner who wasn't top on points gets "FROM 4TH ON POINTS" on the winner card.
+8. **Announcer lines** go through the shared callout scripts the other 3D games use: "Hot nineteen!", "Rien ne va
+   plus", "Number fourteen". No film or television audio.
+9. **Tempo:**
+   - the sweep plays inside the changeover (below);
+   - a six-player game is about 15 minutes of darts plus a minute of finale;
+   - the celebration is ≤ 8 s;
+   - **rematch is one tap** (the existing RESET_MATCH) within 15 s of the reveal.
+
+The hot numbers stay purely random. Only 2% of rounds have a hot treble worth less than T20 (a real "chase it or go
+T20?" choice); that's rare enough to be a nice surprise rather than a system.
+
+### 8.2 The moments and their timing
+
+**The sweep fits inside the existing changeover.** Dart 3 lands, then takeout (the players pull their darts, usually
+3–8 s), then the 2.5 s intermission. The sweep is about 3 s from dart 3, so pace is unchanged. If the next player's
+first dart arrives mid-sweep, the TV fast-forwards to the end state (interruptible by design).
+
+| Moment | What happens | Time |
+|---|---|---|
+| Round start (`round_announce`) | The two new hot wedges light gold on the board and the porthole pulses; the card reads "ROUND 2 · HOT NUMBERS 19 · 14" | 3.0 s (the existing window) |
+| A dart | It sticks truthfully; "+60" floats from the bed; its chips clack into the thrower's tray | 0.8 s |
+| A hot dart | A gold flare on the wedge and its table cell; "HOT ×3"; the score counts 19 → 57; a distinctive chime; a bigger cascade into the tray | 1.4 s |
+| The sweep (after dart 3) | "SEAN SCORES 114 · +114 CHIPS"; the tray's drops lift and slide across the felt in a staggered fan; each settles with a tiny bounce and a click; the receiving cells glow; **steals** snap their rim to the thrower's colour with a "TAKES 14 FROM BEN" card; a changed favourite moves the crown | 2–4 s (it scales with the drops, in grouped batches; at 2 chips a drop a visit is ~3–30 landings) |
+| The pre-spin | The lights dim; "ALL BETS ARE DOWN"; a wide shot of the full table; the leader map strengthens; the HUD shows each player's "wins on N numbers" | 6 s |
+| The spin | The wheel hero shot; the rotor turns; every pocket rim glows its leader's colour; the ball launches the other way; the ball camera follows; the room quietens; each slow pass lights the pocket under it; the ball drops and rattles into the pocket | 12 s |
+| A re-spin (empty pocket) | "NO CHIPS ON 7 · SPIN AGAIN"; a short spin | 6 s |
+| The reveal | A cut to the table; the winning cell lights; its stacks are the focus; the card reads "NUMBER 14 · BEN 45 · SEAN 40 · BEN WINS ZERO HOUR", plus "ONE DROP IN IT" and "NEXT DOOR: 20 (ALI) · 5 (SEAN)" when true | 5 s |
+| The celebration | A gold sweep across the felt; the winning stacks glow; a few chips rise and spin; the room takes the winner's colour; "FROM 4TH ON POINTS" if it's an upset | ≤ 8 s |
+| The placings | The final card: every place with its points rank beside it (↑ / ↓ arrows for movers); Rematch | until rematch, then the existing winner flow |
+
+The server's `spin` window = pre-spin + spins + reveal, fixed by `spin.durations`, so every TV is in step.
+
+**Fast mode:**
+- `?fast=1` on the TV, for testing, halves the sweep and the spin;
+- `ZEROHOUR_PACE=fast` on the server (env, or the debug panel if it already has a pace control; check in M1) shortens
+  the server windows to match;
+- `?reduced=1`, or `prefers-reduced-motion`, swaps flights for fades and cuts for camera moves.
+
+**Cameras** (a ShotDirector subclass; the master by `eyeFit`, from the table's real bounds):
+- `master`: the table long side, the wheel at the left, the board in frame. The pitch is steep enough that tall
+  stacks don't hide short ones behind them;
+- `visit`: the thrower's tray and the near half of the table;
+- `chip`: a close-up, used sparingly (a hot visit, the first sweep of the game);
+- `wheel`, `ball`, `winner`.
+
+The camera rests on the master during ordinary play.
+
+**HUD** (Didone + small caps; the DOM is the readable truth; names via `textContent`; `--zh-*` CSS prefix):
+- the thrower card: name, colour, darts left, each dart's points (hot ones in gold);
+- the round "ROUND 3 OF 5";
+- the hot numbers;
+- the standings strip, ordered by chance: per player colour, **"N numbers · chance %"**, total points (smaller),
+  and the favourite's crown;
+- the sweep card, with steals;
+- the round-5 "LAST VISIT" cards;
+- the spin cards and the winner card;
 - the commit hash in small type;
-- help and How to play.
-
-**Readability from across a bar is the first gate**, ahead of beauty:
-- every player's arc, name and % must read on a 1080p TV at 4 m, at 2, 4 and 6 players;
-- a 2% arc must still be visible (a minimum drawn width, with the true % printed).
+- help and How to play (a 20-second explainer: the brief's own script, on `lib3d/kit/intro.js`).
 
 ---
 
-## 9. Simulated customer perspectives (labelled as simulated, not research)
+## 9. Sound (M6, after the look; on a shared synth core, no third-party audio)
 
-Personas: a darts beginner; a casual group at the bar; a competitive darts enthusiast; a bar operator (engagement,
-session turnover).
+The sounds:
+- the chips: appear, clack into a tray, slide on felt, land on a stack, settle;
+- the hot hit;
+- the rotor's rumble, the ball circling, the ball's rattle into a pocket;
+- the reveal, and a victory flourish;
+- a quiet room tone.
 
-For each persona, from the sim numbers and a scripted playthrough:
-- what they'd enjoy;
-- what would frustrate them;
-- where they'd get bored;
-- whether losing feels fair;
-- whether they have a reason to play again.
+Each is scheduled from the same timeline as the animation (so it's in sync by construction). There's a volume
+setting, and sound is off by default until M6 is signed off (Limbo's rule).
 
-**Compared against Killer, Derby and Demolition** on:
-- first-play excitement;
-- strategic depth;
-- spectator engagement;
-- dramatic moments;
-- perceived fairness;
-- replayability;
-- duration;
-- how fast the rules explain.
-
-Every claim is labelled as a hypothesis for real playtesting.
+The synth starts as `lib3d/audio.js`, promoted from `limbo/audio.js` if that fits; otherwise it's built here and
+Limbo adopts it later. Either way, Limbo is untouched.
 
 ---
 
-## 10. Deliverables and file plan
+## 10. Performance budget
+
+Target: **60 fps at ≥ 2.1 Mpx in real Chrome on the M1** (Claude in Chrome), in the master and in the busiest
+moment.
+
+**Build to:**
+- ≤ 1 shadow-casting key light, with the shadow box on the table;
+- the room in a far LOD;
+- every light made at load at intensity 0;
+- `renderer.compile` at boot;
+- the reflection probe baked once per round, not per frame.
+
+**The busiest state, tested explicitly:** 6 players, 5 rounds, high scores (inject about 3,000 chips via
+`__zerohourDemo.force('full')`), a sweep in flight and the leader map pulsing.
+
+---
+
+## 11. File plan (as built, 2026-11-18)
 
 ```
-src/engines/zerohour/rules.js      the pure rules core (versions, params, chips, weights, spins, Redline), ESM if require(esm) holds
-src/engines/zerohour/rng.js        injectable RNG: crypto in production, seeded for sims/tests; commit–reveal
-src/engines/zerohour.js            the engine (init/setup/handleThrow/handleAction/scheduled/meta/debugPreviewPhase)
+public/games/zerohour/rules.mjs    THE rules (pure ES module): scoring, hot, chips, drops, cells/leaders/standings, steals, spin draws,
+                                   placings, WHEEL_ORDER — required by the server (Node >= 22.14 loads ESM with require), the tests and the demo
+src/engines/zerohour.js            the engine: turn flow, HMAC draws from the match secret, commit, spin/shootout/finish, bots, previews
 src/catalogue.js                   + ['zerohour','Zero Hour','social',2,6]
-src/server.js                      whitelist CONFIRM_ZEROHOUR_SETUP / ZEROHOUR_REDLINE; phase lists + setup, redline, spin
-src/session.js                     ranking rule for Zero Hour
-public/control.html                game card, setup overlay (version + preset + advanced), Redline panel, debug group
-public/viewer.html                 background map
-public/games/zerohour.html         the 3D TV page (no classic: this is a new game)
-public/games/zerohour/             common, wheel (hero), hub (board), chips, ball, room, fx, director, hud, game, demo, intro, main
-scripts/zerohour-sim.cjs           the Monte Carlo harness (+ throw models, policies) → JSON + markdown tables
-tests/zerohour-rules.test.cjs      rules: every version, every dart form, bulls, misses, zero rules, doubles, Redline variants
-tests/zerohour-fairness.test.cjs   seeded reproducibility, χ² of draws v weights, angle-in-arc, commit–reveal round trip
-tests/zerohour-lifecycle.test.cjs  undo, Correct Score across a spin, reconnect / restore mid-spin, darts during spin/redline, session expiry
-tests/rules.test.cjs               + the setup special case for zerohour
-tests/browser/zerohour.spec.cjs    nothing lies: arcs = weights, chips, %, round, hot numbers, ball's final angle = state's, winner name in DOM
-docs/plans/tools/zerohour-*.cjs    look-dev / moments renders (from the shanghai-cap template)
-docs/plans/zero-hour-playtest.md   THE REPORT: sim results, the recommendation, limitations, balancing, how to run on the Mac
-docs/plans/ZERO-HOUR-STATUS.md     status + critiques, as the other games
+src/server.js                      'spin' in the two match-over phase lists (darts are ignored); gameData.secret stripped in getPublicGameState
+src/session.js                     zerohour → 'engine_standings' (the winner phase supplies every player's place)
+public/control.html                game card, debug group (Next / Spin / Winner), background maps
+public/viewer.html                 background map; public/assets/zerohour/bg.jpg (a render)
+public/games/zerohour.html         the 3D TV page (HUD styles)
+public/games/zerohour/             common, table, chips, wheel, board (+ porthole), room, director, hud, game, demo, intro, main
+scripts/zerohour-balance.cjs       balance on the real engine with the venue's bot profiles (§4)
+tests/zerohour-rules.test.cjs      rules, draws (χ²), the engine's turn flow, corrections, restart, spin, shootouts, doubles, the secret
+tests/zerohour-host.test.cjs       a whole game through the real server: the secret never sent, darts in the spin ignored, session places
+tests/browser/zerohour.spec.cjs    nothing lies through a whole game; the ball rests in the server's pocket; a refresh rebuilds the table
+tests/browser/intros.spec.cjs      + Zero Hour (How to play)
+docs/plans/tools/zerohour-look.cjs the review renders (→ docs/plans/zerohour-lookdev/m0/)
+docs/plans/ZERO-HOUR-STATUS.md     status + critiques
 ```
 
 ---
 
-## 11. Milestones (in order; ⛔ = a stop for Sean unless he says to run through)
+## 12. Quality gates (each review: 1920×1080 stills, 1:1 crops, a 4 m readability check, written critique fixed before sending)
 
-0. **The rules core and the harness.**
-   - Verify `require(esm)`. Write `rules.js` and `rng.js` with every mechanic as a parameter, the throw models and
-     the policies, and `zerohour-sim.cjs`.
-   - Run the full matrix (§6.3).
-   - Write the first report (`zero-hour-playtest.md`): the results, A v B v C1 v C2 against §10's success criteria,
-     the recommended version and parameters, and Redline's recommended variant.
-   - ⛔ **"Which version do we build out, with which numbers?"** The other versions stay playable.
-1. **Playable on the real server** (a greybox TV page):
-   - the engine, catalogue, setup overlay, Redline panel, bots with skill, and test speed;
-   - a greybox TV with a flat 2D-in-3D wheel with exact arcs, the hub board, chips and the spin playing the server's
-     angle;
-   - the How to play explainer;
-   - all versions selectable;
-   - the rules, fairness and lifecycle tests, and the browser spec;
-   - the full suite green;
-   - Sean plays it.
-2. **The wheel (hero) look-dev:**
-   - 2–3 face designs at 1:1 (studio and in the room), readability tests at 2, 4 and 6 players and at a 2% arc, and
-     the spin's seven beats as a strip.
-   - ⛔ **"Is this the wheel?"**
-3. **The room and the look:**
-   - the clock tower, the city, lights, the midnight finale, the HUD in deco;
-   - stills, crops, a 20 s clip;
-   - **fps in real Chrome on the M1.**
-   - ⛔ **"Is this the look?"**
-4. **Set pieces:** the chip flights and arc growth, hot-number glows, Redline (the red line, the gamble's resolution),
-   each round spin's theatre, the midnight finale, a tie or zero edge.
-5. **Polish and the second report:** re-run the sims with the final numbers; the simulated customer read; duration
-   measured from real bot-paced games on the server; CHANGELOG, the asset register; the final
-   `zero-hour-playtest.md` with "would six friends rematch?" answered as honestly as the evidence allows.
-6. **Sound** on the shared audio core (ticks, the ball, chimes, the midnight bells): after the look, as for the
-   others.
+The brief's ten questions are the checklist. In short:
+1. Credible in a premium venue?
+2. A distinct, original salon (not Killer's)?
+3. Do the chips convince at 1:1?
+4. Is the sweep satisfying, and is it under 4 s?
+5. Can you tell who owns and who leads each cell from 4 m?
+6. Is the table beautiful and readable when full?
+7. Is the wheel worth the finale?
+8. Is it exciting without wasting time?
+9. Is the winner obvious in one second?
+10. Would someone watching want to play?
 
 ---
 
-## 12. Risks to check early
+## 13. Milestones (in order; ⛔ = a stop for Sean unless he says to run through)
 
-- **The core may not be fun.** The maths can make it fair; only play can make it fun. Build M1 fast and play it before
-  polishing anything. If neither version is compelling, the report says so and Version C gets the build.
-- **Skill flatness (H1).** If no payout or k setting gives a meaningful skill edge without killing upsets, that's a
-  design problem to report, not to hide.
-- **Pace.** Six players, five visits and five spins may not fit 15 minutes. Measure; propose cuts (spin length, 4
-  visits at 6 players, simultaneous phase windows).
-- **The decision phase is new to the platform.** Darts thrown during Redline or a spin, a tablet disconnect
-  mid-decision, and a session expiring mid-spin all need tests on day one.
-- **ESM / CJS:** if `require(esm)` doesn't hold on the venue's Node, the shared rules module needs a build step.
-  Check `.nvmrc` and the deploy target.
-- **Readability of small arcs,** and labels on a tilted face. Prototype in M1, not M2.
-- **Fairness perception.** A ball that lands near an arc's edge will look rigged to someone. Draw the arc edges crisply,
-  print the %, and let the ball settle visibly inside.
+The brief's M1–M6 map onto the series' hero-first order like this:
+
+0. **The rules core, the balance check, and the chip-and-table hero.**
+   - `rules.js` and `draw.js` with their unit tests; `zerohour-balance.cjs` (§4) on the real rules.
+   - 2–3 chip designs and 2–3 table layouts at 1:1 and full frame: at 2, 4 and 6 players, round 1 and round 5.
+   - A first **sweep motion study** (a clip), because it's the signature and should be judged early.
+   - The balance script confirms §4 and §8.1 on the real engine; if it disagrees by more than a few points, the
+     report says so and proposes the `DROP` that hits Sean's target.
+   - ⛔ **"Is this the chip, the table and the sweep?"**
+1. **Greybox that plays the real game** (the brief's M1):
+   - the engine, the catalogue and every hard-coded list (§2);
+   - a greybox table, chips and stacks; a greybox wheel landing on the server's pocket; How to play;
+   - the rules, draws and lifecycle tests and the browser spec; the full suite green;
+   - shown to Sean.
+2. **The wheel hero** (the brief's M3): the modelled wheel at 1:1 from 3+ angles, the spin timeline, and a test of
+   100 seeded spins that all land on their server pocket at 30, 60 and 120 fps. ⛔ **"Is this the wheel?"**
+3. **The salon and the look** (the brief's M4): the room, the lighting and escalation, the HUD; stills, crops, a 20 s
+   clip; **fps in real Chrome**. ⛔ **"Is this the look?"**
+4. **Set pieces** (the brief's M2 animation + M5): the hot reveal, the hot dart, the full sweep, the pre-spin map,
+   the steal card, a favourite change, Last Orders, the spin theatre with the leader-coloured rims, the re-spin, the
+   reveal (with "one drop in it" and the neighbours), an upset celebration, the placings card, a tie, and the
+   shootout. Strips plus `moments.mp4`.
+5. **Game flow and stability:** 6 players with long names, doubles, corrections and reconnects in the browser, fast
+   and reduced modes, the busiest-state fps, CHANGELOG.
+6. **Sound,** then the final status and how to run it on the Mac (the brief's M6).
 
 ---
 
-## 13. Decisions proposed (Sean to confirm or change at the M0 gate)
+## 14. Risks to check early
 
-1. **One shared, pure rules module** for the server, the simulator and the TV demo.
-2. **A continuous weighted wheel** with labelled percentages, not pockets.
-3. **Server-side draws with integer weights and commit–reveal;** the TV animates to the server's angle.
-4. **A floor of chips** so nobody's wedge is ever empty.
-5. **Four candidates enter the harness (A, B, C1, C2)**, and the evidence picks one.
-6. **"Midnight", the clock tower observatory,** as the world; the five visits are the hours to midnight.
-7. **No real money, deposits, prizes or betting language** beyond "chips"; chips are points.
+- **Balance (§4):** the sims use the venue's bot profiles, not real players. If the real-engine sim or real play
+  disagrees, change `DROP` (one constant), not the rules.
+- **Two players is the weakest table:** a duel with few favourite changes. It's still a fair game; the How to play
+  and the attract copy should suggest 3–6.
+- **Steal-card fatigue:** at 1.6 steals a visit, a card every visit could get old. One combined card a visit, no
+  card for a steal of an empty-ish number (the old leader had ≤ 1 drop there), and the crown change outranks a steal.
+- **Occlusion:** tall near stacks hiding far cells at a shallow camera. Prototype the master pitch in M0, not M3.
+- **The tablet spoiling the spin:** the control card must hold the result until the reveal (a browser check).
+- **The secret leaking:** a test asserts `getPublicGameState().gameData.secret` is undefined, and that match records
+  carry it only after the game ends.
+- **Six chip colours on green felt:** a colour-blindness check (deuteranopia simulation) in M0.
+- **A sweep arriving mid-takeout or a fast next dart:** the interrupt path is tested in the browser spec.
 
-**Questions for Sean:**
-- Is a convex payout acceptable (it breaks "chips = darts score" but may fix skill flatness)?
-- Is 4 visits at 6 players acceptable if 5 can't fit 15 minutes?
-- Should a corrected dart re-draw an already-drawn spin? (The proposal: no.)
+---
+
+## 15. Decisions (made 2026-11-18; Sean: "update the plan with your recommendations of a fun, engaging game")
+
+1. **Balance:** drops of **2 chips** (10 points) on the 37-pocket wheel; **places 2–6 by value on the winning number**,
+   then by total points.
+   Sean's target: the best player generally wins, third and fourth sometimes, and upsets lower down (§4).
+2. **The world:** the Belle Époque **"Salle Zéro"** (a working title), kept clear of Killer's art deco.
+3. **The wheel:** a standard single-zero European wheel and layout, 0–36 (Sean, 2026-11-18). Two hot numbers a round,
+   from 10–20 only, shown on the board and the HUD.
+4. **The leader light:** subtle all game, strong before the spin; the pocket rims carry it during the spin.
+5. **The engagement layer (§8.1):** steals, live odds with the favourite's crown, Last Orders, the leader-lit spin,
+   "one drop in it", upset placings, one-tap rematch. It's all presentation of engine state; no new rules.
+6. **The gates:** held (the series rule). Sean can say "run through" at any point.
+
+Still open: none needed to start M0. The M0 gate judges the chips, the table and the sweep; the M2 and M3 gates judge
+the wheel and the look.
