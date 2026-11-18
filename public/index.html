@@ -108,6 +108,8 @@
             outline: none;
         }
         .choice:active { transform: translateY(0); }
+        .demo-link { display: block; margin-top: 28px; text-align: center; color: var(--gold); font-size: 15px; letter-spacing: .04em; text-decoration: none; opacity: .8; }
+        .demo-link:hover, .demo-link:focus-visible { opacity: 1; text-decoration: underline; }
         .choice svg { width: 64px; height: 64px; color: var(--gold); }
         .choice h2 {
             margin: 0;
@@ -174,6 +176,7 @@
                 <span class="path">/viewer</span>
             </a>
         </div>
+        <a class="demo-link" href="/demos.html">Demo arcade: watch a simulated game of any 3D game &rarr;</a>
     </main>
     <span class="version" id="appVersion"></span>
     <script>

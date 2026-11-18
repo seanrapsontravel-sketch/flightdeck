@@ -19,8 +19,8 @@ certs/
 **/.DS_Store
 .tmp-verify/
 
-# Browser verification artifacts
-output/playwright/
+# Browser verification artifacts, and other generated output (before/after comparison sheets etc.)
+output/
 test-results/
 playwright-report/
 

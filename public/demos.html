@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Arcade</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+/* Demo Arcade: one screen that lists every 3D game and launches its ?demo=1 simulated game
+   in a full-screen frame. Keyboard first (arrows / Enter / Esc), built for a 16:9 TV. */
+:root {
+    --u: min(calc(100vh / 108), calc(100vw / 192));
+    --bg: #0d0d10;
+    --panel: #17171c;
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #f0eedf;
+    --dim: rgba(240, 238, 223, 0.62);
+    --gold: #c5a059;
+    --gold-hi: #f5e3b5;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+    background: radial-gradient(ellipse at 50% -10%, #2a2318 0%, var(--bg) 55%) fixed, var(--bg);
+    color: var(--text);
+    font-family: 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden; user-select: none;
+    display: flex; flex-direction: column;
+    padding: calc(var(--u) * 5) calc(var(--u) * 7) calc(var(--u) * 4);
+}
+header { display: flex; align-items: baseline; gap: calc(var(--u) * 3); margin-bottom: calc(var(--u) * 3.5); }
+h1 {
+    margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: .04em;
+    font-size: calc(var(--u) * 6.4); line-height: 1; color: var(--gold-hi);
+    text-shadow: 0 calc(var(--u) * .5) 0 rgba(0, 0, 0, .5);
+}
+header .sub { font-size: calc(var(--u) * 2.4); letter-spacing: .32em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+header .count { margin-left: auto; font-size: calc(var(--u) * 2.2); color: var(--dim); letter-spacing: .1em; }
+
+.grid {
+    flex: 1; min-height: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);
+    gap: calc(var(--u) * 2.6);
+}
+.card {
+    --accent: var(--gold);
+    position: relative; display: flex; flex-direction: column; min-height: 0;
+    background: var(--panel); border-radius: calc(var(--u) * 1.4); overflow: hidden;
+    outline: calc(var(--u) * .35) solid transparent; outline-offset: calc(var(--u) * .4);
+    transition: transform .18s ease, outline-color .18s ease, box-shadow .18s ease, opacity .18s ease;
+    opacity: .78; cursor: pointer;
+}
+.card.is-sel {
+    opacity: 1; transform: scale(1.035); outline-color: var(--accent); z-index: 1;
+    box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 6) rgba(0, 0, 0, .6), 0 0 calc(var(--u) * 5) color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.thumb {
+    position: relative; flex: 1; min-height: 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 45%, #111) 0%, #111 100%);
+}
+.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb img.is-missing { display: none; }
+.num {
+    position: absolute; left: calc(var(--u) * 1.4); top: calc(var(--u) * 1.4);
+    width: calc(var(--u) * 4); height: calc(var(--u) * 4); border-radius: 50%;
+    display: grid; place-items: center; font-weight: 900; font-size: calc(var(--u) * 2.2);
+    background: rgba(0, 0, 0, .62); color: var(--accent); border: calc(var(--u) * .2) solid var(--accent);
+}
+.play {
+    position: absolute; right: calc(var(--u) * 1.4); bottom: calc(var(--u) * 1.4);
+    padding: calc(var(--u) * .7) calc(var(--u) * 1.6); border-radius: calc(var(--u) * 3);
+    background: var(--accent); color: #111; font-weight: 900; font-size: calc(var(--u) * 1.8);
+    letter-spacing: .12em; text-transform: uppercase;
+    opacity: 0; transform: translateY(calc(var(--u) * 1)); transition: opacity .18s, transform .18s;
+}
+.card.is-sel .play { opacity: 1; transform: none; }
+.info { padding: calc(var(--u) * 1.6) calc(var(--u) * 2) calc(var(--u) * 1.9); border-top: calc(var(--u) * .4) solid var(--accent); }
+.title { font-weight: 900; text-transform: uppercase; letter-spacing: .03em; font-size: calc(var(--u) * 3.1); line-height: 1.05; }
+.tag { font-size: calc(var(--u) * 1.75); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-top: calc(var(--u) * .5); }
+.desc { font-size: calc(var(--u) * 2.05); line-height: 1.3; color: var(--dim); margin-top: calc(var(--u) * .9); min-height: calc(var(--u) * 5.3); }
+.card.is-sel .desc { color: var(--text); }
+
+footer {
+    display: flex; align-items: center; gap: calc(var(--u) * 4); margin-top: calc(var(--u) * 3.5);
+    font-size: calc(var(--u) * 2.1); color: var(--dim);
+}
+footer .keys { display: flex; gap: calc(var(--u) * 3.2); flex-wrap: wrap; }
+footer .opts { margin-left: auto; display: flex; gap: calc(var(--u) * 2); }
+.opt { padding: calc(var(--u) * .7) calc(var(--u) * 1.6); border-radius: calc(var(--u) * .8); background: var(--panel); border: 1px solid var(--line); color: var(--text); }
+.opt b { color: var(--gold-hi); }
+kbd {
+    display: inline-block; min-width: calc(var(--u) * 3); padding: calc(var(--u) * .25) calc(var(--u) * .7);
+    margin-right: calc(var(--u) * .6); border-radius: calc(var(--u) * .5); text-align: center;
+    border: 1px solid rgba(255, 255, 255, .22); border-bottom-width: calc(var(--u) * .35);
+    font: 700 calc(var(--u) * 1.8) ui-monospace, Menlo, monospace; color: var(--text); background: #222;
+}
+
+/* the game */
+#stage { position: fixed; inset: 0; z-index: 50; background: #000; display: none; }
+#stage.is-on { display: block; }
+#stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity .4s ease; }
+#stage iframe.is-loaded { opacity: 1; }
+#loading {
+    position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: calc(var(--u) * 1.5);
+    font-weight: 900; text-transform: uppercase; letter-spacing: .1em; color: var(--gold-hi);
+}
+#loading .t { font-size: calc(var(--u) * 7); }
+#loading .s { font-size: calc(var(--u) * 2.2); letter-spacing: .32em; color: var(--gold); font-weight: 700; }
+#hint {
+    position: absolute; left: 50%; top: calc(var(--u) * 2); transform: translateX(-50%); z-index: 2;
+    padding: calc(var(--u) * 1) calc(var(--u) * 2.4); border-radius: calc(var(--u) * 3);
+    background: rgba(0, 0, 0, .72); color: var(--text); font-size: calc(var(--u) * 2);
+    transition: opacity .6s ease; pointer-events: none; white-space: nowrap;
+}
+#hint.is-hidden { opacity: 0; }
+</style>
+</head>
+<body>
+<header>
+    <h1>Demo Arcade</h1>
+    <span class="sub">Simulated games</span>
+    <span class="count" id="count"></span>
+</header>
+<main class="grid" id="grid"></main>
+<footer>
+    <div class="keys">
+        <span><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>choose</span>
+        <span><kbd>Enter</kbd>watch</span>
+        <span><kbd>1</kbd>–<kbd>8</kbd>jump</span>
+        <span><kbd>Esc</kbd>/<kbd>⌫</kbd>back to menu</span>
+        <span><kbd>F</kbd>full screen</span>
+    </div>
+    <div class="opts">
+        <span class="opt"><kbd>−</kbd><kbd>+</kbd>Players <b id="o-players">4</b></span>
+        <span class="opt"><kbd>I</kbd>How-to-play intro <b id="o-intro">on</b></span>
+    </div>
+</footer>
+
+<div id="stage">
+    <div id="loading"><div class="t" id="l-title"></div><div class="s">Loading simulated game…</div></div>
+    <div id="hint"></div>
+</div>
+
+<script>
+(() => {
+    // Each 3D game's TV page runs a looping bot game with ?demo=1 (players 2–6, seed optional).
+    const GAMES = [
+        { id: 'derby', file: 'derby.html', title: 'Derby', tag: 'Race to the post', accent: '#d9b25a',
+          desc: 'Your number is your horse. Hit it to gallop down the track — first past the post wins.' },
+        { id: 'demolition', file: 'demolition.html', title: 'Demolition', tag: 'Bring your tower down', accent: '#f2b705',
+          desc: 'Every tower starts at 180. Each dart swings the wrecking ball — finish on exactly zero.' },
+        { id: 'limbo', file: 'limbo.html', title: 'Limbo', tag: 'How low can you go?', accent: '#ff7a59',
+          desc: 'Stay at or under the burning bar as it drops. Go over and lose a torch — last torch burning wins.' },
+        { id: 'killer', file: 'killer.html', title: 'Killer', tag: 'Arm up — then hunt', accent: '#c9a24b',
+          desc: 'Earn your licence on your own number, then take out everyone else. Last one standing.' },
+        { id: 'quackshot', file: 'quackshot-3d.html', title: 'Quackshot', tag: 'Fairground duck shoot', accent: '#ffcf33',
+          desc: 'Where your dart lands is what scores: hit the ducks, dodge the fire and the water. Six rounds.' },
+        { id: 'shanghai', file: 'shanghai-3d.html', title: 'Shanghai', tag: 'The lantern pagoda', accent: '#e5484d',
+          desc: 'Eight rounds, one number each. Single, double and treble in one visit is an instant Shanghai.' },
+        { id: 'millionpound', file: 'millionpound.html', title: 'Million Pound Oche', tag: 'Knowledge · accuracy · nerve', accent: '#5b8cff',
+          desc: 'Answer quiz questions with a dart — the board’s quarters are A to D. Gamble on trebles to climb to £1M.' },
+        { id: 'zerohour', file: 'zerohour.html', title: 'Zero Hour', tag: 'Salle Zéro roulette', accent: '#2fbf71',
+          desc: 'Your points become roulette chips that land on numbers 0–36. After five rounds, one spin decides it.' },
+    ];
+    const COLS = 4;
+    const $ = (id) => document.getElementById(id);
+    const store = {
+        get(k, d) { try { const v = localStorage.getItem('demo-arcade:' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+        set(k, v) { try { localStorage.setItem('demo-arcade:' + k, JSON.stringify(v)); } catch {} },
+    };
+    let sel = Math.min(GAMES.length - 1, Math.max(0, store.get('sel', 0)));
+    let players = Math.min(6, Math.max(2, store.get('players', 4)));
+    let intro = store.get('intro', true);
+    let current = null; // index of the game on stage
+
+    // ---- menu
+    const grid = $('grid');
+    GAMES.forEach((g, i) => {
+        const el = document.createElement('div');
+        el.className = 'card'; el.style.setProperty('--accent', g.accent);
+        el.innerHTML = `<div class="thumb"><img alt="" src="/assets/demos/${g.id}.jpg"><span class="num">${i + 1}</span><span class="play">▶ Watch</span></div>
+            <div class="info"><div class="title"></div><div class="tag"></div><div class="desc"></div></div>`;
+        el.querySelector('.title').textContent = g.title;
+        el.querySelector('.tag').textContent = g.tag;
+        el.querySelector('.desc').textContent = g.desc;
+        el.querySelector('img').addEventListener('error', (e) => e.target.classList.add('is-missing'));
+        el.addEventListener('mouseenter', () => select(i));
+        el.addEventListener('click', () => { select(i); launch(i); });
+        grid.appendChild(el);
+    });
+    $('count').textContent = `${GAMES.length} games`;
+    const cards = [...grid.children];
+
+    function select(i) {
+        sel = (i + GAMES.length) % GAMES.length;
+        cards.forEach((c, j) => c.classList.toggle('is-sel', j === sel));
+        store.set('sel', sel);
+    }
+    function renderOpts() {
+        $('o-players').textContent = players;
+        $('o-intro').textContent = intro ? 'on' : 'off';
+        store.set('players', players); store.set('intro', intro);
+    }
+
+    // ---- stage
+    const stage = $('stage'), hint = $('hint');
+    let frame = null, hintTimer = null;
+    function showHint(text) {
+        hint.textContent = text; hint.classList.remove('is-hidden');
+        clearTimeout(hintTimer); hintTimer = setTimeout(() => hint.classList.add('is-hidden'), 3500);
+    }
+    function launch(i, { push = true } = {}) {
+        const g = GAMES[i];
+        closeFrame();
+        current = i; select(i);
+        $('l-title').textContent = g.title;
+        stage.classList.add('is-on');
+        frame = document.createElement('iframe');
+        frame.allow = 'autoplay; fullscreen';
+        // no intro param = the game's normal explainer (up until the first dart). ?intro=1 would pin it on screen for review.
+        const q = new URLSearchParams({ demo: '1', players: String(players), seed: String(Math.floor(Math.random() * 1e6)) });
+        if (!intro) q.set('intro', '0');
+        frame.src = `/games/${g.file}?${q}`;
+        frame.addEventListener('load', () => {
+            frame.classList.add('is-loaded');
+            // keys pressed while the game has focus still reach the menu (same origin)
+            try { frame.contentWindow.addEventListener('keydown', onKey, true); } catch {}
+            frame.focus();
+        });
+        stage.appendChild(frame);
+        showHint(`${g.title} · Esc or Backspace: menu · [ ]: previous / next game · R: restart`);
+        if (push) history.pushState({ game: g.id }, '', '#' + g.id);
+    }
+    function closeFrame() {
+        if (!frame) return;
+        try { frame.contentWindow.removeEventListener('keydown', onKey, true); } catch {}
+        frame.src = 'about:blank'; frame.remove(); frame = null; // frees the game's WebGL context
+    }
+    function backToMenu({ pop = false } = {}) {
+        if (current === null) return;
+        closeFrame(); current = null;
+        stage.classList.remove('is-on');
+        window.focus();
+        if (!pop && location.hash) history.back();
+    }
+    addEventListener('popstate', () => {
+        const i = GAMES.findIndex((g) => '#' + g.id === location.hash);
+        if (i >= 0) launch(i, { push: false }); else backToMenu({ pop: true });
+    });
+
+    function toggleFullscreen() {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else document.documentElement.requestFullscreen().catch(() => {});
+    }
+
+    // ---- keys
+    function onKey(e) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const k = e.key;
+        if (k === 'f' || k === 'F') { toggleFullscreen(); return e.preventDefault(); }
+        if (current !== null) {
+            if (k === 'Escape' || k === 'Backspace') { e.preventDefault(); e.stopPropagation(); backToMenu(); }
+            else if (k === '[' || k === ']') { e.preventDefault(); e.stopPropagation(); launch((current + (k === ']' ? 1 : -1) + GAMES.length) % GAMES.length, { push: false }); history.replaceState({}, '', '#' + GAMES[current].id); }
+            else if (k === 'r' || k === 'R') { e.preventDefault(); e.stopPropagation(); launch(current, { push: false }); }
+            return;
+        }
+        const n = GAMES.length, row = Math.floor(sel / COLS), col = sel % COLS, rows = Math.ceil(n / COLS);
+        switch (k) {
+            case 'ArrowRight': select(sel + 1); break;
+            case 'ArrowLeft': select(sel - 1); break;
+            case 'ArrowDown': select(Math.min(n - 1, ((row + 1) % rows) * COLS + col)); break;
+            case 'ArrowUp': select(Math.min(n - 1, ((row - 1 + rows) % rows) * COLS + col)); break;
+            case 'Enter': case ' ': launch(sel); break;
+            case '-': case '_': players = Math.max(2, players - 1); renderOpts(); break;
+            case '+': case '=': players = Math.min(6, players + 1); renderOpts(); break;
+            case 'i': case 'I': intro = !intro; renderOpts(); break;
+            default:
+                if (/^[1-9]$/.test(k) && Number(k) <= n) { select(Number(k) - 1); launch(sel); break; }
+                return;
+        }
+        e.preventDefault();
+    }
+    addEventListener('keydown', onKey);
+
+    select(sel); renderOpts();
+    // deep link: /demos.html#limbo opens straight into that game
+    const start = GAMES.findIndex((g) => '#' + g.id === location.hash);
+    if (start >= 0) { history.replaceState(null, '', location.pathname); launch(start); }
+})();
+</script>
+</body>
+</html>
