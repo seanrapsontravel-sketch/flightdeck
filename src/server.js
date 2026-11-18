@@ -124,7 +124,7 @@ function installLogTee() {
 
 installLogTee();
 
-const { initGameData, handleGameAction, applyScheduledAction, buildDebugPreviewPhase, initialMatchSchedule, leaderboardSpec, matchRecordsFor, buildQuick10MatchRecord, CRICKET_MAX_PLAYERS, X01_MAX_PLAYERS, normalizeThrowProfileId, DEFAULT_THROW_PROFILE, getActiveThrowerEntity, parseBotFromName } = require('./engines');
+const { initGameData, handleGameAction, applyScheduledAction, buildDebugPreviewPhase, initialMatchSchedule, queuesThrows, leaderboardSpec, matchRecordsFor, buildQuick10MatchRecord, CRICKET_MAX_PLAYERS, X01_MAX_PLAYERS, normalizeThrowProfileId, DEFAULT_THROW_PROFILE, getActiveThrowerEntity, parseBotFromName } = require('./engines');
 const { mapScoliaThrow, isMockMode } = require('./board/scolia/scoliaClient');
 const { createBoardDriver, loadBoardConfig, saveBoardConfig } = require('./board/createBoardDriver');
 const { appendMatch, topMatches } = require('./matchHistory');
@@ -1614,6 +1614,28 @@ function broadcastState() {
     });
 }
 
+/**
+ * Quiz games (Million Pound Oche) draw a game's questions at the start. The
+ * ids asked so far in this session ride along so a rematch doesn't repeat
+ * them; a new session (or none) starts a fresh list.
+ */
+const RECENT_QUESTIONS_MAX = 600;
+function recentQuestionsFor(gameType) {
+    const rq = gameState.recentQuestions;
+    const sessionId = gameState.session?.id || null;
+    if (!rq || rq.sessionId !== sessionId) return [];
+    return Array.isArray(rq.byGame?.[gameType]) ? rq.byGame[gameType] : [];
+}
+function rememberQuestions(gameType, gameData) {
+    if (!gameData || !Array.isArray(gameData.questionIds)) return;
+    const sessionId = gameState.session?.id || null;
+    if (!gameState.recentQuestions || gameState.recentQuestions.sessionId !== sessionId) {
+        gameState.recentQuestions = { sessionId, byGame: {} };
+    }
+    const list = (gameState.recentQuestions.byGame[gameType] || []).filter(id => !gameData.questionIds.includes(id));
+    gameState.recentQuestions.byGame[gameType] = [...list, ...gameData.questionIds].slice(-RECENT_QUESTIONS_MAX);
+}
+
 function visitThrowCount(gameData, gameType) {
     if (!gameData) return 0;
     if (gameType === 'demolition') return gameData.dartsThrownThisTurn || 0;
@@ -2124,6 +2146,15 @@ function acceptScoringThrow(payload, source, profileOverride = null) {
     }
     if (phase && phase !== 'playing') {
         touchVenueActivity();
+        if (!queuesThrows(gameState.selectedGame)) {
+            // never hold it: it would count for the next turn, not this one
+            if (eventId) acceptedThrows[eventId] = Date.now();
+            logDebugEvent('THROW_DROPPED', `Dropped — ${phase}: this game does not hold darts between turns`, {
+                source: resolved, sector: payload && payload.sector
+            });
+            broadcastState();
+            return;
+        }
         if (enqueueThrow(payload, resolved) && eventId) acceptedThrows[eventId] = Date.now();
         broadcastState();
         return;
@@ -2828,8 +2859,10 @@ wss.on('connection', (ws, req) => {
                     gameState.gameData = initGameData(request.gameType, matchPlayers, {
                         lineupMode: gameState.lineupMode,
                         doublesTeams: gameState.doublesTeams,
-                        playOrder: gameState.playOrder
+                        playOrder: gameState.playOrder,
+                        recentQuestions: recentQuestionsFor(request.gameType)
                     });
+                    rememberQuestions(request.gameType, gameState.gameData);
                     // Names this match's leaderboard entries (see maybePersistMatchResults).
                     if (gameState.gameData) gameState.gameData.matchKey = uuidv4();
                     gameState.matchParticipants = matchPlayers.map(p => ({ id: p.id, name: p.name }));

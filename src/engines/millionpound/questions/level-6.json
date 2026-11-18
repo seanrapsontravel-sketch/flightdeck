@@ -1,0 +1,574 @@
+[
+ {
+  "id": "geo-0033",
+  "level": 6,
+  "category": "geography",
+  "q": "What is the capital of Australia's Northern Territory?",
+  "correct": "Darwin",
+  "wrong": [
+   "Alice Springs",
+   "Katherine",
+   "Cairns"
+  ],
+  "source": "Northern Territory Government"
+ },
+ {
+  "id": "his-0030",
+  "level": 6,
+  "category": "history",
+  "q": "Who is regarded as the first Prime Minister of Great Britain?",
+  "correct": "Robert Walpole",
+  "wrong": [
+   "William Pitt the Elder",
+   "Lord North",
+   "Henry Pelham"
+  ],
+  "source": "gov.uk: Sir Robert Walpole"
+ },
+ {
+  "id": "mus-0023",
+  "level": 6,
+  "category": "music",
+  "q": "Who composed the ballet \"The Rite of Spring\"?",
+  "correct": "Igor Stravinsky",
+  "wrong": [
+   "Sergei Prokofiev",
+   "Tchaikovsky",
+   "Maurice Ravel"
+  ],
+  "source": "Britannica: The Rite of Spring"
+ },
+ {
+  "id": "spo-0021",
+  "level": 6,
+  "category": "sport",
+  "q": "Which team won the first Cricket World Cup, in 1975?",
+  "correct": "West Indies",
+  "wrong": [
+   "Australia",
+   "England",
+   "India"
+  ],
+  "source": "ICC: 1975 World Cup"
+ },
+ {
+  "id": "nat-0026",
+  "level": 6,
+  "category": "nature",
+  "q": "Which is the fastest bird in a hunting dive?",
+  "correct": "Peregrine falcon",
+  "wrong": [
+   "Golden eagle",
+   "Swift",
+   "Gyrfalcon"
+  ],
+  "source": "RSPB: Peregrine"
+ },
+ {
+  "id": "geo-0034",
+  "level": 6,
+  "category": "geography",
+  "q": "Which African country was formerly known as Abyssinia?",
+  "correct": "Ethiopia",
+  "wrong": [
+   "Eritrea",
+   "Somalia",
+   "Sudan"
+  ],
+  "source": "Britannica: Ethiopia"
+ },
+ {
+  "id": "dar-0012",
+  "level": 6,
+  "category": "darts",
+  "q": "Who won the first BDO World Darts Championship, in 1978?",
+  "correct": "Leighton Rees",
+  "wrong": [
+   "Eric Bristow",
+   "John Lowe",
+   "Jocky Wilson"
+  ],
+  "source": "BDO / Lakeside: 1978 champion"
+ },
+ {
+  "id": "ent-0023",
+  "level": 6,
+  "category": "film, tv & books",
+  "q": "Which director made the 1954 film \"Seven Samurai\"?",
+  "correct": "Akira Kurosawa",
+  "wrong": [
+   "Yasujirō Ozu",
+   "Hayao Miyazaki",
+   "Kenji Mizoguchi"
+  ],
+  "source": "BFI: Seven Samurai"
+ },
+ {
+  "id": "sci-0038",
+  "level": 6,
+  "category": "science",
+  "q": "What is the chemical symbol for tungsten?",
+  "correct": "W",
+  "wrong": [
+   "Tu",
+   "Tn",
+   "Ts"
+  ],
+  "source": "RSC Periodic Table: Tungsten"
+ },
+ {
+  "id": "geo-0035",
+  "level": 6,
+  "category": "geography",
+  "q": "The Okavango Delta is in which country?",
+  "correct": "Botswana",
+  "wrong": [
+   "Namibia",
+   "Zambia",
+   "Zimbabwe"
+  ],
+  "source": "UNESCO: Okavango Delta"
+ },
+ {
+  "id": "mus-0024",
+  "level": 6,
+  "category": "music",
+  "q": "What was Freddie Mercury's birth name?",
+  "correct": "Farrokh Bulsara",
+  "wrong": [
+   "Frederick Mercer",
+   "Farid Bahari",
+   "Freddie Bulmer"
+  ],
+  "source": "Britannica: Freddie Mercury"
+ },
+ {
+  "id": "sci-0039",
+  "level": 6,
+  "category": "science",
+  "q": "Who was the first woman to win a Nobel Prize?",
+  "correct": "Marie Curie",
+  "wrong": [
+   "Dorothy Hodgkin",
+   "Rosalind Franklin",
+   "Lise Meitner"
+  ],
+  "source": "Nobel Prize: Marie Curie (1903)"
+ },
+ {
+  "id": "spo-0022",
+  "level": 6,
+  "category": "sport",
+  "q": "Which jockey rode a record nine Epsom Derby winners?",
+  "correct": "Lester Piggott",
+  "wrong": [
+   "Frankie Dettori",
+   "Willie Carson",
+   "Pat Eddery"
+  ],
+  "source": "Britannica: Lester Piggott"
+ },
+ {
+  "id": "geo-0036",
+  "level": 6,
+  "category": "geography",
+  "q": "Which country has the longest coastline in the world?",
+  "correct": "Canada",
+  "wrong": [
+   "Norway",
+   "Russia",
+   "Indonesia"
+  ],
+  "source": "CIA World Factbook: Coastline"
+ },
+ {
+  "id": "his-0031",
+  "level": 6,
+  "category": "history",
+  "q": "Which wife of Henry VIII was executed in 1536?",
+  "correct": "Anne Boleyn",
+  "wrong": [
+   "Catherine Howard",
+   "Jane Seymour",
+   "Catherine of Aragon"
+  ],
+  "source": "Historic Royal Palaces: Anne Boleyn"
+ },
+ {
+  "id": "ent-0024",
+  "level": 6,
+  "category": "film, tv & books",
+  "q": "Which novel opens with the line \"Call me Ishmael\"?",
+  "correct": "Moby-Dick",
+  "wrong": [
+   "Treasure Island",
+   "Robinson Crusoe",
+   "The Old Man and the Sea"
+  ],
+  "source": "Britannica: Moby Dick"
+ },
+ {
+  "id": "sci-0040",
+  "level": 6,
+  "category": "science",
+  "q": "What is the most common blood group in the UK?",
+  "correct": "O positive",
+  "wrong": [
+   "A positive",
+   "B positive",
+   "AB negative"
+  ],
+  "source": "NHS Blood and Transplant: Blood types"
+ },
+ {
+  "id": "mus-0025",
+  "level": 6,
+  "category": "music",
+  "q": "Who composed \"The Lark Ascending\"?",
+  "correct": "Vaughan Williams",
+  "wrong": [
+   "Edward Elgar",
+   "Frederick Delius",
+   "Gustav Holst"
+  ],
+  "source": "Britannica: Ralph Vaughan Williams"
+ },
+ {
+  "id": "geo-0037",
+  "level": 6,
+  "category": "geography",
+  "q": "What is the capital of Mongolia?",
+  "correct": "Ulaanbaatar",
+  "wrong": [
+   "Astana",
+   "Bishkek",
+   "Tashkent"
+  ],
+  "source": "Britannica: Ulaanbaatar"
+ },
+ {
+  "id": "his-0032",
+  "level": 6,
+  "category": "history",
+  "q": "In which year was the Battle of Agincourt fought?",
+  "correct": "1415",
+  "wrong": [
+   "1346",
+   "1356",
+   "1453"
+  ],
+  "source": "Britannica: Battle of Agincourt"
+ },
+ {
+  "id": "sci-0041",
+  "level": 6,
+  "category": "science",
+  "q": "What is the change in pitch of a passing siren called?",
+  "correct": "The Doppler effect",
+  "wrong": [
+   "The Coriolis effect",
+   "The Compton effect",
+   "The Raman effect"
+  ],
+  "source": "Britannica: Doppler effect"
+ },
+ {
+  "id": "spo-0023",
+  "level": 6,
+  "category": "sport",
+  "q": "Which golfer won the Open Championship a record six times?",
+  "correct": "Harry Vardon",
+  "wrong": [
+   "Tom Watson",
+   "Jack Nicklaus",
+   "Tiger Woods"
+  ],
+  "source": "The R&A: Open champions"
+ },
+ {
+  "id": "ent-0025",
+  "level": 6,
+  "category": "film, tv & books",
+  "q": "Who composed the score for the film \"Lawrence of Arabia\"?",
+  "correct": "Maurice Jarre",
+  "wrong": [
+   "John Barry",
+   "Ennio Morricone",
+   "Max Steiner"
+  ],
+  "source": "BFI: Lawrence of Arabia (1962)"
+ },
+ {
+  "id": "geo-0038",
+  "level": 6,
+  "category": "geography",
+  "q": "Which is the longest river entirely in England?",
+  "correct": "Thames",
+  "wrong": [
+   "Severn",
+   "Trent",
+   "Great Ouse"
+  ],
+  "source": "Environment Agency: River Thames"
+ },
+ {
+  "id": "sci-0042",
+  "level": 6,
+  "category": "science",
+  "q": "What is the smallest bone in the human body?",
+  "correct": "Stapes",
+  "wrong": [
+   "Incus",
+   "Malleus",
+   "Hyoid"
+  ],
+  "source": "Britannica: Stapes"
+ },
+ {
+  "id": "his-0033",
+  "level": 6,
+  "category": "history",
+  "q": "Who succeeded Oliver Cromwell as Lord Protector?",
+  "correct": "Richard Cromwell",
+  "wrong": [
+   "Henry Cromwell",
+   "Thomas Fairfax",
+   "John Lambert"
+  ],
+  "source": "UK Parliament: Richard Cromwell"
+ },
+ {
+  "id": "mus-0026",
+  "level": 6,
+  "category": "music",
+  "q": "How many semitones are there in an octave?",
+  "correct": "12",
+  "wrong": [
+   "8",
+   "10",
+   "7"
+  ],
+  "source": "Britannica: Octave"
+ },
+ {
+  "id": "sci-0043",
+  "level": 6,
+  "category": "science",
+  "q": "What is the largest organ inside the human body?",
+  "correct": "The liver",
+  "wrong": [
+   "The brain",
+   "The heart",
+   "The stomach"
+  ],
+  "source": "Britannica: Liver"
+ },
+ {
+  "id": "sci-0044",
+  "level": 6,
+  "category": "science",
+  "q": "To the nearest degree, what is absolute zero in Celsius?",
+  "correct": "-273°C",
+  "wrong": [
+   "-100°C",
+   "-459°C",
+   "-373°C"
+  ],
+  "source": "BIPM: 0 K = −273.15 °C"
+ },
+ {
+  "id": "geo-0039",
+  "level": 6,
+  "category": "geography",
+  "q": "Which sea has no coastline?",
+  "correct": "Sargasso Sea",
+  "wrong": [
+   "Dead Sea",
+   "Caspian Sea",
+   "Coral Sea"
+  ],
+  "source": "NOAA: Sargasso Sea"
+ },
+ {
+  "id": "his-0034",
+  "level": 6,
+  "category": "history",
+  "q": "Which act of 1689 limited the powers of the English monarch?",
+  "correct": "Bill of Rights",
+  "wrong": [
+   "Magna Carta",
+   "Act of Settlement",
+   "Petition of Right"
+  ],
+  "source": "UK Parliament: Bill of Rights 1689"
+ },
+ {
+  "id": "foo-0019",
+  "level": 6,
+  "category": "food & drink",
+  "q": "What is the Japanese dish natto made from?",
+  "correct": "Soybeans",
+  "wrong": [
+   "Mung beans",
+   "Rice",
+   "Seaweed"
+  ],
+  "source": "Britannica: Natto"
+ },
+ {
+  "id": "spo-0024",
+  "level": 6,
+  "category": "sport",
+  "q": "Which country won football's Euro 2004 as huge outsiders?",
+  "correct": "Greece",
+  "wrong": [
+   "Portugal",
+   "Denmark",
+   "Czech Republic"
+  ],
+  "source": "UEFA: Euro 2004"
+ },
+ {
+  "id": "sci-0045",
+  "level": 6,
+  "category": "science",
+  "q": "Which planet has the shortest day?",
+  "correct": "Jupiter",
+  "wrong": [
+   "Saturn",
+   "Mercury",
+   "Earth"
+  ],
+  "source": "NASA: Jupiter (about 10 hours)"
+ },
+ {
+  "id": "geo-0040",
+  "level": 6,
+  "category": "geography",
+  "q": "Mount Kosciuszko is the highest mountain on which country's mainland?",
+  "correct": "Australia",
+  "wrong": [
+   "Poland",
+   "New Zealand",
+   "Argentina"
+  ],
+  "source": "Geoscience Australia"
+ },
+ {
+  "id": "nat-0027",
+  "level": 6,
+  "category": "nature",
+  "q": "What is a female ferret called?",
+  "correct": "A jill",
+  "wrong": [
+   "A jenny",
+   "A doe",
+   "A sow"
+  ],
+  "source": "Britannica: Ferret"
+ },
+ {
+  "id": "foo-0020",
+  "level": 6,
+  "category": "food & drink",
+  "q": "Mozzarella di bufala is made from the milk of which animal?",
+  "correct": "Water buffalo",
+  "wrong": [
+   "Cow",
+   "Goat",
+   "Sheep"
+  ],
+  "source": "EU PDO register: Mozzarella di Bufala Campana"
+ },
+ {
+  "id": "ent-0026",
+  "level": 6,
+  "category": "film, tv & books",
+  "q": "In which country was the film director Alfred Hitchcock born?",
+  "correct": "England",
+  "wrong": [
+   "United States",
+   "Ireland",
+   "Scotland"
+  ],
+  "source": "BFI: Alfred Hitchcock (born Leytonstone)"
+ },
+ {
+  "id": "gen-0015",
+  "level": 6,
+  "category": "general knowledge",
+  "q": "How many faces does an icosahedron have?",
+  "correct": "20",
+  "wrong": [
+   "12",
+   "16",
+   "24"
+  ],
+  "source": "Britannica: Icosahedron"
+ },
+ {
+  "id": "his-0035",
+  "level": 6,
+  "category": "history",
+  "q": "Which English king was nicknamed \"Lackland\"?",
+  "correct": "King John",
+  "wrong": [
+   "Henry III",
+   "Richard I",
+   "Edward I"
+  ],
+  "source": "Britannica: John, King of England"
+ },
+ {
+  "id": "geo-0041",
+  "level": 6,
+  "category": "geography",
+  "q": "Which country has the most ancient pyramids?",
+  "correct": "Sudan",
+  "wrong": [
+   "Egypt",
+   "Mexico",
+   "Peru"
+  ],
+  "source": "Britannica: Nubian pyramids (Meroë)"
+ },
+ {
+  "id": "sci-0046",
+  "level": 6,
+  "category": "science",
+  "q": "What is the most abundant metal in the Earth's crust?",
+  "correct": "Aluminium",
+  "wrong": [
+   "Iron",
+   "Copper",
+   "Magnesium"
+  ],
+  "source": "British Geological Survey: crustal abundance"
+ },
+ {
+  "id": "his-0036",
+  "level": 6,
+  "category": "history",
+  "q": "Who was the last Anglo-Saxon king of England, killed in 1066?",
+  "correct": "Harold II",
+  "wrong": [
+   "Æthelred II",
+   "Cnut",
+   "Edmund Ironside"
+  ],
+  "source": "English Heritage: Battle of Hastings"
+ },
+ {
+  "id": "spo-0025",
+  "level": 6,
+  "category": "sport",
+  "q": "In which year did Jesse Owens win four Olympic golds in Berlin?",
+  "correct": "1936",
+  "wrong": [
+   "1932",
+   "1940",
+   "1948"
+  ],
+  "source": "IOC: Berlin 1936"
+ }
+]

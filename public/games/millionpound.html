@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Million Pound Oche ("The Hot Oche"): a quiz answered with darts. Plan: docs/plans/MILLION-POUND-OCHE.md.
+         Plays the real game in the viewer, or ?demo=1. No dart-announcer.js here on purpose: calling the dart's number
+         would spoil the held breath before the reveal (decision §12.5). -->
+    <title>Million Pound Oche</title>
+    <script src="/games/shared-player-theme.js"></script>
+    <script src="/games/event-videos.js"></script>
+    <script type="importmap">{ "imports": { "three": "/vendor/three-0.160.0/three.module.min.js" } }</script>
+    <style>
+        :root { font-size: calc(100vh / 108); --mpo-navy: #0a1240; --mpo-navy2: #050a2a; --mpo-silver: #c9d2e6; --mpo-gold: #f2c14e; --mpo-amber: #ff9a1a; --mpo-green: #22d36b;
+            --mpo-cond: "Avenir Next Condensed", "DIN Condensed", "Roboto Condensed", "Arial Narrow", Arial, sans-serif; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #02030c; color: #fff; font-family: var(--mpo-cond); }
+        #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+        .mpo-loader { position: fixed; inset: 0; display: grid; place-items: center; z-index: 50; background: radial-gradient(ellipse at 50% 45%, #1a1f6a, #02030c 70%); transition: opacity 1s ease .2s; }
+        .mpo-loader h1 { margin: 0; font: 900 10rem/0.9 var(--mpo-cond); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mpo-gold); text-shadow: 0 0 4rem rgba(255, 190, 80, .45); text-align: center; }
+        .mpo-loader h1 small { display: block; font-size: 3rem; letter-spacing: .3em; color: var(--mpo-silver); margin-top: 1.6rem; }
+        body.booted .mpo-loader { opacity: 0; pointer-events: none; }
+        body.no-webgl .mpo-loader h1::after { content: ' — 3D unavailable'; font-size: 3rem; }
+
+        .mpo-hud { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+
+        /* the lozenge: an elongated hexagon, a silver edge round a navy fill */
+        .mpo-loz, .mpo-q, .mpo-ans, .mpo-title, .mpo-round, .mpo-chip, .mpo-tab, .mpo-status { --pt: 3.2rem; clip-path: polygon(var(--pt) 0, calc(100% - var(--pt)) 0, 100% 50%, calc(100% - var(--pt)) 100%, var(--pt) 100%, 0 50%);
+            background: linear-gradient(180deg, #eef3ff, #8d97b4 50%, #dfe6f7); }
+        .mpo-q-in, .mpo-ans-in { position: absolute; inset: 0.32rem; --pt2: calc(var(--pt) - 0.18rem); clip-path: polygon(var(--pt2) 0, calc(100% - var(--pt2)) 0, 100% 50%, calc(100% - var(--pt2)) 100%, var(--pt2) 100%, 0 50%);
+            background: radial-gradient(ellipse at 50% 0%, #2a3aa8 0%, #0d1660 45%, #040824 100%); }
+
+        /* ---- round pill (top left) */
+        .mpo-round { position: absolute; top: 2.4rem; left: 3rem; --pt: 2.2rem; display: flex; gap: 2.2rem; align-items: center; padding: 0.9rem 3.4rem; color: #fff; }
+        .mpo-round::before { content: ''; position: absolute; inset: 0.25rem; z-index: -1; clip-path: inherit; background: linear-gradient(180deg, #0f1a6e, #050a2a); }
+        .mpo-round { isolation: isolate; }
+        .mpo-round-label { font: 800 1.3rem var(--mpo-cond); letter-spacing: .32em; color: var(--mpo-silver); }
+        .mpo-round-of { font: 900 3.6rem/1 var(--mpo-cond); font-variant-numeric: tabular-nums; }
+        .mpo-round-level { font: 900 1.8rem var(--mpo-cond); letter-spacing: .14em; color: var(--mpo-gold); max-width: 12rem; line-height: 1.05; }
+        .mpo-round.is-final .mpo-round-level { animation: mpoPulse .9s ease-in-out infinite alternate; }
+        @keyframes mpoPulse { to { filter: brightness(1.5); transform: scale(1.05); } }
+
+        /* ---- player chips (top) */
+        .mpo-chips { position: absolute; top: 2.4rem; left: 40rem; right: 33rem; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 1rem; }
+        .mpo-chip { position: relative; isolation: isolate; --pt: 1.8rem; height: 7.6rem; display: flex; align-items: center; gap: 1rem; padding: 0 2.2rem; transition: transform .35s cubic-bezier(.2, .9, .3, 1.3), filter .35s; filter: brightness(.82); }
+        .mpo-chip::before { content: ''; position: absolute; inset: 0.25rem; z-index: -1; clip-path: inherit; background: linear-gradient(180deg, #101a66, #050a2a); }
+        .mpo-chip::after { content: ''; position: absolute; left: 2.2rem; right: 2.2rem; bottom: 0.5rem; height: 0.45rem; background: var(--team); border-radius: 1rem; }
+        .mpo-chip.is-active { transform: translateY(0.6rem); filter: brightness(1.15) drop-shadow(0 0 1.2rem rgba(255, 200, 90, .45)); }
+        .mpo-chip.is-active::before { background: linear-gradient(180deg, #24339a, #0a1250); }
+        .mpo-chip.is-winner { filter: brightness(1.3) drop-shadow(0 0 1.6rem rgba(255, 200, 90, .8)); }
+        .mpo-chip-avs { display: flex; flex: none; }
+        .mpo-chip-avs.is-duo .mpo-av + .mpo-av { margin-left: -1.4rem; }
+        .mpo-av { width: 4.2rem; height: 4.2rem; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--team); font: 900 1.8rem var(--mpo-cond); border: 0.25rem solid #dfe6f7; }
+        .mpo-av img { width: 100%; height: 100%; object-fit: cover; }
+        .mpo-chip-t { min-width: 0; }
+        .mpo-chip-name { font: 800 2.1rem/1.05 var(--mpo-cond); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mpo-chip-prize { font: 900 3rem/1 var(--mpo-cond); color: var(--mpo-gold); font-variant-numeric: tabular-nums; }
+        .mpo-chip-prize.bump { animation: mpoBump .7s cubic-bezier(.2, 1.6, .4, 1); }
+        @keyframes mpoBump { from { transform: scale(1.5); color: #fff; text-shadow: 0 0 1.5rem var(--mpo-gold); } }
+
+        /* ---- the money tree (right) */
+        .mpo-tree { position: absolute; right: 3rem; top: 12rem; width: 27rem; padding: 1rem 1.2rem 1.2rem; border-radius: 1rem; background: linear-gradient(180deg, rgba(8, 14, 60, .88), rgba(3, 6, 26, .92)); border: 0.2rem solid rgba(201, 210, 230, .55); box-shadow: 0 0 3rem rgba(40, 70, 255, .25); }
+        .mpo-tree-name { font: 900 2.2rem var(--mpo-cond); text-transform: uppercase; text-align: center; letter-spacing: .06em; padding-bottom: 0.6rem; margin-bottom: 0.4rem; border-bottom: 0.15rem solid rgba(201, 210, 230, .35); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mpo-tree-row { display: grid; grid-template-columns: 3rem 1.6rem 1fr; align-items: center; gap: 0.6rem; height: 3.12rem; padding: 0 1rem; border-radius: 1.6rem; font: 800 2.5rem var(--mpo-cond); color: #ffb54a; font-variant-numeric: tabular-nums; }
+        .mpo-tree-n { font-size: 1.9rem; color: var(--mpo-silver); text-align: right; }
+        .mpo-tree-dot { width: 1rem; height: 1rem; transform: rotate(45deg); background: transparent; justify-self: center; }
+        .mpo-tree-row.is-won .mpo-tree-dot { background: var(--mpo-gold); box-shadow: 0 0 .6rem var(--mpo-gold); }
+        .mpo-tree-row.is-million { color: #fff; }
+        .mpo-tree-row.is-million .mpo-tree-v { color: var(--mpo-gold); text-shadow: 0 0 1rem rgba(255, 200, 80, .6); }
+        .mpo-tree-row.is-current { background: linear-gradient(180deg, #ffbe4a, #e07a00); color: #1a0d00; }
+        .mpo-tree-row.is-current .mpo-tree-n { color: #3a2000; }
+        .mpo-tree-row.is-target { box-shadow: inset 0 0 0 0.25rem var(--mpo-gold); animation: mpoTarget 1s ease-in-out infinite alternate; }
+        @keyframes mpoTarget { to { box-shadow: inset 0 0 0 0.25rem #fff, 0 0 1.4rem rgba(255, 200, 80, .7); } }
+
+        /* ---- the lower third */
+        .mpo-low { position: absolute; left: 3rem; right: 3rem; bottom: 2.2rem; display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "tab stakes status" "q q q" "a a a"; column-gap: 1.6rem; row-gap: 1.2rem; transform: translateY(120%); transition: transform .55s cubic-bezier(.2, .9, .25, 1); }
+        .mpo-low.is-on { transform: none; }
+        .mpo-tab { grid-area: tab; justify-self: start; position: relative; isolation: isolate; --pt: 2rem; display: flex; align-items: center; gap: 1.6rem; padding: 0.7rem 3rem; min-width: 44rem; }
+        .mpo-tab::before { content: ''; position: absolute; inset: 0.25rem; z-index: -1; clip-path: inherit; background: linear-gradient(90deg, var(--team) 0 1.2rem, #101a66 1.2rem, #050a2a); }
+        .mpo-tab-name { font: 900 3.4rem/1 var(--mpo-cond); text-transform: uppercase; white-space: nowrap; max-width: 26rem; overflow: hidden; text-overflow: ellipsis; padding-left: 0.6rem; }
+        .mpo-tab-for { font: 800 2rem var(--mpo-cond); letter-spacing: .08em; color: var(--mpo-silver); white-space: nowrap; }
+        .mpo-tab-for b { color: var(--mpo-gold); font-size: 2.6rem; }
+        .mpo-pips { display: flex; gap: 0.9rem; margin-left: auto; }
+        .mpo-pip { width: 2.2rem; height: 2.2rem; transform: rotate(45deg); border: 0.25rem solid #7d88aa; }
+        .mpo-pip.is-now { border-color: #fff; animation: mpoPulse .8s ease-in-out infinite alternate; }
+        .mpo-pip.is-right { background: var(--mpo-green); border-color: var(--mpo-green); }
+        .mpo-pip.is-pass { background: var(--mpo-gold); border-color: var(--mpo-gold); }
+        .mpo-pip.is-wrong { background: #39405a; border-color: #5a6280; }
+        .mpo-pip.is-treble { background: var(--mpo-gold); border-color: var(--mpo-green); box-shadow: 0 0 .8rem var(--mpo-gold); }
+        .mpo-pip.is-drop { background: #ff3b4a; border-color: #ff3b4a; }
+        .mpo-status { grid-area: status; justify-self: end; align-self: center; position: relative; isolation: isolate; --pt: 1.8rem; padding: 0.6rem 3.2rem; font: 900 2.8rem var(--mpo-cond); letter-spacing: .16em; opacity: 0; transform: scale(.85); transition: opacity .2s, transform .3s cubic-bezier(.2, 1.5, .4, 1); }
+        .mpo-status::before { content: ''; position: absolute; inset: 0.25rem; z-index: -1; clip-path: inherit; background: #0a1250; }
+        .mpo-status.is-on { opacity: 1; transform: none; }
+        .mpo-status.k-locked::before { background: linear-gradient(180deg, #ffbe4a, #e07a00); } .mpo-status.k-locked { color: #1a0d00; }
+        .mpo-status.k-right::before { background: linear-gradient(180deg, #4dfb95, #0a9d47); }
+        .mpo-status.k-pass::before { background: linear-gradient(180deg, #ffe08a, #d79a1a); } .mpo-status.k-pass { color: #241400; }
+        .mpo-status.k-wrong::before, .mpo-status.k-none::before { background: linear-gradient(180deg, #2a3170, #0c1140); }
+
+        .mpo-q { grid-area: q; position: relative; height: 13rem; --pt: 4.2rem; }
+        .mpo-q-text { position: absolute; inset: 0.4rem 6rem; display: grid; place-items: center; text-align: center; font: 700 4.8rem/1.12 var(--mpo-cond); overflow: hidden; text-wrap: balance; }
+        .mpo-q.is-in { animation: mpoQIn .5s cubic-bezier(.2, .9, .3, 1.1); }
+        @keyframes mpoQIn { from { transform: scaleX(.6); opacity: 0; } }
+        /* the genre's connecting lines behind each answer row */
+        .mpo-answers { grid-area: a; position: relative; display: grid; grid-template-columns: 1fr 1fr; column-gap: 4rem; row-gap: 1.2rem; }
+        .mpo-answers::before, .mpo-answers::after { content: ''; position: absolute; left: -3rem; right: -3rem; height: 0.25rem; background: linear-gradient(90deg, transparent, #c9d2e6 6%, #c9d2e6 94%, transparent); z-index: -1; }
+        .mpo-answers::before { top: 4.1rem; } .mpo-answers::after { bottom: 4.1rem; }
+        .mpo-ans { position: relative; height: 8.2rem; --pt: 3.2rem; opacity: 0; transform: translateY(1.2rem); transition: opacity .35s, transform .35s, filter .4s; }
+        .mpo-ans.is-shown { opacity: 1; transform: none; }
+        .mpo-ans-in { display: flex; align-items: center; gap: 1.1rem; padding: 0 3.6rem 0 2.8rem; }
+        .mpo-mini { flex: none; width: 6rem; height: 6rem; }
+        .mpo-mini-rim { fill: #030616; stroke: #9fb0dc; stroke-width: .05; }
+        .mpo-mini-q { fill: #18266e; stroke: #030616; stroke-width: .07; }
+        .mpo-mini-q.is-me { fill: #e9f0ff; }
+        .mpo-mini-bull { fill: #e0a838; }
+        .mpo-mini-n { font: 900 .44px var(--mpo-cond); fill: #0a1240; text-anchor: middle; }
+        .mpo-ans-key { display: grid; justify-items: center; flex: none; width: 4.4rem; }
+        .mpo-ans-key b { font: 900 4.4rem/1 var(--mpo-cond); color: var(--mpo-gold); }
+        .mpo-ans-key b::after { content: ':'; }
+        .mpo-ans-where { display: none; }
+        .mpo-ans-text { flex: 1; min-width: 0; font: 700 4.2rem/1 var(--mpo-cond); white-space: nowrap; overflow: hidden; }
+        .mpo-ans.is-locked .mpo-ans-in { background: linear-gradient(180deg, #ffc35a, #ff9a1a 55%, #c86a00); color: #1a0d00; }
+        .mpo-ans.is-locked .mpo-ans-key b { color: #3a1d00; }
+        .mpo-ans.is-wrong .mpo-ans-in { background: linear-gradient(180deg, #d9963c, #a85c06); color: #1a0d00; }
+        .mpo-ans.is-wrong .mpo-ans-key b { color: #3a1d00; }
+        .mpo-ans.is-right .mpo-ans-in { background: linear-gradient(180deg, #5dffa2, #17c35e 55%, #087a35); color: #001a0a; animation: mpoRight .32s steps(1) 0s 5 alternate; }
+        .mpo-ans.is-right .mpo-ans-key b { color: #003314; }
+        @keyframes mpoRight { 50% { filter: brightness(1.6); } }
+        .mpo-ans.is-dim { filter: brightness(.55) saturate(.7); }
+
+
+        /* the stakes before every dart */
+        .mpo-stakes { grid-area: stakes; justify-self: center; align-self: center; display: flex; gap: 1rem; opacity: 0; transition: opacity .3s; }
+        .mpo-stakes.is-on { opacity: 1; }
+        .mpo-stake { position: relative; isolation: isolate; --pt: 1.4rem; clip-path: polygon(var(--pt) 0, calc(100% - var(--pt)) 0, 100% 50%, calc(100% - var(--pt)) 100%, var(--pt) 100%, 0 50%); background: linear-gradient(180deg, #eef3ff, #8d97b4 50%, #dfe6f7); padding: 0.45rem 2.2rem; display: flex; align-items: baseline; gap: 0.8rem; white-space: nowrap; }
+        .mpo-stake::before { content: ''; position: absolute; inset: 0.22rem; z-index: -1; clip-path: inherit; background: linear-gradient(180deg, #101a66, #050a2a); }
+        .mpo-stake-l { font: 800 1.6rem var(--mpo-cond); letter-spacing: .16em; color: var(--mpo-silver); }
+        .mpo-stake b { font: 900 2.8rem/1 var(--mpo-cond); color: #fff; font-variant-numeric: tabular-nums; }
+        .mpo-stake.k-right b { color: #6dff9f; }
+        .mpo-stake.k-treble::before { background: linear-gradient(180deg, #5a3a00, #2a1800); } .mpo-stake.k-treble b { color: var(--mpo-gold); }
+        .mpo-stake.k-wrong::before { background: linear-gradient(180deg, #4a0b16, #22040a); } .mpo-stake.k-wrong b { color: #ff7a86; }
+        .mpo-stake.k-pass b { color: var(--mpo-gold); font-size: 2.2rem; }
+        .mpo-stake[hidden] { display: none; }
+        .mpo-status.k-treble::before { background: linear-gradient(180deg, #ffe08a, #ff9a1a); } .mpo-status.k-treble { color: #241400; }
+        .mpo-status.k-treble-right::before { background: linear-gradient(90deg, #ffe08a, #4dfb95, #ffe08a); } .mpo-status.k-treble-right { color: #062a12; }
+        .mpo-status.k-treble-wrong::before { background: linear-gradient(180deg, #ff5a6a, #8a0a18); }
+        .mpo-ans.is-locked.is-treble .mpo-ans-in { background: linear-gradient(180deg, #ffe58a, #ffb01a 50%, #d06a00); box-shadow: inset 0 0 0 0.3rem #fff3c0; }
+        .mpo-mini-q.is-off { fill: #05081c; }
+        .mpo-tab-tag { color: var(--mpo-gold); }
+        .mpo-tree-row.is-checkpoint { color: #ffffff; }
+        .mpo-tree-row.is-checkpoint .mpo-tree-v::after { content: ' ◆'; color: var(--mpo-silver); font-size: 1.6rem; }
+        .mpo-tree-row.is-banked .mpo-tree-v::after { content: ' BANKED'; color: var(--mpo-gold); font-size: 1.4rem; letter-spacing: .1em; }
+        .mpo-tree-row.is-treble:not(.is-target) { box-shadow: inset 0 0 0 0.18rem rgba(242, 193, 78, .45); }
+
+        /* ---- title cards (upper middle, over the stage) */
+        .mpo-title { position: absolute; left: 50%; top: 31%; --pt: 5rem; transform: translate(-50%, -50%) scaleX(.2); opacity: 0; padding: 2rem 9rem 2.4rem; text-align: center; isolation: isolate; max-width: 110rem; transition: opacity .2s; }
+        .mpo-title::before { content: ''; position: absolute; inset: 0.35rem; z-index: -1; clip-path: inherit; background: radial-gradient(ellipse at 50% 0%, #2a3aa8, #0a1250 55%, #040824); }
+        .mpo-title.is-on { opacity: 1; animation: mpoTitle .45s cubic-bezier(.2, 1.2, .4, 1) forwards; }
+        .mpo-title.is-out { opacity: 0; transition: opacity .35s; }
+        @keyframes mpoTitle { from { transform: translate(-50%, -50%) scaleX(.15); } to { transform: translate(-50%, -50%) scaleX(1); } }
+        .mpo-title-main { font: 900 8.6rem/0.95 var(--mpo-cond); text-transform: uppercase; color: var(--team, var(--mpo-gold)); text-shadow: 0 0 2.4rem rgba(255, 200, 90, .35); }
+        .mpo-title-sub { margin-top: 1rem; font: 800 3rem var(--mpo-cond); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mpo-title.k-next .mpo-title-main, .mpo-title.k-round .mpo-title-main { color: #fff; }
+        .mpo-title.k-winner .mpo-title-main, .mpo-title.k-draw .mpo-title-main, .mpo-title.k-million .mpo-title-main, .mpo-title.k-final .mpo-title-main, .mpo-title.k-treble .mpo-title-main { color: var(--mpo-gold); }
+        .mpo-title.k-winner, .mpo-title.k-draw { top: 18%; }
+        .mpo-title.k-winner .mpo-title-sub, .mpo-title.k-draw .mpo-title-sub { font-size: 4.8rem; letter-spacing: .04em; }
+
+        /* ---- final standings */
+        .mpo-final { position: absolute; left: 50%; top: 31rem; transform: translateX(-50%); width: 92rem; padding: 2rem 3rem; border-radius: 1.2rem; background: linear-gradient(180deg, rgba(10, 18, 72, .92), rgba(3, 6, 26, .94)); border: 0.2rem solid rgba(201, 210, 230, .6); opacity: 0; transition: opacity .5s .6s; }
+        .mpo-final.is-on { opacity: 1; }
+        .mpo-final-h { font: 900 2.2rem var(--mpo-cond); letter-spacing: .4em; color: var(--mpo-silver); text-align: center; margin-bottom: 1rem; }
+        .mpo-final-row { display: grid; grid-template-columns: 8rem 1fr 22rem 22rem; align-items: center; gap: 1.6rem; padding: 0.7rem 1.6rem; border-left: 0.8rem solid var(--team); margin-top: 0.6rem; background: rgba(255, 255, 255, .04); font: 800 3rem var(--mpo-cond); }
+        .mpo-final-row.is-winner { background: linear-gradient(90deg, rgba(255, 190, 60, .3), rgba(255, 190, 60, .05)); }
+        .mpo-final-place { color: var(--mpo-silver); }
+        .mpo-final-name { text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mpo-final-prize { color: var(--mpo-gold); font-weight: 900; text-align: right; font-variant-numeric: tabular-nums; }
+        .mpo-final-correct { font-size: 2.2rem; color: var(--mpo-silver); text-align: right; }
+
+        .mpo-help { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 90rem; padding: 3rem 4rem; background: linear-gradient(180deg, #101a66, #050a2a); border: 0.25rem solid var(--mpo-silver); border-radius: 1.2rem; box-shadow: 0 2rem 5rem rgba(0, 0, 0, .6); opacity: 0; transition: opacity .25s; z-index: 6; }
+        .mpo-help.is-on { opacity: 1; }
+        .mpo-help h2 { margin: 0 0 1.6rem; font: 900 5rem var(--mpo-cond); text-transform: uppercase; color: var(--mpo-gold); }
+        .mpo-help-row { display: grid; grid-template-columns: 20rem 1fr; gap: 1.6rem; font: 600 2.6rem/1.3 var(--mpo-cond); padding: 0.6rem 0; border-top: 0.15rem solid rgba(201, 210, 230, .3); }
+        .mpo-help-row b { font-weight: 900; text-transform: uppercase; color: var(--mpo-silver); }
+
+        .mpo-video { position: fixed; inset: 0; z-index: 30; display: none; background: #000; }
+        .mpo-video.is-on { display: block; }
+        .mpo-video video { width: 100%; height: 100%; object-fit: cover; }
+        body.capture .mpo-hud * { animation-duration: 0s !important; transition: none !important; }
+    </style>
+</head>
+<body>
+    <canvas id="stage"></canvas>
+    <div class="mpo-loader"><h1>Million Pound Oche<small>KNOWLEDGE IS POWER · ACCURACY IS EVERYTHING</small></h1></div>
+    <script type="module" src="/games/millionpound/main.js"></script>
+</body>
+</html>

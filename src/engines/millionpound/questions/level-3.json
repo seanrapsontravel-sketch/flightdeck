@@ -1,0 +1,600 @@
+[
+ {
+  "id": "nat-0012",
+  "level": 3,
+  "category": "nature",
+  "q": "How many hearts does an octopus have?",
+  "correct": "3",
+  "wrong": [
+   "1",
+   "2",
+   "4"
+  ],
+  "source": "Britannica: Octopus"
+ },
+ {
+  "id": "geo-0012",
+  "level": 3,
+  "category": "geography",
+  "q": "What is the capital of Canada?",
+  "correct": "Ottawa",
+  "wrong": [
+   "Toronto",
+   "Montreal",
+   "Vancouver"
+  ],
+  "source": "Government of Canada"
+ },
+ {
+  "id": "sci-0014",
+  "level": 3,
+  "category": "science",
+  "q": "What is the chemical symbol for gold?",
+  "correct": "Au",
+  "wrong": [
+   "Ag",
+   "Go",
+   "Gd"
+  ],
+  "source": "RSC Periodic Table: Gold"
+ },
+ {
+  "id": "his-0010",
+  "level": 3,
+  "category": "history",
+  "q": "In which year did the Berlin Wall fall?",
+  "correct": "1989",
+  "wrong": [
+   "1987",
+   "1991",
+   "1985"
+  ],
+  "source": "Britannica: Berlin Wall"
+ },
+ {
+  "id": "mus-0009",
+  "level": 3,
+  "category": "music",
+  "q": "Which band released the album \"The Dark Side of the Moon\"?",
+  "correct": "Pink Floyd",
+  "wrong": [
+   "Led Zeppelin",
+   "The Who",
+   "Genesis"
+  ],
+  "source": "Britannica: The Dark Side of the Moon"
+ },
+ {
+  "id": "spo-0009",
+  "level": 3,
+  "category": "sport",
+  "q": "Which country won the first FIFA World Cup, in 1930?",
+  "correct": "Uruguay",
+  "wrong": [
+   "Argentina",
+   "Brazil",
+   "Italy"
+  ],
+  "source": "FIFA: 1930 World Cup"
+ },
+ {
+  "id": "dar-0006",
+  "level": 3,
+  "category": "darts",
+  "q": "Which darts player is nicknamed \"The Power\"?",
+  "correct": "Phil Taylor",
+  "wrong": [
+   "Michael van Gerwen",
+   "Raymond van Barneveld",
+   "Gary Anderson"
+  ],
+  "source": "PDC: Phil Taylor"
+ },
+ {
+  "id": "ent-0011",
+  "level": 3,
+  "category": "film, tv & books",
+  "q": "Who directed the 1975 film \"Jaws\"?",
+  "correct": "Steven Spielberg",
+  "wrong": [
+   "George Lucas",
+   "Martin Scorsese",
+   "Ridley Scott"
+  ],
+  "source": "BFI: Jaws (1975)"
+ },
+ {
+  "id": "geo-0013",
+  "level": 3,
+  "category": "geography",
+  "q": "In which country is the city of Marrakesh?",
+  "correct": "Morocco",
+  "wrong": [
+   "Algeria",
+   "Tunisia",
+   "Egypt"
+  ],
+  "source": "Britannica: Marrakech"
+ },
+ {
+  "id": "sci-0015",
+  "level": 3,
+  "category": "science",
+  "q": "What is the most abundant gas in Earth's atmosphere?",
+  "correct": "Nitrogen",
+  "wrong": [
+   "Oxygen",
+   "Carbon dioxide",
+   "Argon"
+  ],
+  "source": "NASA: Earth's atmosphere (78% N2)"
+ },
+ {
+  "id": "foo-0009",
+  "level": 3,
+  "category": "food & drink",
+  "q": "Profiteroles are made from which type of pastry?",
+  "correct": "Choux",
+  "wrong": [
+   "Puff",
+   "Filo",
+   "Shortcrust"
+  ],
+  "source": "Britannica: Choux pastry"
+ },
+ {
+  "id": "nat-0013",
+  "level": 3,
+  "category": "nature",
+  "q": "What is the largest living species of bird?",
+  "correct": "Ostrich",
+  "wrong": [
+   "Emu",
+   "Albatross",
+   "Cassowary"
+  ],
+  "source": "Britannica: Ostrich"
+ },
+ {
+  "id": "geo-0014",
+  "level": 3,
+  "category": "geography",
+  "q": "Which US state is nicknamed the Sunshine State?",
+  "correct": "Florida",
+  "wrong": [
+   "California",
+   "Arizona",
+   "Hawaii"
+  ],
+  "source": "State of Florida"
+ },
+ {
+  "id": "sci-0016",
+  "level": 3,
+  "category": "science",
+  "q": "How many bones are there in the adult human body?",
+  "correct": "206",
+  "wrong": [
+   "186",
+   "212",
+   "230"
+  ],
+  "source": "Britannica: Human skeleton"
+ },
+ {
+  "id": "mus-0010",
+  "level": 3,
+  "category": "music",
+  "q": "Which composer wrote the \"Moonlight Sonata\"?",
+  "correct": "Beethoven",
+  "wrong": [
+   "Mozart",
+   "Chopin",
+   "Bach"
+  ],
+  "source": "Britannica: Moonlight Sonata"
+ },
+ {
+  "id": "ent-0012",
+  "level": 3,
+  "category": "film, tv & books",
+  "q": "What is the name of the pub in EastEnders?",
+  "correct": "The Queen Vic",
+  "wrong": [
+   "The Rovers Return",
+   "The Woolpack",
+   "The Bull"
+  ],
+  "source": "BBC: EastEnders"
+ },
+ {
+  "id": "spo-0010",
+  "level": 3,
+  "category": "sport",
+  "q": "How many players are there in a rugby union team?",
+  "correct": "15",
+  "wrong": [
+   "13",
+   "11",
+   "12"
+  ],
+  "source": "World Rugby: Laws"
+ },
+ {
+  "id": "his-0011",
+  "level": 3,
+  "category": "history",
+  "q": "Who was king during the Great Fire of London in 1666?",
+  "correct": "Charles II",
+  "wrong": [
+   "James II",
+   "William III",
+   "Charles I"
+  ],
+  "source": "Museum of London: Great Fire"
+ },
+ {
+  "id": "geo-0015",
+  "level": 3,
+  "category": "geography",
+  "q": "What is the capital of New Zealand?",
+  "correct": "Wellington",
+  "wrong": [
+   "Auckland",
+   "Christchurch",
+   "Queenstown"
+  ],
+  "source": "NZ Government"
+ },
+ {
+  "id": "sci-0017",
+  "level": 3,
+  "category": "science",
+  "q": "Who developed the theory of general relativity?",
+  "correct": "Albert Einstein",
+  "wrong": [
+   "Isaac Newton",
+   "Niels Bohr",
+   "Stephen Hawking"
+  ],
+  "source": "Britannica: General relativity"
+ },
+ {
+  "id": "nat-0014",
+  "level": 3,
+  "category": "nature",
+  "q": "What kind of animal is a Komodo dragon?",
+  "correct": "Lizard",
+  "wrong": [
+   "Snake",
+   "Crocodile",
+   "Salamander"
+  ],
+  "source": "Britannica: Komodo dragon"
+ },
+ {
+  "id": "foo-0010",
+  "level": 3,
+  "category": "food & drink",
+  "q": "Gouda cheese comes from which country?",
+  "correct": "Netherlands",
+  "wrong": [
+   "Belgium",
+   "Switzerland",
+   "Denmark"
+  ],
+  "source": "EU PGI register: Gouda Holland"
+ },
+ {
+  "id": "mus-0011",
+  "level": 3,
+  "category": "music",
+  "q": "Which musical features the song \"Memory\"?",
+  "correct": "Cats",
+  "wrong": [
+   "Evita",
+   "Les Misérables",
+   "Starlight Express"
+  ],
+  "source": "Britannica: Cats (musical)"
+ },
+ {
+  "id": "ent-0013",
+  "level": 3,
+  "category": "film, tv & books",
+  "q": "In Only Fools and Horses, which part of London do the Trotters live in?",
+  "correct": "Peckham",
+  "wrong": [
+   "Brixton",
+   "Hackney",
+   "Lewisham"
+  ],
+  "source": "BBC: Only Fools and Horses"
+ },
+ {
+  "id": "spo-0011",
+  "level": 3,
+  "category": "sport",
+  "q": "Which golfer was nicknamed \"The Golden Bear\"?",
+  "correct": "Jack Nicklaus",
+  "wrong": [
+   "Arnold Palmer",
+   "Greg Norman",
+   "Gary Player"
+  ],
+  "source": "Britannica: Jack Nicklaus"
+ },
+ {
+  "id": "geo-0016",
+  "level": 3,
+  "category": "geography",
+  "q": "Which mountain range is traditionally taken to divide Europe from Asia?",
+  "correct": "The Urals",
+  "wrong": [
+   "The Alps",
+   "The Carpathians",
+   "The Pyrenees"
+  ],
+  "source": "Britannica: Ural Mountains"
+ },
+ {
+  "id": "his-0012",
+  "level": 3,
+  "category": "history",
+  "q": "Which ancient wonder stood at the harbour of Rhodes?",
+  "correct": "The Colossus",
+  "wrong": [
+   "The Lighthouse",
+   "The Hanging Gardens",
+   "The Mausoleum"
+  ],
+  "source": "Britannica: Colossus of Rhodes"
+ },
+ {
+  "id": "sci-0018",
+  "level": 3,
+  "category": "science",
+  "q": "Roughly how fast does light travel, in km per second?",
+  "correct": "300,000",
+  "wrong": [
+   "30,000",
+   "3,000,000",
+   "150,000"
+  ],
+  "source": "NIST: c = 299,792 km/s"
+ },
+ {
+  "id": "nat-0015",
+  "level": 3,
+  "category": "nature",
+  "q": "Which tree produces acorns?",
+  "correct": "Oak",
+  "wrong": [
+   "Beech",
+   "Ash",
+   "Chestnut"
+  ],
+  "source": "Woodland Trust: Oak"
+ },
+ {
+  "id": "dar-0007",
+  "level": 3,
+  "category": "darts",
+  "q": "On a dartboard, which number is immediately to the left of 20?",
+  "correct": "5",
+  "wrong": [
+   "1",
+   "12",
+   "9"
+  ],
+  "source": "PDC: dartboard layout"
+ },
+ {
+  "id": "mus-0012",
+  "level": 3,
+  "category": "music",
+  "q": "Which instrument is Yo-Yo Ma famous for playing?",
+  "correct": "Cello",
+  "wrong": [
+   "Violin",
+   "Double bass",
+   "Viola"
+  ],
+  "source": "Britannica: Yo-Yo Ma"
+ },
+ {
+  "id": "geo-0017",
+  "level": 3,
+  "category": "geography",
+  "q": "Across the Strait of Gibraltar from Spain lies which country?",
+  "correct": "Morocco",
+  "wrong": [
+   "Algeria",
+   "Tunisia",
+   "Portugal"
+  ],
+  "source": "Britannica: Strait of Gibraltar"
+ },
+ {
+  "id": "foo-0011",
+  "level": 3,
+  "category": "food & drink",
+  "q": "Which country is the world's largest producer of coffee?",
+  "correct": "Brazil",
+  "wrong": [
+   "Colombia",
+   "Vietnam",
+   "Ethiopia"
+  ],
+  "source": "International Coffee Organization"
+ },
+ {
+  "id": "mus-0013",
+  "level": 3,
+  "category": "music",
+  "q": "Robbie Williams found fame as a member of which band?",
+  "correct": "Take That",
+  "wrong": [
+   "Boyzone",
+   "East 17",
+   "Westlife"
+  ],
+  "source": "Britannica: Robbie Williams"
+ },
+ {
+  "id": "his-0013",
+  "level": 3,
+  "category": "history",
+  "q": "Who was the first emperor of Rome?",
+  "correct": "Augustus",
+  "wrong": [
+   "Julius Caesar",
+   "Nero",
+   "Caligula"
+  ],
+  "source": "Britannica: Augustus"
+ },
+ {
+  "id": "sci-0019",
+  "level": 3,
+  "category": "science",
+  "q": "Which gas puts the bubbles in fizzy drinks?",
+  "correct": "Carbon dioxide",
+  "wrong": [
+   "Oxygen",
+   "Hydrogen",
+   "Helium"
+  ],
+  "source": "Britannica: Carbonation"
+ },
+ {
+  "id": "spo-0012",
+  "level": 3,
+  "category": "sport",
+  "q": "In tennis, what is a score of zero called?",
+  "correct": "Love",
+  "wrong": [
+   "Nil",
+   "Duck",
+   "Zip"
+  ],
+  "source": "ITF: Rules of Tennis"
+ },
+ {
+  "id": "geo-0018",
+  "level": 3,
+  "category": "geography",
+  "q": "Which river flows through Paris?",
+  "correct": "Seine",
+  "wrong": [
+   "Loire",
+   "Rhône",
+   "Rhine"
+  ],
+  "source": "Britannica: Seine River"
+ },
+ {
+  "id": "sci-0020",
+  "level": 3,
+  "category": "science",
+  "q": "Conjunctivitis affects which part of the body?",
+  "correct": "The eye",
+  "wrong": [
+   "The ear",
+   "The skin",
+   "The liver"
+  ],
+  "source": "NHS: Conjunctivitis"
+ },
+ {
+  "id": "gen-0011",
+  "level": 3,
+  "category": "general knowledge",
+  "q": "How many squares are there on a chessboard?",
+  "correct": "64",
+  "wrong": [
+   "48",
+   "56",
+   "81"
+  ],
+  "source": "FIDE Laws of Chess"
+ },
+ {
+  "id": "his-0014",
+  "level": 3,
+  "category": "history",
+  "q": "Which civilisation built Machu Picchu?",
+  "correct": "The Inca",
+  "wrong": [
+   "The Aztecs",
+   "The Maya",
+   "The Olmecs"
+  ],
+  "source": "UNESCO: Machu Picchu"
+ },
+ {
+  "id": "ent-0014",
+  "level": 3,
+  "category": "film, tv & books",
+  "q": "Who played the Joker in \"The Dark Knight\" (2008)?",
+  "correct": "Heath Ledger",
+  "wrong": [
+   "Jack Nicholson",
+   "Joaquin Phoenix",
+   "Jared Leto"
+  ],
+  "source": "BFI: The Dark Knight"
+ },
+ {
+  "id": "sci-0021",
+  "level": 3,
+  "category": "science",
+  "q": "Which part of a cell is known as its powerhouse?",
+  "correct": "Mitochondria",
+  "wrong": [
+   "Nucleus",
+   "Ribosome",
+   "Cell wall"
+  ],
+  "source": "Britannica: Mitochondrion"
+ },
+ {
+  "id": "his-0015",
+  "level": 3,
+  "category": "history",
+  "q": "Which US president issued the Emancipation Proclamation?",
+  "correct": "Abraham Lincoln",
+  "wrong": [
+   "Ulysses S. Grant",
+   "Andrew Johnson",
+   "Thomas Jefferson"
+  ],
+  "source": "US National Archives"
+ },
+ {
+  "id": "his-0016",
+  "level": 3,
+  "category": "history",
+  "q": "Which Roman emperor ordered a wall built across northern Britain in AD 122?",
+  "correct": "Hadrian",
+  "wrong": [
+   "Antoninus Pius",
+   "Trajan",
+   "Claudius"
+  ],
+  "source": "English Heritage: Hadrian's Wall"
+ },
+ {
+  "id": "dar-0008",
+  "level": 3,
+  "category": "darts",
+  "q": "Which darts player was nicknamed \"The Crafty Cockney\"?",
+  "correct": "Eric Bristow",
+  "wrong": [
+   "Bobby George",
+   "John Lowe",
+   "Keith Deller"
+  ],
+  "source": "Britannica: Eric Bristow"
+ }
+]

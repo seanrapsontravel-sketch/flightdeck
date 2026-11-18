@@ -1,0 +1,587 @@
+[
+ {
+  "id": "ent-0019",
+  "level": 5,
+  "category": "film, tv & books",
+  "q": "Which film won the first Academy Award for Best Picture?",
+  "correct": "Wings",
+  "wrong": [
+   "The Jazz Singer",
+   "Metropolis",
+   "Ben-Hur"
+  ],
+  "source": "Academy of Motion Picture Arts and Sciences: 1st Academy Awards"
+ },
+ {
+  "id": "geo-0025",
+  "level": 5,
+  "category": "geography",
+  "q": "Counting overseas territories, which country spans the most time zones?",
+  "correct": "France",
+  "wrong": [
+   "Russia",
+   "United States",
+   "United Kingdom"
+  ],
+  "source": "CIA World Factbook: France (12 time zones)"
+ },
+ {
+  "id": "sci-0030",
+  "level": 5,
+  "category": "science",
+  "q": "Which metal is the best conductor of electricity?",
+  "correct": "Silver",
+  "wrong": [
+   "Copper",
+   "Gold",
+   "Aluminium"
+  ],
+  "source": "Britannica: Silver"
+ },
+ {
+  "id": "his-0023",
+  "level": 5,
+  "category": "history",
+  "q": "In which battle of 1805 was Admiral Nelson killed?",
+  "correct": "Trafalgar",
+  "wrong": [
+   "The Nile",
+   "Copenhagen",
+   "Waterloo"
+  ],
+  "source": "Royal Museums Greenwich: Trafalgar"
+ },
+ {
+  "id": "mus-0018",
+  "level": 5,
+  "category": "music",
+  "q": "Who composed the opera \"The Magic Flute\"?",
+  "correct": "Mozart",
+  "wrong": [
+   "Wagner",
+   "Verdi",
+   "Puccini"
+  ],
+  "source": "Britannica: The Magic Flute"
+ },
+ {
+  "id": "spo-0017",
+  "level": 5,
+  "category": "sport",
+  "q": "Who was the first man to run a mile in under four minutes?",
+  "correct": "Roger Bannister",
+  "wrong": [
+   "Sebastian Coe",
+   "Steve Ovett",
+   "Hicham El Guerrouj"
+  ],
+  "source": "Britannica: Roger Bannister (1954)"
+ },
+ {
+  "id": "nat-0022",
+  "level": 5,
+  "category": "nature",
+  "q": "What is the largest species of shark?",
+  "correct": "Whale shark",
+  "wrong": [
+   "Great white shark",
+   "Basking shark",
+   "Tiger shark"
+  ],
+  "source": "Britannica: Whale shark"
+ },
+ {
+  "id": "geo-0026",
+  "level": 5,
+  "category": "geography",
+  "q": "What is the smallest US state by area?",
+  "correct": "Rhode Island",
+  "wrong": [
+   "Delaware",
+   "Connecticut",
+   "Hawaii"
+  ],
+  "source": "US Census Bureau"
+ },
+ {
+  "id": "his-0024",
+  "level": 5,
+  "category": "history",
+  "q": "In which year did the Acts of Union unite the parliaments of England and Scotland?",
+  "correct": "1707",
+  "wrong": [
+   "1603",
+   "1801",
+   "1688"
+  ],
+  "source": "UK Parliament: Act of Union 1707"
+ },
+ {
+  "id": "sci-0031",
+  "level": 5,
+  "category": "science",
+  "q": "What is the longest bone in the human body?",
+  "correct": "Femur",
+  "wrong": [
+   "Tibia",
+   "Humerus",
+   "Fibula"
+  ],
+  "source": "Britannica: Femur"
+ },
+ {
+  "id": "geo-0027",
+  "level": 5,
+  "category": "geography",
+  "q": "Which river flows through Vienna, Budapest and Belgrade?",
+  "correct": "Danube",
+  "wrong": [
+   "Rhine",
+   "Vistula",
+   "Dnieper"
+  ],
+  "source": "Britannica: Danube River"
+ },
+ {
+  "id": "mus-0019",
+  "level": 5,
+  "category": "music",
+  "q": "Which band released the album \"OK Computer\" in 1997?",
+  "correct": "Radiohead",
+  "wrong": [
+   "Blur",
+   "Oasis",
+   "Pulp"
+  ],
+  "source": "Britannica: Radiohead"
+ },
+ {
+  "id": "sci-0032",
+  "level": 5,
+  "category": "science",
+  "q": "What is the boundary of a black hole, beyond which nothing can escape?",
+  "correct": "Event horizon",
+  "wrong": [
+   "Photon sphere",
+   "Singularity",
+   "Accretion disc"
+  ],
+  "source": "NASA: Black holes"
+ },
+ {
+  "id": "nat-0023",
+  "level": 5,
+  "category": "nature",
+  "q": "Counting its two big claws, how many legs does a lobster have?",
+  "correct": "10",
+  "wrong": [
+   "8",
+   "6",
+   "12"
+  ],
+  "source": "Britannica: Lobster (decapod)"
+ },
+ {
+  "id": "his-0025",
+  "level": 5,
+  "category": "history",
+  "q": "Who was on the throne at the time of the Gunpowder Plot of 1605?",
+  "correct": "James I",
+  "wrong": [
+   "Charles I",
+   "Elizabeth I",
+   "James II"
+  ],
+  "source": "UK Parliament: The Gunpowder Plot"
+ },
+ {
+  "id": "foo-0016",
+  "level": 5,
+  "category": "food & drink",
+  "q": "What is the main ingredient of baba ghanoush?",
+  "correct": "Aubergine",
+  "wrong": [
+   "Chickpeas",
+   "Courgette",
+   "Lentils"
+  ],
+  "source": "Britannica: Baba ghanoush"
+ },
+ {
+  "id": "spo-0018",
+  "level": 5,
+  "category": "sport",
+  "q": "In which year did England win the men's Rugby World Cup?",
+  "correct": "2003",
+  "wrong": [
+   "1999",
+   "2007",
+   "2019"
+  ],
+  "source": "World Rugby: Rugby World Cup 2003"
+ },
+ {
+  "id": "geo-0028",
+  "level": 5,
+  "category": "geography",
+  "q": "What is the largest island in the Mediterranean?",
+  "correct": "Sicily",
+  "wrong": [
+   "Sardinia",
+   "Cyprus",
+   "Corsica"
+  ],
+  "source": "Britannica: Sicily"
+ },
+ {
+  "id": "sci-0033",
+  "level": 5,
+  "category": "science",
+  "q": "Which planet spins on its side, tilted about 98 degrees?",
+  "correct": "Uranus",
+  "wrong": [
+   "Neptune",
+   "Saturn",
+   "Venus"
+  ],
+  "source": "NASA: Uranus"
+ },
+ {
+  "id": "ent-0020",
+  "level": 5,
+  "category": "film, tv & books",
+  "q": "In which year was the first episode of Doctor Who broadcast?",
+  "correct": "1963",
+  "wrong": [
+   "1958",
+   "1966",
+   "1970"
+  ],
+  "source": "BBC: Doctor Who (23 November 1963)"
+ },
+ {
+  "id": "mus-0020",
+  "level": 5,
+  "category": "music",
+  "q": "Which instrument did the jazz musician John Coltrane play?",
+  "correct": "Saxophone",
+  "wrong": [
+   "Trumpet",
+   "Piano",
+   "Clarinet"
+  ],
+  "source": "Britannica: John Coltrane"
+ },
+ {
+  "id": "his-0026",
+  "level": 5,
+  "category": "history",
+  "q": "Suleiman the Magnificent ruled which empire?",
+  "correct": "Ottoman",
+  "wrong": [
+   "Mughal",
+   "Persian",
+   "Byzantine"
+  ],
+  "source": "Britannica: Suleyman the Magnificent"
+ },
+ {
+  "id": "nat-0024",
+  "level": 5,
+  "category": "nature",
+  "q": "What is a baby swan called?",
+  "correct": "A cygnet",
+  "wrong": [
+   "A gosling",
+   "A fledgling",
+   "A cria"
+  ],
+  "source": "RSPB: Mute swan"
+ },
+ {
+  "id": "geo-0029",
+  "level": 5,
+  "category": "geography",
+  "q": "Lake Titicaca lies on the border of Peru and which country?",
+  "correct": "Bolivia",
+  "wrong": [
+   "Chile",
+   "Ecuador",
+   "Argentina"
+  ],
+  "source": "Britannica: Lake Titicaca"
+ },
+ {
+  "id": "dar-0011",
+  "level": 5,
+  "category": "darts",
+  "q": "In darts, what is a score of 26 (single 20, single 1, single 5) called?",
+  "correct": "Bed and breakfast",
+  "wrong": [
+   "Bag of nuts",
+   "Madhouse",
+   "Shanghai"
+  ],
+  "source": "Darts terminology (bed and breakfast = 2s 6d)"
+ },
+ {
+  "id": "his-0027",
+  "level": 5,
+  "category": "history",
+  "q": "Who was the British monarch at the time of the Battle of Waterloo?",
+  "correct": "George III",
+  "wrong": [
+   "George IV",
+   "William IV",
+   "Victoria"
+  ],
+  "source": "Royal Collection Trust: George III (reigned 1760–1820)"
+ },
+ {
+  "id": "ent-0021",
+  "level": 5,
+  "category": "film, tv & books",
+  "q": "Which Shakespeare play features Rosencrantz and Guildenstern?",
+  "correct": "Hamlet",
+  "wrong": [
+   "Macbeth",
+   "King Lear",
+   "Othello"
+  ],
+  "source": "RSC: Hamlet"
+ },
+ {
+  "id": "foo-0017",
+  "level": 5,
+  "category": "food & drink",
+  "q": "Which nuts go into a traditional pesto alla genovese?",
+  "correct": "Pine nuts",
+  "wrong": [
+   "Walnuts",
+   "Almonds",
+   "Cashews"
+  ],
+  "source": "Consorzio del Pesto Genovese"
+ },
+ {
+  "id": "spo-0019",
+  "level": 5,
+  "category": "sport",
+  "q": "Which F1 driver won seven world titles between 1994 and 2004?",
+  "correct": "Michael Schumacher",
+  "wrong": [
+   "Ayrton Senna",
+   "Alain Prost",
+   "Sebastian Vettel"
+  ],
+  "source": "FIA: World Drivers' Champions"
+ },
+ {
+  "id": "geo-0030",
+  "level": 5,
+  "category": "geography",
+  "q": "The ancient city of Petra is in which country?",
+  "correct": "Jordan",
+  "wrong": [
+   "Egypt",
+   "Syria",
+   "Lebanon"
+  ],
+  "source": "UNESCO: Petra"
+ },
+ {
+  "id": "sci-0034",
+  "level": 5,
+  "category": "science",
+  "q": "What does a seismometer measure?",
+  "correct": "Earthquakes",
+  "wrong": [
+   "Wind speed",
+   "Air pressure",
+   "Rainfall"
+  ],
+  "source": "British Geological Survey: Seismometers"
+ },
+ {
+  "id": "mus-0021",
+  "level": 5,
+  "category": "music",
+  "q": "Who composed the \"Enigma Variations\"?",
+  "correct": "Edward Elgar",
+  "wrong": [
+   "Gustav Holst",
+   "Benjamin Britten",
+   "Vaughan Williams"
+  ],
+  "source": "Britannica: Enigma Variations"
+ },
+ {
+  "id": "nat-0025",
+  "level": 5,
+  "category": "nature",
+  "q": "What is the largest living species of penguin?",
+  "correct": "Emperor penguin",
+  "wrong": [
+   "King penguin",
+   "Adélie penguin",
+   "Gentoo penguin"
+  ],
+  "source": "British Antarctic Survey: Emperor penguin"
+ },
+ {
+  "id": "his-0028",
+  "level": 5,
+  "category": "history",
+  "q": "The ancient city of Carthage was in which modern country?",
+  "correct": "Tunisia",
+  "wrong": [
+   "Libya",
+   "Morocco",
+   "Egypt"
+  ],
+  "source": "UNESCO: Archaeological Site of Carthage"
+ },
+ {
+  "id": "spo-0020",
+  "level": 5,
+  "category": "sport",
+  "q": "In which city did the 1974 \"Rumble in the Jungle\" take place?",
+  "correct": "Kinshasa",
+  "wrong": [
+   "Lagos",
+   "Nairobi",
+   "Manila"
+  ],
+  "source": "Britannica: Rumble in the Jungle"
+ },
+ {
+  "id": "sci-0035",
+  "level": 5,
+  "category": "science",
+  "q": "What is the atomic number of carbon?",
+  "correct": "6",
+  "wrong": [
+   "12",
+   "8",
+   "14"
+  ],
+  "source": "RSC Periodic Table: Carbon"
+ },
+ {
+  "id": "geo-0031",
+  "level": 5,
+  "category": "geography",
+  "q": "Which strait separates Asia from North America?",
+  "correct": "Bering Strait",
+  "wrong": [
+   "Strait of Magellan",
+   "Strait of Hormuz",
+   "Davis Strait"
+  ],
+  "source": "Britannica: Bering Strait"
+ },
+ {
+  "id": "sci-0036",
+  "level": 5,
+  "category": "science",
+  "q": "Who discovered penicillin in 1928?",
+  "correct": "Alexander Fleming",
+  "wrong": [
+   "Louis Pasteur",
+   "Howard Florey",
+   "Joseph Lister"
+  ],
+  "source": "Britannica: Alexander Fleming"
+ },
+ {
+  "id": "gen-0014",
+  "level": 5,
+  "category": "general knowledge",
+  "q": "Who painted \"The Persistence of Memory\", with its melting clocks?",
+  "correct": "Salvador Dalí",
+  "wrong": [
+   "René Magritte",
+   "Joan Miró",
+   "Max Ernst"
+  ],
+  "source": "MoMA: The Persistence of Memory"
+ },
+ {
+  "id": "foo-0018",
+  "level": 5,
+  "category": "food & drink",
+  "q": "Kirsch is a brandy distilled from which fruit?",
+  "correct": "Cherries",
+  "wrong": [
+   "Plums",
+   "Pears",
+   "Apples"
+  ],
+  "source": "Britannica: Kirsch"
+ },
+ {
+  "id": "geo-0032",
+  "level": 5,
+  "category": "geography",
+  "q": "What is the capital of the Canadian province of British Columbia?",
+  "correct": "Victoria",
+  "wrong": [
+   "Vancouver",
+   "Kelowna",
+   "Surrey"
+  ],
+  "source": "Government of British Columbia"
+ },
+ {
+  "id": "sci-0037",
+  "level": 5,
+  "category": "science",
+  "q": "What is the chemical symbol for sodium?",
+  "correct": "Na",
+  "wrong": [
+   "So",
+   "Sd",
+   "S"
+  ],
+  "source": "RSC Periodic Table: Sodium"
+ },
+ {
+  "id": "his-0029",
+  "level": 5,
+  "category": "history",
+  "q": "Which English king was known as \"the Confessor\"?",
+  "correct": "Edward",
+  "wrong": [
+   "Harold",
+   "Alfred",
+   "Athelstan"
+  ],
+  "source": "Britannica: Edward the Confessor"
+ },
+ {
+  "id": "ent-0022",
+  "level": 5,
+  "category": "film, tv & books",
+  "q": "Who wrote the novel \"Brave New World\"?",
+  "correct": "Aldous Huxley",
+  "wrong": [
+   "George Orwell",
+   "H.G. Wells",
+   "Anthony Burgess"
+  ],
+  "source": "Britannica: Brave New World"
+ },
+ {
+  "id": "mus-0022",
+  "level": 5,
+  "category": "music",
+  "q": "Who composed the orchestral suite \"The Planets\"?",
+  "correct": "Gustav Holst",
+  "wrong": [
+   "Edward Elgar",
+   "Benjamin Britten",
+   "Frederick Delius"
+  ],
+  "source": "Britannica: The Planets"
+ }
+]

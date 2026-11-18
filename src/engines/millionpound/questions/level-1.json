@@ -1,0 +1,574 @@
+[
+ {
+  "id": "nat-0001",
+  "level": 1,
+  "category": "nature",
+  "q": "How many legs does a spider have?",
+  "correct": "8",
+  "wrong": [
+   "6",
+   "10",
+   "12"
+  ],
+  "source": "Britannica: Spider"
+ },
+ {
+  "id": "gen-0001",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "How many sides does a hexagon have?",
+  "correct": "6",
+  "wrong": [
+   "5",
+   "7",
+   "8"
+  ],
+  "source": "Britannica: Hexagon"
+ },
+ {
+  "id": "geo-0001",
+  "level": 1,
+  "category": "geography",
+  "q": "What is the capital city of France?",
+  "correct": "Paris",
+  "wrong": [
+   "Lyon",
+   "Marseille",
+   "Nice"
+  ],
+  "source": "Britannica: Paris"
+ },
+ {
+  "id": "sci-0001",
+  "level": 1,
+  "category": "science",
+  "q": "Which planet is known as the Red Planet?",
+  "correct": "Mars",
+  "wrong": [
+   "Venus",
+   "Jupiter",
+   "Mercury"
+  ],
+  "source": "NASA: Mars"
+ },
+ {
+  "id": "foo-0001",
+  "level": 1,
+  "category": "food & drink",
+  "q": "Which fruit is the main ingredient of guacamole?",
+  "correct": "Avocado",
+  "wrong": [
+   "Mango",
+   "Lime",
+   "Pear"
+  ],
+  "source": "Britannica: Guacamole"
+ },
+ {
+  "id": "gen-0002",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "How many days are there in a leap year?",
+  "correct": "366",
+  "wrong": [
+   "365",
+   "364",
+   "367"
+  ],
+  "source": "Britannica: Leap year"
+ },
+ {
+  "id": "nat-0002",
+  "level": 1,
+  "category": "nature",
+  "q": "Which of these do bees make?",
+  "correct": "Honey",
+  "wrong": [
+   "Silk",
+   "Butter",
+   "Syrup"
+  ],
+  "source": "Britannica: Honey"
+ },
+ {
+  "id": "spo-0001",
+  "level": 1,
+  "category": "sport",
+  "q": "In football, how many players does each team have on the pitch at kick-off?",
+  "correct": "11",
+  "wrong": [
+   "10",
+   "12",
+   "9"
+  ],
+  "source": "IFAB Laws of the Game, Law 3"
+ },
+ {
+  "id": "dar-0001",
+  "level": 1,
+  "category": "darts",
+  "q": "What is the highest score possible with three darts?",
+  "correct": "180",
+  "wrong": [
+   "150",
+   "160",
+   "200"
+  ],
+  "source": "PDC: three treble 20s"
+ },
+ {
+  "id": "geo-0002",
+  "level": 1,
+  "category": "geography",
+  "q": "Which ocean lies between Europe and North America?",
+  "correct": "Atlantic",
+  "wrong": [
+   "Pacific",
+   "Indian",
+   "Arctic"
+  ],
+  "source": "Britannica: Atlantic Ocean"
+ },
+ {
+  "id": "mus-0001",
+  "level": 1,
+  "category": "music",
+  "q": "How many strings does a standard guitar have?",
+  "correct": "6",
+  "wrong": [
+   "4",
+   "5",
+   "8"
+  ],
+  "source": "Britannica: Guitar"
+ },
+ {
+  "id": "gen-0003",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "What colour do you get by mixing blue and yellow paint?",
+  "correct": "Green",
+  "wrong": [
+   "Purple",
+   "Orange",
+   "Brown"
+  ],
+  "source": "Subtractive colour mixing"
+ },
+ {
+  "id": "ent-0001",
+  "level": 1,
+  "category": "film, tv & books",
+  "q": "Which Disney film features the song \"Let It Go\"?",
+  "correct": "Frozen",
+  "wrong": [
+   "Moana",
+   "Tangled",
+   "Encanto"
+  ],
+  "source": "Disney: Frozen (2013)"
+ },
+ {
+  "id": "nat-0003",
+  "level": 1,
+  "category": "nature",
+  "q": "What is a baby kangaroo called?",
+  "correct": "A joey",
+  "wrong": [
+   "A cub",
+   "A kit",
+   "A foal"
+  ],
+  "source": "Britannica: Kangaroo"
+ },
+ {
+  "id": "sci-0002",
+  "level": 1,
+  "category": "science",
+  "q": "What is the chemical formula for water?",
+  "correct": "H2O",
+  "wrong": [
+   "CO2",
+   "O2",
+   "NaCl"
+  ],
+  "source": "Britannica: Water"
+ },
+ {
+  "id": "geo-0003",
+  "level": 1,
+  "category": "geography",
+  "q": "In which city is Big Ben?",
+  "correct": "London",
+  "wrong": [
+   "Manchester",
+   "Edinburgh",
+   "Cardiff"
+  ],
+  "source": "UK Parliament: Big Ben"
+ },
+ {
+  "id": "his-0001",
+  "level": 1,
+  "category": "history",
+  "q": "Who was the first person to walk on the Moon?",
+  "correct": "Neil Armstrong",
+  "wrong": [
+   "Buzz Aldrin",
+   "Yuri Gagarin",
+   "John Glenn"
+  ],
+  "source": "NASA: Apollo 11"
+ },
+ {
+  "id": "foo-0002",
+  "level": 1,
+  "category": "food & drink",
+  "q": "Pizza originated in which country?",
+  "correct": "Italy",
+  "wrong": [
+   "Greece",
+   "Spain",
+   "France"
+  ],
+  "source": "Britannica: Pizza"
+ },
+ {
+  "id": "gen-0004",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "How many hours are there in a day?",
+  "correct": "24",
+  "wrong": [
+   "12",
+   "20",
+   "36"
+  ],
+  "source": "Standard timekeeping"
+ },
+ {
+  "id": "spo-0002",
+  "level": 1,
+  "category": "sport",
+  "q": "In which sport would you use a shuttlecock?",
+  "correct": "Badminton",
+  "wrong": [
+   "Tennis",
+   "Squash",
+   "Table tennis"
+  ],
+  "source": "BWF: Laws of Badminton"
+ },
+ {
+  "id": "nat-0004",
+  "level": 1,
+  "category": "nature",
+  "q": "What is the largest animal on Earth?",
+  "correct": "Blue whale",
+  "wrong": [
+   "African elephant",
+   "Giraffe",
+   "Great white shark"
+  ],
+  "source": "NOAA: Blue whale"
+ },
+ {
+  "id": "mus-0002",
+  "level": 1,
+  "category": "music",
+  "q": "Which band released \"Hey Jude\"?",
+  "correct": "The Beatles",
+  "wrong": [
+   "The Rolling Stones",
+   "Queen",
+   "Oasis"
+  ],
+  "source": "The Beatles: Hey Jude (1968)"
+ },
+ {
+  "id": "geo-0004",
+  "level": 1,
+  "category": "geography",
+  "q": "What is the largest country in the world by area?",
+  "correct": "Russia",
+  "wrong": [
+   "Canada",
+   "China",
+   "United States"
+  ],
+  "source": "Britannica: Russia"
+ },
+ {
+  "id": "sci-0003",
+  "level": 1,
+  "category": "science",
+  "q": "Which gas do plants take in from the air to make food?",
+  "correct": "Carbon dioxide",
+  "wrong": [
+   "Oxygen",
+   "Nitrogen",
+   "Helium"
+  ],
+  "source": "Britannica: Photosynthesis"
+ },
+ {
+  "id": "ent-0002",
+  "level": 1,
+  "category": "film, tv & books",
+  "q": "Which school does Harry Potter attend?",
+  "correct": "Hogwarts",
+  "wrong": [
+   "Beauxbatons",
+   "Durmstrang",
+   "St Trinian's"
+  ],
+  "source": "J.K. Rowling: Harry Potter"
+ },
+ {
+  "id": "sci-0004",
+  "level": 1,
+  "category": "science",
+  "q": "At what temperature does pure water freeze?",
+  "correct": "0°C",
+  "wrong": [
+   "10°C",
+   "32°C",
+   "-10°C"
+  ],
+  "source": "Britannica: Water (0 °C at 1 atm)"
+ },
+ {
+  "id": "his-0002",
+  "level": 1,
+  "category": "history",
+  "q": "In which country are the pyramids of Giza?",
+  "correct": "Egypt",
+  "wrong": [
+   "Mexico",
+   "Peru",
+   "Sudan"
+  ],
+  "source": "UNESCO: Memphis and its Necropolis"
+ },
+ {
+  "id": "foo-0003",
+  "level": 1,
+  "category": "food & drink",
+  "q": "Which drink is made from fermented grapes?",
+  "correct": "Wine",
+  "wrong": [
+   "Cider",
+   "Beer",
+   "Whisky"
+  ],
+  "source": "Britannica: Wine"
+ },
+ {
+  "id": "nat-0005",
+  "level": 1,
+  "category": "nature",
+  "q": "Which of these flightless birds lives in Antarctica?",
+  "correct": "Penguin",
+  "wrong": [
+   "Ostrich",
+   "Kiwi",
+   "Emu"
+  ],
+  "source": "British Antarctic Survey: Penguins"
+ },
+ {
+  "id": "spo-0003",
+  "level": 1,
+  "category": "sport",
+  "q": "How many holes are played in a standard round of golf?",
+  "correct": "18",
+  "wrong": [
+   "9",
+   "12",
+   "21"
+  ],
+  "source": "R&A: Rules of Golf"
+ },
+ {
+  "id": "gen-0005",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "What shape has three sides?",
+  "correct": "Triangle",
+  "wrong": [
+   "Square",
+   "Pentagon",
+   "Circle"
+  ],
+  "source": "Britannica: Triangle"
+ },
+ {
+  "id": "ent-0003",
+  "level": 1,
+  "category": "film, tv & books",
+  "q": "The film industry known as Bollywood is based in which country?",
+  "correct": "India",
+  "wrong": [
+   "Pakistan",
+   "Nigeria",
+   "Bangladesh"
+  ],
+  "source": "Britannica: Bollywood"
+ },
+ {
+  "id": "mus-0003",
+  "level": 1,
+  "category": "music",
+  "q": "Which of these is a brass instrument?",
+  "correct": "Trumpet",
+  "wrong": [
+   "Violin",
+   "Flute",
+   "Harp"
+  ],
+  "source": "Britannica: Brass instrument"
+ },
+ {
+  "id": "sci-0005",
+  "level": 1,
+  "category": "science",
+  "q": "How many planets are there in our solar system?",
+  "correct": "8",
+  "wrong": [
+   "9",
+   "7",
+   "10"
+  ],
+  "source": "IAU 2006 definition of a planet"
+ },
+ {
+  "id": "nat-0006",
+  "level": 1,
+  "category": "nature",
+  "q": "A caterpillar grows up to become which of these?",
+  "correct": "Butterfly",
+  "wrong": [
+   "Dragonfly",
+   "Grasshopper",
+   "Ladybird"
+  ],
+  "source": "Britannica: Caterpillar"
+ },
+ {
+  "id": "dar-0002",
+  "level": 1,
+  "category": "darts",
+  "q": "On a dartboard, how many points is the inner bull worth?",
+  "correct": "50",
+  "wrong": [
+   "25",
+   "100",
+   "60"
+  ],
+  "source": "PDC: dartboard scoring"
+ },
+ {
+  "id": "gen-0006",
+  "level": 1,
+  "category": "general knowledge",
+  "q": "How many weeks are there in a year?",
+  "correct": "52",
+  "wrong": [
+   "48",
+   "50",
+   "56"
+  ],
+  "source": "Standard calendar"
+ },
+ {
+  "id": "nat-0007",
+  "level": 1,
+  "category": "nature",
+  "q": "Which country is home to the wild kangaroo?",
+  "correct": "Australia",
+  "wrong": [
+   "Kenya",
+   "Brazil",
+   "India"
+  ],
+  "source": "Britannica: Kangaroo"
+ },
+ {
+  "id": "his-0003",
+  "level": 1,
+  "category": "history",
+  "q": "Which liner sank in 1912 after hitting an iceberg?",
+  "correct": "Titanic",
+  "wrong": [
+   "Lusitania",
+   "Bismarck",
+   "Mary Rose"
+  ],
+  "source": "Britannica: Titanic"
+ },
+ {
+  "id": "foo-0004",
+  "level": 1,
+  "category": "food & drink",
+  "q": "What is the main ingredient of an omelette?",
+  "correct": "Eggs",
+  "wrong": [
+   "Flour",
+   "Rice",
+   "Cheese"
+  ],
+  "source": "Britannica: Omelette"
+ },
+ {
+  "id": "ent-0004",
+  "level": 1,
+  "category": "film, tv & books",
+  "q": "What colour is the ogre Shrek?",
+  "correct": "Green",
+  "wrong": [
+   "Blue",
+   "Brown",
+   "Orange"
+  ],
+  "source": "DreamWorks: Shrek (2001)"
+ },
+ {
+  "id": "spo-0004",
+  "level": 1,
+  "category": "sport",
+  "q": "Wimbledon is a famous tournament in which sport?",
+  "correct": "Tennis",
+  "wrong": [
+   "Golf",
+   "Cricket",
+   "Snooker"
+  ],
+  "source": "AELTC: The Championships"
+ },
+ {
+  "id": "mus-0004",
+  "level": 1,
+  "category": "music",
+  "q": "Which singer was known as the \"King of Pop\"?",
+  "correct": "Michael Jackson",
+  "wrong": [
+   "Elvis Presley",
+   "Prince",
+   "Stevie Wonder"
+  ],
+  "source": "Britannica: Michael Jackson"
+ },
+ {
+  "id": "sci-0006",
+  "level": 1,
+  "category": "science",
+  "q": "What is the closest star to Earth?",
+  "correct": "The Sun",
+  "wrong": [
+   "Sirius",
+   "Polaris",
+   "Betelgeuse"
+  ],
+  "source": "NASA: The Sun"
+ }
+]

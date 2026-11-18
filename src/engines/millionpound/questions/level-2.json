@@ -1,0 +1,639 @@
+[
+ {
+  "id": "geo-0005",
+  "level": 2,
+  "category": "geography",
+  "q": "What is the longest river in the UK?",
+  "correct": "River Severn",
+  "wrong": [
+   "River Thames",
+   "River Trent",
+   "River Tay"
+  ],
+  "source": "Britannica: River Severn"
+ },
+ {
+  "id": "mus-0005",
+  "level": 2,
+  "category": "music",
+  "q": "How many keys does a standard modern piano have?",
+  "correct": "88",
+  "wrong": [
+   "76",
+   "92",
+   "100"
+  ],
+  "source": "Britannica: Piano"
+ },
+ {
+  "id": "geo-0006",
+  "level": 2,
+  "category": "geography",
+  "q": "What is the capital of Australia?",
+  "correct": "Canberra",
+  "wrong": [
+   "Sydney",
+   "Melbourne",
+   "Perth"
+  ],
+  "source": "Britannica: Canberra"
+ },
+ {
+  "id": "his-0004",
+  "level": 2,
+  "category": "history",
+  "q": "In which year did the Second World War end?",
+  "correct": "1945",
+  "wrong": [
+   "1944",
+   "1946",
+   "1939"
+  ],
+  "source": "IWM: The end of the Second World War"
+ },
+ {
+  "id": "nat-0008",
+  "level": 2,
+  "category": "nature",
+  "q": "What is the fastest land animal?",
+  "correct": "Cheetah",
+  "wrong": [
+   "Lion",
+   "Pronghorn",
+   "Greyhound"
+  ],
+  "source": "Britannica: Cheetah"
+ },
+ {
+  "id": "sci-0007",
+  "level": 2,
+  "category": "science",
+  "q": "What is the hardest natural substance?",
+  "correct": "Diamond",
+  "wrong": [
+   "Quartz",
+   "Granite",
+   "Gold"
+  ],
+  "source": "Britannica: Diamond (Mohs 10)"
+ },
+ {
+  "id": "foo-0005",
+  "level": 2,
+  "category": "food & drink",
+  "q": "Which nut is used to make marzipan?",
+  "correct": "Almond",
+  "wrong": [
+   "Walnut",
+   "Hazelnut",
+   "Cashew"
+  ],
+  "source": "Britannica: Marzipan"
+ },
+ {
+  "id": "ent-0005",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "Who played Jack in the 1997 film Titanic?",
+  "correct": "Leonardo DiCaprio",
+  "wrong": [
+   "Brad Pitt",
+   "Matt Damon",
+   "Johnny Depp"
+  ],
+  "source": "BFI: Titanic (1997)"
+ },
+ {
+  "id": "mus-0006",
+  "level": 2,
+  "category": "music",
+  "q": "Freddie Mercury was the lead singer of which band?",
+  "correct": "Queen",
+  "wrong": [
+   "Genesis",
+   "Led Zeppelin",
+   "The Who"
+  ],
+  "source": "Britannica: Queen"
+ },
+ {
+  "id": "spo-0005",
+  "level": 2,
+  "category": "sport",
+  "q": "In snooker, how many points is the black ball worth?",
+  "correct": "7",
+  "wrong": [
+   "5",
+   "6",
+   "10"
+  ],
+  "source": "WPBSA: Rules of Snooker"
+ },
+ {
+  "id": "dar-0003",
+  "level": 2,
+  "category": "darts",
+  "q": "Which number sits at the top of a standard dartboard?",
+  "correct": "20",
+  "wrong": [
+   "1",
+   "5",
+   "12"
+  ],
+  "source": "PDC: dartboard layout"
+ },
+ {
+  "id": "geo-0007",
+  "level": 2,
+  "category": "geography",
+  "q": "What is the smallest country in the world by area?",
+  "correct": "Vatican City",
+  "wrong": [
+   "Monaco",
+   "San Marino",
+   "Liechtenstein"
+  ],
+  "source": "Britannica: Vatican City"
+ },
+ {
+  "id": "his-0005",
+  "level": 2,
+  "category": "history",
+  "q": "Who was the UK Prime Minister for most of the Second World War?",
+  "correct": "Winston Churchill",
+  "wrong": [
+   "Neville Chamberlain",
+   "Clement Attlee",
+   "Anthony Eden"
+  ],
+  "source": "gov.uk: Past Prime Ministers"
+ },
+ {
+  "id": "sci-0008",
+  "level": 2,
+  "category": "science",
+  "q": "What is the largest organ of the human body?",
+  "correct": "The skin",
+  "wrong": [
+   "The liver",
+   "The brain",
+   "The lungs"
+  ],
+  "source": "NHS / Britannica: Skin"
+ },
+ {
+  "id": "nat-0009",
+  "level": 2,
+  "category": "nature",
+  "q": "What is the largest species of big cat?",
+  "correct": "Tiger",
+  "wrong": [
+   "Lion",
+   "Jaguar",
+   "Leopard"
+  ],
+  "source": "Britannica: Tiger"
+ },
+ {
+  "id": "gen-0007",
+  "level": 2,
+  "category": "general knowledge",
+  "q": "How many sides does a UK 50p coin have?",
+  "correct": "7",
+  "wrong": [
+   "6",
+   "8",
+   "5"
+  ],
+  "source": "Royal Mint: 50p coin"
+ },
+ {
+  "id": "foo-0006",
+  "level": 2,
+  "category": "food & drink",
+  "q": "Feta cheese comes from which country?",
+  "correct": "Greece",
+  "wrong": [
+   "Italy",
+   "Turkey",
+   "Spain"
+  ],
+  "source": "EU PDO register: Feta (Greece)"
+ },
+ {
+  "id": "ent-0006",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "Who created Mickey Mouse?",
+  "correct": "Walt Disney",
+  "wrong": [
+   "Jim Henson",
+   "Chuck Jones",
+   "Matt Groening"
+  ],
+  "source": "Britannica: Mickey Mouse"
+ },
+ {
+  "id": "geo-0008",
+  "level": 2,
+  "category": "geography",
+  "q": "Mount Everest sits on the border of Nepal and which country?",
+  "correct": "China",
+  "wrong": [
+   "India",
+   "Bhutan",
+   "Pakistan"
+  ],
+  "source": "Britannica: Mount Everest"
+ },
+ {
+  "id": "sci-0009",
+  "level": 2,
+  "category": "science",
+  "q": "Which part of a plant does most of its photosynthesis?",
+  "correct": "The leaves",
+  "wrong": [
+   "The roots",
+   "The stem",
+   "The flowers"
+  ],
+  "source": "Britannica: Leaf"
+ },
+ {
+  "id": "spo-0006",
+  "level": 2,
+  "category": "sport",
+  "q": "In which city were the 2012 Summer Olympics held?",
+  "correct": "London",
+  "wrong": [
+   "Beijing",
+   "Rio de Janeiro",
+   "Athens"
+  ],
+  "source": "IOC: London 2012"
+ },
+ {
+  "id": "mus-0007",
+  "level": 2,
+  "category": "music",
+  "q": "Which instrument did Jimi Hendrix famously play?",
+  "correct": "Guitar",
+  "wrong": [
+   "Drums",
+   "Saxophone",
+   "Piano"
+  ],
+  "source": "Britannica: Jimi Hendrix"
+ },
+ {
+  "id": "his-0006",
+  "level": 2,
+  "category": "history",
+  "q": "Which Tudor king had six wives?",
+  "correct": "Henry VIII",
+  "wrong": [
+   "Henry VII",
+   "Edward VI",
+   "Richard III"
+  ],
+  "source": "Historic Royal Palaces: Henry VIII"
+ },
+ {
+  "id": "geo-0009",
+  "level": 2,
+  "category": "geography",
+  "q": "Which country is shaped like a boot?",
+  "correct": "Italy",
+  "wrong": [
+   "Spain",
+   "Greece",
+   "Portugal"
+  ],
+  "source": "Britannica: Italy"
+ },
+ {
+  "id": "nat-0010",
+  "level": 2,
+  "category": "nature",
+  "q": "Which is the only mammal capable of true flight?",
+  "correct": "Bat",
+  "wrong": [
+   "Flying squirrel",
+   "Sugar glider",
+   "Flying lemur"
+  ],
+  "source": "Bat Conservation Trust"
+ },
+ {
+  "id": "foo-0007",
+  "level": 2,
+  "category": "food & drink",
+  "q": "What is the main ingredient of hummus?",
+  "correct": "Chickpeas",
+  "wrong": [
+   "Lentils",
+   "Kidney beans",
+   "Peas"
+  ],
+  "source": "Britannica: Hummus"
+ },
+ {
+  "id": "ent-0007",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "In Friends, what is the name of the coffee shop?",
+  "correct": "Central Perk",
+  "wrong": [
+   "The Daily Grind",
+   "Monk's Café",
+   "The Bean Scene"
+  ],
+  "source": "Warner Bros: Friends"
+ },
+ {
+  "id": "gen-0008",
+  "level": 2,
+  "category": "general knowledge",
+  "q": "A golden wedding anniversary celebrates how many years?",
+  "correct": "50",
+  "wrong": [
+   "25",
+   "40",
+   "60"
+  ],
+  "source": "Traditional anniversary list"
+ },
+ {
+  "id": "sci-0010",
+  "level": 2,
+  "category": "science",
+  "q": "At sea level, at what temperature does water boil?",
+  "correct": "100°C",
+  "wrong": [
+   "90°C",
+   "110°C",
+   "212°C"
+  ],
+  "source": "Britannica: Boiling point"
+ },
+ {
+  "id": "dar-0004",
+  "level": 2,
+  "category": "darts",
+  "q": "How many numbered segments are there on a standard dartboard?",
+  "correct": "20",
+  "wrong": [
+   "16",
+   "24",
+   "30"
+  ],
+  "source": "PDC: dartboard layout"
+ },
+ {
+  "id": "geo-0010",
+  "level": 2,
+  "category": "geography",
+  "q": "What is the capital of Scotland?",
+  "correct": "Edinburgh",
+  "wrong": [
+   "Glasgow",
+   "Aberdeen",
+   "Dundee"
+  ],
+  "source": "Scottish Parliament"
+ },
+ {
+  "id": "his-0007",
+  "level": 2,
+  "category": "history",
+  "q": "In which year did the Battle of Hastings take place?",
+  "correct": "1066",
+  "wrong": [
+   "1086",
+   "1215",
+   "1415"
+  ],
+  "source": "English Heritage: Battle of Hastings"
+ },
+ {
+  "id": "mus-0008",
+  "level": 2,
+  "category": "music",
+  "q": "Which singer released the album \"21\" in 2011?",
+  "correct": "Adele",
+  "wrong": [
+   "Amy Winehouse",
+   "Duffy",
+   "Florence Welch"
+  ],
+  "source": "Official Charts: Adele 21"
+ },
+ {
+  "id": "spo-0007",
+  "level": 2,
+  "category": "sport",
+  "q": "A marathon is about how long?",
+  "correct": "26 miles",
+  "wrong": [
+   "20 miles",
+   "24 miles",
+   "30 miles"
+  ],
+  "source": "World Athletics: 42.195 km"
+ },
+ {
+  "id": "nat-0011",
+  "level": 2,
+  "category": "nature",
+  "q": "What is a group of lions called?",
+  "correct": "A pride",
+  "wrong": [
+   "A pack",
+   "A herd",
+   "A troop"
+  ],
+  "source": "Britannica: Lion"
+ },
+ {
+  "id": "sci-0011",
+  "level": 2,
+  "category": "science",
+  "q": "Which blood cells fight infection?",
+  "correct": "White blood cells",
+  "wrong": [
+   "Red blood cells",
+   "Platelets",
+   "Nerve cells"
+  ],
+  "source": "NHS: Blood"
+ },
+ {
+  "id": "ent-0008",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "In which film series does Darth Vader appear?",
+  "correct": "Star Wars",
+  "wrong": [
+   "Star Trek",
+   "Alien",
+   "Dune"
+  ],
+  "source": "Lucasfilm: Star Wars"
+ },
+ {
+  "id": "foo-0008",
+  "level": 2,
+  "category": "food & drink",
+  "q": "Which spice gives paella its golden colour?",
+  "correct": "Saffron",
+  "wrong": [
+   "Paprika",
+   "Cumin",
+   "Cinnamon"
+  ],
+  "source": "Britannica: Paella"
+ },
+ {
+  "id": "gen-0009",
+  "level": 2,
+  "category": "general knowledge",
+  "q": "In the UK, what number do you dial for the emergency services?",
+  "correct": "999",
+  "wrong": [
+   "911",
+   "111",
+   "100"
+  ],
+  "source": "gov.uk: Emergency services"
+ },
+ {
+  "id": "geo-0011",
+  "level": 2,
+  "category": "geography",
+  "q": "What is the largest hot desert in the world?",
+  "correct": "Sahara",
+  "wrong": [
+   "Gobi",
+   "Kalahari",
+   "Arabian"
+  ],
+  "source": "Britannica: Sahara"
+ },
+ {
+  "id": "his-0008",
+  "level": 2,
+  "category": "history",
+  "q": "Who painted the Mona Lisa?",
+  "correct": "Leonardo da Vinci",
+  "wrong": [
+   "Michelangelo",
+   "Raphael",
+   "Botticelli"
+  ],
+  "source": "Louvre: Mona Lisa"
+ },
+ {
+  "id": "spo-0008",
+  "level": 2,
+  "category": "sport",
+  "q": "The Ashes is contested between England and Australia in which sport?",
+  "correct": "Cricket",
+  "wrong": [
+   "Rugby union",
+   "Tennis",
+   "Golf"
+  ],
+  "source": "ECB: The Ashes"
+ },
+ {
+  "id": "sci-0012",
+  "level": 2,
+  "category": "science",
+  "q": "What is the centre of an atom called?",
+  "correct": "The nucleus",
+  "wrong": [
+   "The shell",
+   "The orbit",
+   "The electron"
+  ],
+  "source": "Britannica: Atom"
+ },
+ {
+  "id": "his-0009",
+  "level": 2,
+  "category": "history",
+  "q": "Who was the first woman to be UK Prime Minister?",
+  "correct": "Margaret Thatcher",
+  "wrong": [
+   "Theresa May",
+   "Barbara Castle",
+   "Shirley Williams"
+  ],
+  "source": "gov.uk: Past Prime Ministers"
+ },
+ {
+  "id": "dar-0005",
+  "level": 2,
+  "category": "darts",
+  "q": "Who became the youngest PDC world champion, aged 17, in 2025?",
+  "correct": "Luke Littler",
+  "wrong": [
+   "Luke Humphries",
+   "Michael van Gerwen",
+   "Gerwyn Price"
+  ],
+  "source": "PDC: 2025 World Championship final"
+ },
+ {
+  "id": "ent-0009",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "Which author created the detective Hercule Poirot?",
+  "correct": "Agatha Christie",
+  "wrong": [
+   "Dorothy L. Sayers",
+   "Arthur Conan Doyle",
+   "P.D. James"
+  ],
+  "source": "Britannica: Hercule Poirot"
+ },
+ {
+  "id": "ent-0010",
+  "level": 2,
+  "category": "film, tv & books",
+  "q": "Who voices Woody in the Toy Story films?",
+  "correct": "Tom Hanks",
+  "wrong": [
+   "Tim Allen",
+   "Billy Crystal",
+   "Robin Williams"
+  ],
+  "source": "Pixar: Toy Story"
+ },
+ {
+  "id": "gen-0010",
+  "level": 2,
+  "category": "general knowledge",
+  "q": "What is the square root of 144?",
+  "correct": "12",
+  "wrong": [
+   "14",
+   "16",
+   "11"
+  ],
+  "source": "Arithmetic: 12 × 12 = 144"
+ },
+ {
+  "id": "sci-0013",
+  "level": 2,
+  "category": "science",
+  "q": "Sodium chloride is better known as what?",
+  "correct": "Table salt",
+  "wrong": [
+   "Baking soda",
+   "Bleach",
+   "Chalk"
+  ],
+  "source": "Britannica: Sodium chloride"
+ }
+]

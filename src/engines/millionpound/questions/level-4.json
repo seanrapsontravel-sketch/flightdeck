@@ -1,0 +1,600 @@
+[
+ {
+  "id": "ent-0015",
+  "level": 4,
+  "category": "film, tv & books",
+  "q": "Which actor played James Bond in the most official (Eon) Bond films?",
+  "correct": "Roger Moore",
+  "wrong": [
+   "Sean Connery",
+   "Daniel Craig",
+   "Pierce Brosnan"
+  ],
+  "source": "Eon Productions filmography (Moore: 7)"
+ },
+ {
+  "id": "geo-0019",
+  "level": 4,
+  "category": "geography",
+  "q": "What is the capital of Turkey?",
+  "correct": "Ankara",
+  "wrong": [
+   "Istanbul",
+   "Izmir",
+   "Antalya"
+  ],
+  "source": "Britannica: Ankara"
+ },
+ {
+  "id": "sci-0022",
+  "level": 4,
+  "category": "science",
+  "q": "What is the most abundant element in the universe?",
+  "correct": "Hydrogen",
+  "wrong": [
+   "Helium",
+   "Oxygen",
+   "Carbon"
+  ],
+  "source": "NASA: Hydrogen"
+ },
+ {
+  "id": "his-0017",
+  "level": 4,
+  "category": "history",
+  "q": "Which 1919 treaty ended the First World War with Germany?",
+  "correct": "Treaty of Versailles",
+  "wrong": [
+   "Treaty of Paris",
+   "Treaty of Utrecht",
+   "Treaty of Westphalia"
+  ],
+  "source": "IWM: Treaty of Versailles"
+ },
+ {
+  "id": "mus-0014",
+  "level": 4,
+  "category": "music",
+  "q": "Which singer was born Stefani Germanotta?",
+  "correct": "Lady Gaga",
+  "wrong": [
+   "Katy Perry",
+   "Madonna",
+   "Gwen Stefani"
+  ],
+  "source": "Britannica: Lady Gaga"
+ },
+ {
+  "id": "spo-0013",
+  "level": 4,
+  "category": "sport",
+  "q": "Which racecourse hosts the Grand National?",
+  "correct": "Aintree",
+  "wrong": [
+   "Cheltenham",
+   "Epsom",
+   "Ascot"
+  ],
+  "source": "The Jockey Club: Aintree"
+ },
+ {
+  "id": "dar-0009",
+  "level": 4,
+  "category": "darts",
+  "q": "Michael van Gerwen comes from which country?",
+  "correct": "Netherlands",
+  "wrong": [
+   "Belgium",
+   "Germany",
+   "Denmark"
+  ],
+  "source": "PDC: Michael van Gerwen"
+ },
+ {
+  "id": "geo-0020",
+  "level": 4,
+  "category": "geography",
+  "q": "Which African country has the largest population?",
+  "correct": "Nigeria",
+  "wrong": [
+   "Ethiopia",
+   "Egypt",
+   "South Africa"
+  ],
+  "source": "UN World Population Prospects"
+ },
+ {
+  "id": "sci-0023",
+  "level": 4,
+  "category": "science",
+  "q": "What is the SI unit of electrical resistance?",
+  "correct": "Ohm",
+  "wrong": [
+   "Volt",
+   "Ampere",
+   "Watt"
+  ],
+  "source": "BIPM: SI Brochure"
+ },
+ {
+  "id": "nat-0016",
+  "level": 4,
+  "category": "nature",
+  "q": "What is the collective noun for a group of crows?",
+  "correct": "A murder",
+  "wrong": [
+   "A parliament",
+   "A pride",
+   "A gaggle"
+  ],
+  "source": "Oxford English Dictionary"
+ },
+ {
+  "id": "his-0018",
+  "level": 4,
+  "category": "history",
+  "q": "Who was the last Tsar of Russia?",
+  "correct": "Nicholas II",
+  "wrong": [
+   "Alexander III",
+   "Peter the Great",
+   "Ivan the Terrible"
+  ],
+  "source": "Britannica: Nicholas II"
+ },
+ {
+  "id": "foo-0012",
+  "level": 4,
+  "category": "food & drink",
+  "q": "Manchego cheese comes from which country?",
+  "correct": "Spain",
+  "wrong": [
+   "Italy",
+   "Portugal",
+   "France"
+  ],
+  "source": "EU PDO register: Queso Manchego"
+ },
+ {
+  "id": "ent-0016",
+  "level": 4,
+  "category": "film, tv & books",
+  "q": "Which TV comedy is set at the Dunder Mifflin paper company?",
+  "correct": "The Office",
+  "wrong": [
+   "Parks and Recreation",
+   "Brooklyn Nine-Nine",
+   "30 Rock"
+  ],
+  "source": "NBC: The Office (US)"
+ },
+ {
+  "id": "geo-0021",
+  "level": 4,
+  "category": "geography",
+  "q": "What is the deepest lake in the world?",
+  "correct": "Lake Baikal",
+  "wrong": [
+   "Lake Tanganyika",
+   "Lake Superior",
+   "Caspian Sea"
+  ],
+  "source": "UNESCO: Lake Baikal"
+ },
+ {
+  "id": "mus-0015",
+  "level": 4,
+  "category": "music",
+  "q": "Who composed \"The Four Seasons\"?",
+  "correct": "Vivaldi",
+  "wrong": [
+   "Handel",
+   "Haydn",
+   "Bach"
+  ],
+  "source": "Britannica: The Four Seasons"
+ },
+ {
+  "id": "spo-0014",
+  "level": 4,
+  "category": "sport",
+  "q": "In which city is the Maracanã stadium?",
+  "correct": "Rio de Janeiro",
+  "wrong": [
+   "São Paulo",
+   "Buenos Aires",
+   "Brasília"
+  ],
+  "source": "Britannica: Maracanã Stadium"
+ },
+ {
+  "id": "his-0019",
+  "level": 4,
+  "category": "history",
+  "q": "In which year was Magna Carta sealed?",
+  "correct": "1215",
+  "wrong": [
+   "1066",
+   "1265",
+   "1314"
+  ],
+  "source": "British Library: Magna Carta"
+ },
+ {
+  "id": "nat-0017",
+  "level": 4,
+  "category": "nature",
+  "q": "Ants live on every continent except which?",
+  "correct": "Antarctica",
+  "wrong": [
+   "Australia",
+   "Europe",
+   "South America"
+  ],
+  "source": "Britannica: Ant"
+ },
+ {
+  "id": "geo-0022",
+  "level": 4,
+  "category": "geography",
+  "q": "What is the currency of Japan?",
+  "correct": "Yen",
+  "wrong": [
+   "Won",
+   "Yuan",
+   "Ringgit"
+  ],
+  "source": "Bank of Japan"
+ },
+ {
+  "id": "sci-0024",
+  "level": 4,
+  "category": "science",
+  "q": "Who set out the three laws of motion?",
+  "correct": "Isaac Newton",
+  "wrong": [
+   "Galileo Galilei",
+   "Johannes Kepler",
+   "Albert Einstein"
+  ],
+  "source": "Britannica: Newton's laws of motion"
+ },
+ {
+  "id": "ent-0017",
+  "level": 4,
+  "category": "film, tv & books",
+  "q": "Who wrote the novel \"Nineteen Eighty-Four\"?",
+  "correct": "George Orwell",
+  "wrong": [
+   "Aldous Huxley",
+   "Ray Bradbury",
+   "H.G. Wells"
+  ],
+  "source": "Britannica: Nineteen Eighty-Four"
+ },
+ {
+  "id": "gen-0012",
+  "level": 4,
+  "category": "general knowledge",
+  "q": "Which number is written as XC in Roman numerals?",
+  "correct": "90",
+  "wrong": [
+   "110",
+   "40",
+   "140"
+  ],
+  "source": "Roman numerals: XC = 100 − 10"
+ },
+ {
+  "id": "foo-0013",
+  "level": 4,
+  "category": "food & drink",
+  "q": "Which spirit is the base of a Margarita?",
+  "correct": "Tequila",
+  "wrong": [
+   "Vodka",
+   "White rum",
+   "Gin"
+  ],
+  "source": "IBA official cocktails: Margarita"
+ },
+ {
+  "id": "mus-0016",
+  "level": 4,
+  "category": "music",
+  "q": "Bono and The Edge are members of which band?",
+  "correct": "U2",
+  "wrong": [
+   "Coldplay",
+   "Simple Minds",
+   "R.E.M."
+  ],
+  "source": "Britannica: U2"
+ },
+ {
+  "id": "his-0020",
+  "level": 4,
+  "category": "history",
+  "q": "Which king was killed at the Battle of Bosworth Field in 1485?",
+  "correct": "Richard III",
+  "wrong": [
+   "Richard II",
+   "Henry VI",
+   "Edward IV"
+  ],
+  "source": "Britannica: Battle of Bosworth Field"
+ },
+ {
+  "id": "sci-0025",
+  "level": 4,
+  "category": "science",
+  "q": "How many chromosomes are there in a normal human body cell?",
+  "correct": "46",
+  "wrong": [
+   "23",
+   "44",
+   "48"
+  ],
+  "source": "NHGRI: Chromosomes"
+ },
+ {
+  "id": "nat-0018",
+  "level": 4,
+  "category": "nature",
+  "q": "Which of these animals has the longest pregnancy?",
+  "correct": "African elephant",
+  "wrong": [
+   "Blue whale",
+   "Giraffe",
+   "Rhinoceros"
+  ],
+  "source": "Britannica: Elephant (about 22 months)"
+ },
+ {
+  "id": "dar-0010",
+  "level": 4,
+  "category": "darts",
+  "q": "What is the highest possible three-dart checkout in darts?",
+  "correct": "170",
+  "wrong": [
+   "180",
+   "167",
+   "160"
+  ],
+  "source": "PDC: T20, T20, bull"
+ },
+ {
+  "id": "ent-0018",
+  "level": 4,
+  "category": "film, tv & books",
+  "q": "Who wrote the \"Lord of the Rings\" novels?",
+  "correct": "J.R.R. Tolkien",
+  "wrong": [
+   "C.S. Lewis",
+   "Terry Pratchett",
+   "Philip Pullman"
+  ],
+  "source": "Britannica: J.R.R. Tolkien"
+ },
+ {
+  "id": "geo-0023",
+  "level": 4,
+  "category": "geography",
+  "q": "Which country has the most natural lakes?",
+  "correct": "Canada",
+  "wrong": [
+   "Finland",
+   "Russia",
+   "United States"
+  ],
+  "source": "Natural Resources Canada"
+ },
+ {
+  "id": "his-0021",
+  "level": 4,
+  "category": "history",
+  "q": "Which explorer commanded HMS Endeavour on his first Pacific voyage?",
+  "correct": "James Cook",
+  "wrong": [
+   "Francis Drake",
+   "Walter Raleigh",
+   "Ernest Shackleton"
+  ],
+  "source": "Royal Museums Greenwich: HMS Endeavour"
+ },
+ {
+  "id": "sci-0026",
+  "level": 4,
+  "category": "science",
+  "q": "What is the chemical symbol for potassium?",
+  "correct": "K",
+  "wrong": [
+   "P",
+   "Po",
+   "Pt"
+  ],
+  "source": "RSC Periodic Table: Potassium"
+ },
+ {
+  "id": "nat-0019",
+  "level": 4,
+  "category": "nature",
+  "q": "What is the official national animal of Scotland?",
+  "correct": "The unicorn",
+  "wrong": [
+   "The stag",
+   "The golden eagle",
+   "The red lion"
+  ],
+  "source": "Scottish Government: national symbols"
+ },
+ {
+  "id": "mus-0017",
+  "level": 4,
+  "category": "music",
+  "q": "Which Beatles album includes \"Here Comes the Sun\"?",
+  "correct": "Abbey Road",
+  "wrong": [
+   "Revolver",
+   "Let It Be",
+   "Help!"
+  ],
+  "source": "The Beatles: Abbey Road (1969)"
+ },
+ {
+  "id": "foo-0014",
+  "level": 4,
+  "category": "food & drink",
+  "q": "Which vegetable gives borscht its deep red colour?",
+  "correct": "Beetroot",
+  "wrong": [
+   "Spinach",
+   "Pumpkin",
+   "Leek"
+  ],
+  "source": "Britannica: Borscht"
+ },
+ {
+  "id": "gen-0013",
+  "level": 4,
+  "category": "general knowledge",
+  "q": "How many sides does a dodecagon have?",
+  "correct": "12",
+  "wrong": [
+   "10",
+   "14",
+   "20"
+  ],
+  "source": "Britannica: Polygon"
+ },
+ {
+  "id": "spo-0015",
+  "level": 4,
+  "category": "sport",
+  "q": "In the World Snooker Championship final, first to how many frames wins?",
+  "correct": "18",
+  "wrong": [
+   "13",
+   "16",
+   "21"
+  ],
+  "source": "WST: final is best of 35 frames"
+ },
+ {
+  "id": "geo-0024",
+  "level": 4,
+  "category": "geography",
+  "q": "What is the highest mountain in Africa?",
+  "correct": "Mount Kilimanjaro",
+  "wrong": [
+   "Mount Kenya",
+   "Mount Elgon",
+   "Mount Toubkal"
+  ],
+  "source": "Britannica: Kilimanjaro"
+ },
+ {
+  "id": "sci-0027",
+  "level": 4,
+  "category": "science",
+  "q": "Which type of rock forms when lava or magma cools?",
+  "correct": "Igneous",
+  "wrong": [
+   "Sedimentary",
+   "Metamorphic",
+   "Limestone"
+  ],
+  "source": "British Geological Survey"
+ },
+ {
+  "id": "sci-0028",
+  "level": 4,
+  "category": "science",
+  "q": "Which metal is liquid at normal room temperature?",
+  "correct": "Mercury",
+  "wrong": [
+   "Sodium",
+   "Bismuth",
+   "Titanium"
+  ],
+  "source": "RSC Periodic Table: Mercury"
+ },
+ {
+  "id": "nat-0020",
+  "level": 4,
+  "category": "nature",
+  "q": "Which bird is famous for being able to fly backwards?",
+  "correct": "Hummingbird",
+  "wrong": [
+   "Kingfisher",
+   "Swift",
+   "Kestrel"
+  ],
+  "source": "RSPB / Britannica: Hummingbird"
+ },
+ {
+  "id": "foo-0015",
+  "level": 4,
+  "category": "food & drink",
+  "q": "Baklava is made with which type of pastry?",
+  "correct": "Filo",
+  "wrong": [
+   "Choux",
+   "Puff",
+   "Hot water crust"
+  ],
+  "source": "Britannica: Baklava"
+ },
+ {
+  "id": "nat-0021",
+  "level": 4,
+  "category": "nature",
+  "q": "What is a male bee called?",
+  "correct": "A drone",
+  "wrong": [
+   "A worker",
+   "A jack",
+   "A buck"
+  ],
+  "source": "British Beekeepers Association"
+ },
+ {
+  "id": "spo-0016",
+  "level": 4,
+  "category": "sport",
+  "q": "Which country hosted the first modern Olympic Games, in 1896?",
+  "correct": "Greece",
+  "wrong": [
+   "France",
+   "United Kingdom",
+   "United States"
+  ],
+  "source": "IOC: Athens 1896"
+ },
+ {
+  "id": "sci-0029",
+  "level": 4,
+  "category": "science",
+  "q": "Which particle did CERN announce it had discovered in 2012?",
+  "correct": "Higgs boson",
+  "wrong": [
+   "Top quark",
+   "Graviton",
+   "Neutrino"
+  ],
+  "source": "CERN: The Higgs boson"
+ },
+ {
+  "id": "his-0022",
+  "level": 4,
+  "category": "history",
+  "q": "In which year did the Wall Street Crash happen?",
+  "correct": "1929",
+  "wrong": [
+   "1919",
+   "1933",
+   "1937"
+  ],
+  "source": "Britannica: Stock market crash of 1929"
+ }
+]

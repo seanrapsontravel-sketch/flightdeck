@@ -1399,6 +1399,17 @@ function matchRecordsFor(gameData) {
     return engine.buildMatchRecords(gameData) || [];
 }
 
+/**
+ * May a dart that lands outside `playing` be queued and applied later? Most
+ * games say yes (it belonged to the visit under way). A game declares
+ * meta.queueThrows = false when a held dart would wrongly count for whatever
+ * comes next (Million Pound Oche: it would answer the next player's question).
+ */
+function queuesThrows(gameType) {
+    const engine = getEngine(gameType);
+    return !(engine && engine.meta && engine.meta.queueThrows === false);
+}
+
 function initialMatchSchedule(gameData) {
     if (!gameData || !gameData.phase || gameData.phase.type !== 'round_announce') return null;
     const gt = gameData.gameType;
@@ -1425,6 +1436,7 @@ module.exports = {
     applyScheduledAction,
     buildDebugPreviewPhase,
     initialMatchSchedule,
+    queuesThrows,
     leaderboardSpec,
     matchRecordsFor,
     buildQuick10MatchRecord,

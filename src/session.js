@@ -12,7 +12,21 @@ function startSession(players, minutes, now = Date.now()) {
 }
 function visitKey(gd) {
     if (!gd) return null;
+    // A game whose unit of play is the round (Million Pound Oche: every player
+    // must get the same number of questions) only lets the clock stop between rounds.
+    if (gd.sessionUnit === 'round') return `round:${gd.currentRound || 1}`;
     return `${gd.currentRound || 1}:${gd.activeIdx ?? gd.activeTurnIndex ?? 0}:${gd.player?.id || ''}`;
+}
+/** Has the unit the clock waits on (a visit, or a whole round) started yet? */
+function unitStarted(gd) {
+    if (gd?.sessionUnit === 'round') {
+        const ph = gd.phase?.type;
+        if (gd.suddenDeath) return true;                                 // a tiebreak always plays to a winner
+        if (ph === 'round_announce') return false;                       // a new round, not yet begun
+        if (ph === 'intermission') return (gd.phase.data?.nextPlayerIndex || 0) > 0;
+        return (gd.activeIdx || 0) > 0 || dartsInVisit(gd) > 0 || ph === 'locked' || ph === 'reveal';
+    }
+    return !!dartsInVisit(gd);
 }
 function dartsInVisit(gd) { return gd?.dartsThrownThisTurn ?? gd?.throwsThisTurn ?? 0; }
 function endSession(s, reason, now) {
@@ -28,10 +42,15 @@ function tickSession(s, gd, awaitingTakeout, correcting = false, now = Date.now(
     if (s.status !== 'expiring') {
         s.status = 'expiring'; s.expiringVisit = visitKey(gd);
         s.history.push({ action: 'expired', at: now });
-        if (!correcting && (!gd || terminal(gd) || !dartsInVisit(gd) || awaitingTakeout ||
+        if (!correcting && (!gd || terminal(gd) || !unitStarted(gd) || (awaitingTakeout && gd.sessionUnit !== 'round') ||
             ['setup', 'pick_mode', 'pick_player'].includes(gd.phase?.type))) {
             endSession(s, 'time', now); return;
         }
+    }
+    if (gd?.sessionUnit === 'round') {
+        // only the end of the game or the end of the round stops it
+        if (!correcting && (terminal(gd) || visitKey(gd) !== s.expiringVisit)) endSession(s, 'round_finished', now);
+        return;
     }
     if (!correcting && (terminal(gd) || awaitingTakeout || dartsInVisit(gd) >= 3 || visitKey(gd) !== s.expiringVisit)) endSession(s, 'visit_finished', now);
 }
@@ -65,7 +84,7 @@ function resultFor(state, status = 'completed') {
         const official = supplied?.find(a => a.id === p.id || a.playerId === p.id);
         // Unfinished players are tied behind the winner in checkout/elimination
         // games: those games do not determine second/third/fourth place.
-        let metric = ['derby', 'shanghai', 'quackshot'].includes(game) ? Number(score) || 0 : 0;
+        let metric = ['derby', 'shanghai', 'quackshot', 'millionpound'].includes(game) ? Number(score) || 0 : 0;
         if (official) metric = -official.place;
         return { id: p.id, name: p.name, metric, winner: winners.has(p.id), score: score ?? null,
             details: official ? { darts: official.darts, finished: official.finished, stopsCleared: official.stopsCleared }
@@ -86,7 +105,7 @@ function resultFor(state, status = 'completed') {
     return { id: gd.matchKey, sessionId: state.matchSessionId, gameType: game, status, participants: ranked,
         eligible: !excluded, excluded, integrity: { simulated: !!(gd.usedDebug || state.matchSimulated), corrected: !!gd.usedCorrection },
         scoreDetails: { phase: gd.phase?.type, reason: phase.reason || null, totalScore: gd.totalScore ?? null },
-        rankingRule: ['derby', 'shanghai', 'quackshot'].includes(game) ? 'winner_then_score' : ['aroundtheworld', 'zerohour'].includes(game) ? 'engine_standings' : 'winner_then_shared_remaining_places' };
+        rankingRule: ['derby', 'shanghai', 'quackshot', 'millionpound'].includes(game) ? 'winner_then_score' : ['aroundtheworld', 'zerohour'].includes(game) ? 'engine_standings' : 'winner_then_shared_remaining_places' };
 }
 function upsertResult(state, status) {
     const result = resultFor(state, status);

@@ -2,7 +2,8 @@
 // prefix; the behaviour lives here. Everything a player typed goes in via textContent; avatars only from data:image,
 // same-origin or http(s) URLs (anything else shows initials).
 export const el = (tag, cls, parent) => { const e = document.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; };
-export const initials = (name) => String(name || '?').split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase() || '?';
+// first letter/digit of each word, so "Christopher & Maximilian" is CM, not C&
+export const initials = (name) => String(name || '?').split(/\s+/).map((w) => (w.match(/[\p{L}\p{N}]/u) || [])[0]).filter(Boolean).join('').slice(0, 2).toUpperCase() || '?';
 export function avatarEl(avatar, name, cls) {
     const box = el('div', cls);
     if (avatar && /^(data:image\/(png|jpe?g|webp|gif);|\/(?!\/)|https?:)/i.test(avatar)) { const img = el('img', null, box); img.alt = ''; img.src = avatar; }
